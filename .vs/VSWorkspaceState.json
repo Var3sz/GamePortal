@@ -1,7 +1,9 @@
 {
   "ExpandedNodes": [
-    ""
+    "",
+    "\\GamePortal",
+    "\\GamePortal\\bin\\Debug"
   ],
-  "SelectedNode": "\\GamePortal.sln",
+  "SelectedNode": "\\GamePortal\\game-portal",
   "PreviewInSolutionExplorer": false
 }
