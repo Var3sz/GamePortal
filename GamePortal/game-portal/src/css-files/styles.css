@@ -1,0 +1,393 @@
+:root{
+    --primary-color: #769656;
+    --secondary-color: white;
+}
+
+
+/* Navigation bar component */
+#navbar{
+    background-color: var(--primary-color) !important;
+}
+
+#listgroup-item {
+    background-color: var(--primary-color) !important;
+    border-color: transparent !important;
+    border-radius: 0 !important;
+    padding-left: 20px;
+}
+
+#nav-link {
+    color: var(--secondary-color) !important;
+    font-size: 20px;
+    border: 0px;
+}
+
+#navbar-btn {
+    background-color: var(--secondary-color) !important;
+    color: var(--primary-color) !important;
+    font-size: 18px;
+    font-weight: bold;
+    border: none !important;
+}
+
+/* Login page */
+#login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 90px;
+}
+  
+#login-form {
+    width: 400px;
+    box-shadow: 1px 1px 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+}
+  
+#login-form-content {
+    padding-left: 10%;
+    padding-right: 10%;
+}
+  
+#login-title {
+    text-align: center;
+    font-size: 40px;
+    color: black;
+    font-weight: bold;
+}
+  
+#login-labels {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#btn-login {
+    background-color: var(--primary-color) !important;
+    border-color: transparent !important;
+    width: 100%;
+    font-weight: bold;
+}
+
+#login-link {
+    display: block;
+    margin-top: 5px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    color: var(--primary-color) !important;
+}
+
+
+  /* register page */
+
+  #registration-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 15px;
+  }
+  
+  #registration-form {
+    width: 400px;
+    box-shadow: 1px 1px 10px;
+    padding-top: 20px;
+    padding-bottom: 20px;
+    border-radius: 10px;
+  }
+  
+  #registration-form-content {
+    padding-left: 10%;
+    padding-right: 10%;
+  }
+  
+  #registration-title {
+    text-align: center;
+    font-size: 40px;
+    color:black;
+    font-weight: bold;
+  }
+  
+  #registration-labels{
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  #btn-registration {
+    background-color: var(--primary-color) !important;
+    border-color: transparent !important;
+    width: 100%;
+    font-weight: bold;
+  }
+
+  #register-link {
+    display: block;
+    margin-top: 5px;
+    padding-bottom: 0px;
+    margin-bottom: 0px;
+    font-weight: bold;
+    color: var(--primary-color) !important;
+}
+
+/* Admin page */
+
+.table-horizontal-line{
+  border-top: 4px solid var(--primary-color);
+  width: 300px;
+}
+
+.table-header-row{
+  color: white;
+  background-color:  var(--primary-color);
+}
+
+/* Remove player modal */
+
+#remove-player-header {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+#player-modal-attribute{
+    font-size: 20px !important;
+}
+
+#player-modal-body{
+    color: #4B4B5C;
+    font-size: 17px;
+    font-weight: 450;
+}
+
+#remove-btn {
+  background-color: #769656 !important;
+  border-color: transparent !important;
+}
+
+/* Game cards */
+#game-card {
+  width: 21rem;
+  box-shadow: 1px 1px 10px;
+  border-radius: 10px;
+}
+
+#game-card-body{
+  display: flex;
+  flex-direction: column;
+}
+
+#game-card-title {
+  text-align: center;
+  font-size: 28px;
+  font-weight: bold;
+}
+
+#game-card-btn-container{
+  display: flex;
+  justify-content: center;
+}
+
+#game-card-btn {
+  font-size: 15px;
+  font-weight: bold;
+  background-color: var(--primary-color) !important;
+  border-color: transparent !important;
+}
+
+/* Connect4 game properties */
+#Connect4 {
+  text-align: center;
+}
+
+#board {
+  background-color: var(--primary-color);
+  width: 700px;
+  margin: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 8px;
+}
+
+#board > .cell {
+  width: 100%;
+  padding-top: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+}
+
+#board > .cell[data-player = 'playerOne'] {
+  background-color: yellow;
+}
+
+#board > .cell[data-player = 'playerTwo'] {
+  background-color: red;
+}
+
+#connect4-game-menu {
+    width: 21rem;
+    box-shadow: 1px 1px 5px;
+    margin-top: 240px;
+}
+
+/* Winner modal */
+
+#winner-modal-header {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+#trophy {
+  margin-left: 5px;
+  width: 25px;
+}
+
+#winner-modal-body{
+  color: #4B4B5C;
+  font-size: 20px;
+  font-weight: 450;
+}
+
+#restart-btn {
+  background-color: #769656 !important;
+  border-color: transparent !important;
+}
+
+/* Define the animation */
+.circle-drop {
+  animation: dropAnimation 0.5s linear forwards;
+}
+
+/* Keyframes for the animation */
+@keyframes dropAnimation {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(0);
+  }
+}
+
+
+/************************************************************ CHESS ***********************************************************/
+#chessboard {
+  display: flex;
+  flex-wrap: wrap;
+  background-color: var(--primary-color);
+  width: 600px;
+  height: 600px;
+  margin-top: 20px;
+  padding: 0px;
+}
+
+.tile {
+  display: grid;
+  place-content: center;
+  margin: 0px;
+  padding: 0px;
+  width: 75px !important;
+  height: 75px !important;
+}
+
+.dark-tile {
+  background-color: var(--primary-color);
+}
+
+.light-tile {
+  background-color: lightgray;
+}
+
+.tile img {
+  width: 70px;
+}
+
+.chess-piece {
+  width: 75px;
+  height: 75px;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: 70px;
+}
+
+.chess-piece:hover {
+  cursor: grab;
+}
+
+.chess-piece:active {
+  cursor: grabbing;
+}
+
+.tile-highlight:not(.chess-piece-tile)::before {
+  content: " ";
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.4);
+}
+
+.tile-highlight.chess-piece-tile::before {
+  position: absolute;
+  content: " ";
+  width: 75px;
+  height: 75px;
+  border: 5px solid rgba(0, 0, 0, 0.4);
+  border-radius: 50%;
+}
+
+.chess-modal {
+    position: absolute;
+    top: 0px;
+    bottom: 0px;
+    right: 0px;
+    left: 0px;
+}
+
+.chess-modal.hidden {
+  display: none;
+}
+
+.chess-modal > .modal-body {
+  position: absolute;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 600px;
+  top: calc(50% - 40px);
+  left: calc(50% - 300px);
+  height: 200px;
+  background-color: rgba(0, 0, 0, 0.6);
+}
+
+.chess-modal > .modal-body > img {
+  height: 100px;
+  border-radius: 50%;
+  padding: 10px;
+}
+
+.chess-modal > .modal-body > img:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  cursor: pointer;
+}
+
+.chess-modal > .modal-body > .checkmate-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;  gap: 50px;
+  width: 100%;
+}
+
+.chess-modal > .modal-body > .checkmate-body > span{
+  font-size: 35px;
+  color: white;
+
+}
+
+.chess-modal > .modal-body > .checkmate-body > button{
+  background-color: var(--primary-color);
+  border: transparent;
+  width: 50%;
+}
