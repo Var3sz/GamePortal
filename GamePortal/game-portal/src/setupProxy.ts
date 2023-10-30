@@ -8,11 +8,11 @@ const context = [
   "/weatherforecast",
 ];
 
-const onError = (err, req, resp, target) => {
+const onError = (err: any, req: any, resp: any, target: any) => {
     console.error(`${err.message}`);
 }
 
-module.exports = function (app) {
+module.exports = function (app: any) {
   const appProxy = createProxyMiddleware(context, {
     proxyTimeout: 10000,
     target: target,
