@@ -14,6 +14,12 @@ if (!app.Environment.IsDevelopment())
 app.UseStaticFiles();
 app.UseRouting();
 
+app.UseCors(builder =>
+    builder
+        .AllowAnyMethod()
+        .AllowAnyHeader()
+        .WithOrigins("http://localhost:44421")
+);
 
 app.MapControllerRoute(
     name: "default",
