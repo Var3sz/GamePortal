@@ -16,9 +16,7 @@ export const TicTacToeCard = () => {
                         to form a winning line of three. Let's play now!
                     </Card.Text>
                     <Container id="game-card-btn-container">
-                        <Link to="/chess">
-                            <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" disabled>Play offline</Button>
-                        </Link>
+                        <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" disabled>Play offline</Button>
                         <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" disabled>Play online</Button>
                     </Container>
                 </Card.Body>
