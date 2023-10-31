@@ -1,8 +1,8 @@
 export interface RegistrationForm 
 {
-    fullname: string;
+    fullName: string;
+    userName: string;
     email: string;
-    username: string;
-    password: string;
-    birth: string;
+    password: string; 
+    birthdate: string;
 }

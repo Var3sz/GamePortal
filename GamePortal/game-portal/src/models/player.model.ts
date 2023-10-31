@@ -1,9 +1,9 @@
 export interface Player 
 {
     playerId: number;
-    fullname: string;
-    username: string;
-    password: string; 
+    fullName: string;
+    userName: string;
     email: string;
-    birth: string;
+    password: string; 
+    birthdate: string;
 }

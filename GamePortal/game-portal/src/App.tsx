@@ -6,23 +6,46 @@ import { Register } from "./pages/Register";
 import Chess from './pages/Chess';
 import Connect4 from "./pages/Connect4"
 import AppNavbar from './components/AppNavbar';
-import { Route, Routes } from 'react-router-dom';
-import { ManagePlayers } from './pages/ManagePlayers';
-import { useState } from 'react';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { useState, useMemo } from 'react';
 import { Container } from 'react-bootstrap';
+import { ManagePlayers } from './pages/ManagePlayers';
+import { Player } from './models/player.model';
+import { IProviderValue, UserContext } from './UserContext';
+
 
 function App() {
- return (
-     <>
+  const [player, setPlayer] = useState<Player | null>(null);
+
+  const providerValue = useMemo<IProviderValue>(
+    () => ({ player, setPlayer }),
+    [player, setPlayer]
+  );
+
+
+  return (
+    <>
+      <UserContext.Provider value={providerValue}>
         <AppNavbar />
         <Routes>
           <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />}></Route>
-          <Route path="/register" element={<Register />}></Route>
-          <Route path="/admin" element={<ManagePlayers />}></Route>
-          <Route path="/chess" element={<Chess />}></Route>
-          <Route path="/connect4" element={<Connect4 />}></Route>
+          <Route path="/chess/" element={<Chess />}></Route>
+          <Route path="/connect4/" element={<Connect4 />}></Route>
+          {player != null ? (
+            <></>
+          ) : (
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          )}
+          <Route path="/login/" element={<Login />}></Route>
+          <Route path="/register/" element={<Register />}></Route>
+
+          {player?.userName === "admin" ? (
+            <Route path="/admin" element={<ManagePlayers />}></Route>
+          ) : (
+            <Route path="*" element={<Navigate to="/login" replace />} />
+          )}
         </Routes>
+      </UserContext.Provider>
     </>
   );
 }
