@@ -4,6 +4,7 @@ import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
 import { useState, useContext } from 'react';
 import { UserContext } from '../UserContext';
 import { RegistrationForm } from '../models/registrationForm.model';
+import PasswordStrength from '../components/PasswordStrength';
 
 
 //TODO: Regisztráció bekötése ha lesz backend
@@ -52,9 +53,9 @@ export const Register = () => {
     const todayMonth = today.getMonth();
 
     if (todayMonth < birthMonth || (todayMonth === birthMonth && today.getDate() < birth.getDate())) {
-        return ageDifference - 1 >= 18;
+      return ageDifference - 1 >= 18;
     } else {
-        return ageDifference >= 18;
+      return ageDifference >= 18;
     }
   }
 
@@ -163,6 +164,7 @@ export const Register = () => {
                 onChange={handleChange}
                 required />
             </Form.Group>
+            <PasswordStrength password={registrationState.password} />
             <Form.Group className="mt-3">
               <FormLabel id="registration-labels">Date of birth</FormLabel>
               <Form.Control
