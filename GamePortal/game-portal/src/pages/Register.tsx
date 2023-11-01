@@ -163,8 +163,8 @@ export const Register = () => {
                 placeholder="Enter your password"
                 onChange={handleChange}
                 required />
+              <PasswordStrength password={registrationState.password} />
             </Form.Group>
-            <PasswordStrength password={registrationState.password} />
             <Form.Group className="mt-3">
               <FormLabel id="registration-labels">Date of birth</FormLabel>
               <Form.Control

@@ -133,7 +133,7 @@
 /* Password strength bar */ 
 
 .pwd-checker-bar {
-  background-color: transparent !important;
+  background-color: rgb(223, 223, 223) !important;
 }
 
 .pwd-checker-bar.strength-.progress .progress-bar {

@@ -1,4 +1,4 @@
-import {  ProgressBar } from "react-bootstrap";
+import {  ProgressBar, Form } from "react-bootstrap";
 
 export const PasswordStrength = ({ password }: { password: string }) => {
     const strengthChecker = () => {
@@ -20,10 +20,11 @@ export const PasswordStrength = ({ password }: { password: string }) => {
     return (
         <>
             <ProgressBar
-                className={`pwd-checker-bar strength-${strengthChecker().text} mt-1`}
+                className={`pwd-checker-bar strength-${strengthChecker().text}`}
                 now={strengthChecker().value}
                 max={5}
-            /> 
+            />
+            <Form.Text className="align-middle">Password strength: {strengthChecker().text}</Form.Text>
         </>
     );
 }
