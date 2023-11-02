@@ -1,5 +1,6 @@
 ﻿using GamePortal.DAOs;
 using GamePortal.Models;
+using GamePortal.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,17 +11,18 @@ namespace GamePortal.Controllers
     public class RegistrationController : ControllerBase
     {
         private readonly ILogger<RegistrationController> _logger;
-        public RegistrationController(ILogger<RegistrationController> logger)
+        private readonly IPlayerRepository _playerRepository;
+        public RegistrationController(ILogger<RegistrationController> logger, IPlayerRepository playerRepository)
         {
             _logger = logger;
+            _playerRepository = playerRepository;
         }
 
         [HttpPost]
         public Player Registration(RegistrationForm registrationForm)
         {
             Player player = new Player();
-            PlayerDAO playerDAO = new PlayerDAO();
-            var players = playerDAO.GetPlayers();
+            var players = _playerRepository.GetPlayers();
             foreach(Player p in players)
             {
                 if (p.UserName == registrationForm.UserName || p.Email == registrationForm.Email)
@@ -34,7 +36,7 @@ namespace GamePortal.Controllers
             player.Password = registrationForm.Password;
             player.Birthdate = registrationForm.BirthDate;
 
-            playerDAO.InsertPlayer(player);
+            _playerRepository.InsertPlayer(player);
 
             return player;
         }

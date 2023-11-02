@@ -38,7 +38,7 @@ export const Register = () => {
 
   /* Check if email address is valid! */
   function isValidEmail(email: string) {
-    const emailPattern = /^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|\"[a-zA-Z0-9.+!% -]{1,64}\")@[a-zA-Z0-9][a-zA-Z0-9.-]+\.(?:[a-z]{2,}|[0-9]{1,})$/;
+    const emailPattern = /^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|"[a-zA-Z0-9.+!% -]{1,64}")@[a-zA-Z0-9][a-zA-Z0-9.-]+\.(?:[a-z]{2,}|[0-9]{1,})$/;
     if (!emailPattern.test(email)) {
       return false;
     }

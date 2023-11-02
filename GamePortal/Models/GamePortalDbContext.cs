@@ -7,14 +7,7 @@ namespace GamePortal.Models
 {
     public partial class GamePortalDbContext : DbContext
     {
-        public GamePortalDbContext()
-        {
-        }
-
-        public GamePortalDbContext(DbContextOptions<GamePortalDbContext> options)
-            : base(options)
-        {
-        }
+        public GamePortalDbContext(DbContextOptions options): base(options) { }
 
         public virtual DbSet<Game> Games { get; set; } = null!;
         public virtual DbSet<Player> Players { get; set; } = null!;

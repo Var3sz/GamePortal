@@ -1,4 +1,5 @@
 using GamePortal.Models;
+using GamePortal.Repository;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
@@ -12,6 +13,10 @@ builder.Services.AddDbContext<GamePortalDbContext>(options =>
 {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DatabaseConnection")!);
 });
+
+builder.Services.AddCors();
+
+builder.Services.AddScoped<IPlayerRepository, PlayerRepository>();
 
 var app = builder.Build();
 
@@ -28,6 +33,7 @@ app.UseCors(builder =>
         .AllowAnyHeader()
         .WithOrigins("http://localhost:44421")
 );
+
 
 app.MapControllerRoute(
     name: "default",

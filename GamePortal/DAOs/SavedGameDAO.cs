@@ -6,11 +6,11 @@ namespace GamePortal.DAOs
     {
         public void RemoveSavedGames(int playerId)
         {
-            using (GamePortalDbContext context = new GamePortalDbContext())
+            /*using (GamePortalDbContext context = new GamePortalDbContext())
             {
                 context.SavedGames.RemoveRange(context.SavedGames.Where(q => q.PlayerId == playerId));
                 context.SaveChanges();
-            }
+            }*/
         }
     }
 }

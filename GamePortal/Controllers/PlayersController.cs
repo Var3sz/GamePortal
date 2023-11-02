@@ -1,5 +1,6 @@
 ﻿using GamePortal.DAOs;
 using GamePortal.Models;
+using GamePortal.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,16 +10,18 @@ namespace GamePortal.Controllers
     [Route("api/[controller]")]
     public class PlayersController : ControllerBase
     {
+        private readonly IPlayerRepository _playerRepository;
         private readonly ILogger<PlayersController> _logger;
-        public PlayersController(ILogger<PlayersController> logger)
+        public PlayersController(ILogger<PlayersController> logger, IPlayerRepository playerRepository)
         {
             _logger = logger;
+            _playerRepository = playerRepository;
         }
 
         [HttpGet]
         public List<Player> GetPlayers()
         {
-            return new PlayerDAO().GetPlayers();
+            return _playerRepository.GetPlayers();
         }
 
 
@@ -26,7 +29,7 @@ namespace GamePortal.Controllers
         public void RemovePlayer(Player player)
         {
             new SavedGameDAO().RemoveSavedGames(player.PlayerId);
-            new PlayerDAO().RemovePlayer(player);
+            _playerRepository.RemovePlayer(player);
         }
     }
 }

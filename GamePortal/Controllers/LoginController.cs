@@ -1,5 +1,6 @@
 ﻿using GamePortal.DAOs;
 using GamePortal.Models;
+using GamePortal.Repository;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,9 +11,11 @@ namespace GamePortal.Controllers
     public class LoginController : ControllerBase
     {
         private readonly ILogger<LoginController> _logger;
-        public LoginController(ILogger<LoginController> logger)
+        private readonly IPlayerRepository _playerRepository;
+        public LoginController(ILogger<LoginController> logger, IPlayerRepository playerRepository)
         {
             _logger = logger;
+            _playerRepository = playerRepository;
         }
 
         [HttpPost]
@@ -25,7 +28,7 @@ namespace GamePortal.Controllers
                 player.Password = loginCredentials.Password;
                 return player;
             }
-            return new PlayerDAO().GetPlayer(loginCredentials.UserName, loginCredentials.Password);
+            return _playerRepository.GetPlayer(loginCredentials.UserName, loginCredentials.Password);
         }
     }
 
