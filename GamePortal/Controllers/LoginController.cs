@@ -1,6 +1,7 @@
 ﻿using GamePortal.DAOs;
 using GamePortal.Models;
 using GamePortal.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
