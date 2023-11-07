@@ -19,10 +19,8 @@ const RemovePlayerModal: React.FunctionComponent<IRemovePlayerModalProps> = ({
 }) => {
 
   function formatBirthdateString(birthdateString: string) {
-    const date = new Date(birthdateString);
-    return date.toISOString().split('T')[0];
+    return birthdateString.split('T')[0];
   }
-
 
   async function removePlayer() {
     await fetch("http://localhost:5086/api/players", {

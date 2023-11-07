@@ -48,6 +48,7 @@ namespace GamePortal.Extensions
                         .AllowAnyHeader().WithOrigins("http://localhost:44421"));
             });
 
+
             // Add UserRepositories to container
             services.AddScoped<IPlayerRepository, PlayerRepository>();
 

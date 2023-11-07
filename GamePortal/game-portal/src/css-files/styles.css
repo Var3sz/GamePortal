@@ -3,7 +3,6 @@
     --secondary-color: white;
 }
 
-
 /* Navigation bar component */
 #navbar{
     background-color: var(--primary-color) !important;
@@ -80,58 +79,7 @@
 }
 
 
-  /* register page */
-
-  #registration-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 15px;
-  }
-  
-  #registration-form {
-    width: 400px;
-    box-shadow: 1px 1px 10px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    border-radius: 10px;
-  }
-  
-  #registration-form-content {
-    padding-left: 10%;
-    padding-right: 10%;
-  }
-  
-  #registration-title {
-    text-align: center;
-    font-size: 40px;
-    color:black;
-    font-weight: bold;
-  }
-  
-  #registration-labels{
-    font-size: 20px;
-    font-weight: bold;
-  }
-
-  #btn-registration {
-    background-color: var(--primary-color) !important;
-    border-color: transparent !important;
-    width: 100%;
-    font-weight: bold;
-  }
-
-  #register-link {
-    display: block;
-    margin-top: 5px;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-    font-weight: bold;
-    color: var(--primary-color) !important;
-}
-
 /* Password strength bar */ 
-
 .pwd-checker-bar {
   background-color: rgb(223, 223, 223) !important;
 }

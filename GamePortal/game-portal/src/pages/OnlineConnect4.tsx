@@ -1,9 +1,9 @@
-import Referee from "../components/Chess/Referee";
+import Connect4 from "./Connect4";
 
 export const Chess = () => {
   return(
     <>
-      <Referee />
+      <Connect4 />
     </>
   )
 }

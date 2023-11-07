@@ -8,8 +8,6 @@ import { useContext } from 'react';
 export const Home = () => {
   const userContext = useContext(UserContext);
 
-  console.log(userContext?.player?.userName);
-
   return (
     <>
       <Row className="mt-1">

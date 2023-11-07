@@ -1,26 +1,93 @@
 import * as React from 'react';
 import { Button, Form, Container, FormText, FormLabel, Alert } from 'react-bootstrap';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
-import { useState, useContext } from 'react';
+import { useState, useContext, useEffect, useRef, RefObject } from 'react';
 import { UserContext } from '../UserContext';
 import { RegistrationForm } from '../models/registrationForm.model';
 import PasswordStrength from '../components/PasswordStrength';
+import axios from '../api/axios';
+import { faCheck, faTimes, faInfoCircle, faCross } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { error } from 'console';
+import "../css-files/registration.css";
 
+const FULLNAME_REGEX = /[^a-zA-Z\s]+/;
+const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
+const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
+const EMAIL_REGEX = /^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|"[a-zA-Z0-9.+!% -]{1,64}")@[a-zA-Z0-9][a-zA-Z0-9.-]+\.(?:[a-z]{2,}|[0-9]{1,})$/;
+const REGISTER_URL = "/api/registration";
 
-//TODO: Regisztráció bekötése ha lesz backend
 export const Register = () => {
+
   const userContext = useContext(UserContext);
+
+  const userRef: RefObject<HTMLInputElement> = useRef(null);
+  const errorRef: RefObject<HTMLDivElement> = useRef(null);
 
   const [registrationState, setRegistrationState] = useState<RegistrationForm>({
     fullName: "",
     userName: "",
     email: "",
     password: "",
-    birthdate: ""
+    birthdate: "",
+    validFullName: false,
+    validUserName: false,
+    validEmail: false,
+    validPassword: false,
+    validBirthdate: false,
+    fullNameFocus: false,
+    userNameFocus: false,
+    emailFocus: false,
+    passwordFocus: false,
+    birthdateFocus: false,
+    errorMessage: ""
   });
 
   const [registrationSuccess, setRegistrationSuccess] = useState<boolean | null>(null);
 
+  const { fullName, userName, email, password, birthdate,
+    validFullName, validUserName, validEmail, validPassword, validBirthdate,
+    fullNameFocus, userNameFocus, emailFocus, passwordFocus, birthdateFocus, errorMessage
+  } = registrationState;
+
+  useEffect(() => {
+    userRef.current?.focus();
+  }, []);
+
+  useEffect(() => {
+    const correct = FULLNAME_REGEX.test(fullName);
+    setRegistrationState(prevState => ({ ...prevState, validFullName: correct }));
+  }, [fullName]);
+
+  useEffect(() => {
+    const correct = USER_REGEX.test(userName);
+    setRegistrationState(prevState => ({ ...prevState, validUserName: correct }));
+  }, [userName]);
+
+  useEffect(() => {
+    const correct = EMAIL_REGEX.test(email);
+    setRegistrationState(prevState => ({ ...prevState, validEmail: correct }));
+  }, [email]);
+
+  useEffect(() => {
+    const correct = PASSWORD_REGEX.test(password);
+    setRegistrationState(prevState => ({ ...prevState, validPassword: correct }));
+  }, [password]);
+
+  useEffect(() => {
+    const valid = isValidBirthDate(birthdate);
+    setRegistrationState(prevState => ({ ...prevState, validBirthdate: valid }));
+  }, [birthdate]);
+
+  useEffect(() => {
+    setRegistrationState(prevState => ({
+      ...prevState,
+      errorMessage: '',
+      success: false
+    }));
+  }, [fullName, userName, email, password, birthdate]);
+
+  /* Handle if an input element value has changed */
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
     setRegistrationSuccess(null);
     const value = evt.target.value
@@ -30,156 +97,260 @@ export const Register = () => {
     });
   }
 
-  /* Check if any field is empty! */
-  function emptyFields() {
-    return registrationState.fullName === "" || registrationState.userName === ""
-      || registrationState.email === "" || registrationState.password === "" || registrationState.birthdate === "";
-  }
+  /* Handle if an input element gets focus */
+  const handleFocus = (evt: React.FocusEvent<HTMLInputElement>) => {
+    const { name } = evt.target;
+    setRegistrationState(prevState => ({
+      ...prevState,
+      [`${name}Focus`]: true
+    }));
+  };
 
-  /* Check if email address is valid! */
-  function isValidEmail(email: string) {
-    const emailPattern = /^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|"[a-zA-Z0-9.+!% -]{1,64}")@[a-zA-Z0-9][a-zA-Z0-9.-]+\.(?:[a-z]{2,}|[0-9]{1,})$/;
-    if (!emailPattern.test(email)) {
-      return false;
-    }
-    return true;
-  }
+  /* Handle if an input element loses focus */
+  const handleBlur = (evt: React.FocusEvent<HTMLInputElement>) => {
+    const { name } = evt.target;
+    setRegistrationState(prevState => ({
+      ...prevState,
+      [`${name}Focus`]: false
+    }));
+  };
 
-  function isValidBirthDate(birthDate: string) {
+  /* Check if user is above 18 years! */
+  function isValidBirthDate(birthDate: string): boolean {
     const today = new Date();
     const birth = new Date(birthDate);
+
     const ageDifference = today.getFullYear() - birth.getFullYear();
     const birthMonth = birth.getMonth();
     const todayMonth = today.getMonth();
 
-    if (todayMonth < birthMonth || (todayMonth === birthMonth && today.getDate() < birth.getDate())) {
-      return ageDifference - 1 >= 18;
-    } else {
-      return ageDifference >= 18;
+    if (ageDifference > 18) {
+      return true;
+    } else if (ageDifference === 18) {
+      if (todayMonth > birthMonth || (todayMonth === birthMonth && today.getDate() >= birth.getDate())) {
+        return true;
+      }
     }
+
+    return false;
   }
 
-  /* Render the screen based on if the given credentials are correct! */
+  /* Navigate to home if registration has succedd! */
   const renderRegistrationResult = () => {
-    if (registrationSuccess && isValidEmail(registrationState.email)) {
+    if (registrationSuccess) {
       return (
         <Routes>
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       );
     }
-
-    else if (registrationSuccess === false && (emptyFields())) {
-      return <Alert variant="danger">Please fill out all fields</Alert>
-    }
-
-    else if (registrationSuccess === false && !isValidEmail(registrationState.email)) {
-      return <Alert variant="danger">Enter a correct email address</Alert>
-    }
-
-    else if (registrationSuccess === false && !isValidBirthDate(registrationState.birthdate)) {
-      return <Alert variant="danger">You must be older than 18</Alert>
-    }
-
-    else if (registrationSuccess === false) {
-      return <Alert variant="danger">The user already exists</Alert>
-    }
   }
 
-  /* Registration method with POST request for creating a new user in the database */
-  const registration = () => {
-    if (emptyFields() || !isValidEmail(registrationState.email) || !isValidBirthDate(registrationState.birthdate)) {
-      setRegistrationSuccess(false);
-      return;
-    }
+  /* Registration method wwith axios POST method, inserts a user into database */
+  const registration = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
 
-    fetch('http://localhost:5086/api/registration', {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(registrationState)
-    })
-      .then(response => {
-        if (response.status === 200) {
-          const jsonPromise = response.json();
-          jsonPromise.then(data => {
-            userContext?.setPlayer(data);
-            console.log(data);
-            setRegistrationSuccess(true)
-          });
-        }
-        else {
-          console.log("no data passed back");
-          setRegistrationSuccess(false)
-        }
-      });
+    const data = { fullName, userName, email, password, birthdate };
+
+    try {
+      const response = await axios.post(
+        REGISTER_URL,
+        JSON.stringify(data),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: false
+        });
+      if (response.status !== 204) {
+        userContext?.setPlayer(response.data);
+        setRegistrationSuccess(true)
+      } else {
+        setRegistrationSuccess(false)
+        setRegistrationState(prevState => ({
+          ...prevState,
+          errorMessage: "Username or email is taken!"
+        }));
+      }
+    } catch (error: any) {
+      if (!error?.response) {
+        setRegistrationState(prevState => ({
+          ...prevState,
+          errorMessage: "No server response!"
+        }));
+      } else {
+        setRegistrationState(prevState => ({
+          ...prevState,
+          errorMessage: "Registration failed"
+        }));
+      }
+    }
   }
 
   return (
     <>
       <Container id="registration-container">
-        <Form id="registration-form">
+        <Form id="registration-form" onSubmit={registration}>
           <Container id="registration-form-content">
+            <Alert
+              variant="danger"
+              ref={errorRef}
+              className={errorMessage ? "errorMessage" : "offscreen"}
+              aria-live='assertive'>{errorMessage}</Alert>
             <FormText id="registration-title">Registration</FormText>
             <Form.Group className="mt-3">
-              <FormLabel id="registration-labels">Full name</FormLabel>
+              <FormLabel id="registration-labels" htmlFor="fullname">Full name:
+                <Container className={validFullName ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validFullName || !fullName ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
               <Form.Control
-                name="fullName"
                 type="text"
+                id="fullname"
+                name="fullName"
                 className="form-control"
+                ref={userRef}
                 placeholder="Enter your fullname"
                 onChange={handleChange}
-                required />
-              <Form.Control.Feedback type="invalid">Please provide your fullname</Form.Control.Feedback>
+                required
+                aria-invalid={validFullName ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              <FormText
+                id="uidnote"
+                className={fullNameFocus && fullName && !validFullName ? "instructions" : "offscreen"}
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                Provide your fullname
+              </FormText>
             </Form.Group>
             <Form.Group className="mt-3">
-              <FormLabel id="registration-labels">Username</FormLabel>
+              <FormLabel id="registration-labels" htmlFor='username'>Username:
+                <Container className={validUserName ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validUserName || !userName ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
               <Form.Control
-                name="userName"
                 type="text"
+                id="username"
+                name="userName"
                 className="form-control"
                 placeholder="Enter your username"
                 onChange={handleChange}
-                required />
-              <Form.Control.Feedback type="invalid">Please provide a username</Form.Control.Feedback>
+                required
+                aria-invalid={validUserName ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              <FormText id="uidnote" className={userNameFocus && userName && !validUserName ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                4 to 24 characters.<br />
+                Must begin with a letter.<br />
+                Letters, numbers, underscores, hyphens allowed.
+              </FormText>
             </Form.Group>
             <Form.Group className="mt-3">
-              <FormLabel id="registration-labels">E-mail</FormLabel>
+              <FormLabel id="registration-labels" htmlFor="email">E-mail:
+                <Container className={validEmail ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validEmail || !email ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
               <Form.Control
+                type="text"
+                id="email"
                 name="email"
-                type="email"
                 className="form-control"
                 placeholder="Enter your email"
-                pattern='^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|\"[a-zA-Z0-9.+!% -]{1,64}\")@[a-zA-Z0-9][a-zA-Z0-9.-]+\.(?:[a-z]{2,}|[0-9]{1,})$'
                 onChange={handleChange}
-                required />
-              <Form.Control.Feedback type="invalid">Please provide a valid email</Form.Control.Feedback>
+                required
+                aria-invalid={validEmail ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              <FormText id="uidnote" className={emailFocus && email && !validEmail ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                Provide a correct e-mail address format. <br />
+                E.g. yourname@email.com
+              </FormText>
             </Form.Group>
             <Form.Group className="mt-3">
-              <FormLabel id="registration-labels">Password</FormLabel>
+              <FormLabel id="registration-labels" htmlFor="password">Password
+                <Container className={validPassword ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validPassword || !password ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
               <Form.Control
-                name="password"
                 type="password"
+                id="password"
+                name="password"
                 className="form-control"
                 placeholder="Enter your password"
                 onChange={handleChange}
-                required />
-              <PasswordStrength password={registrationState.password} />
+                required
+                aria-invalid={validPassword ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+              <PasswordStrength password={password} />
+              <FormText id="uidnote" className={passwordFocus && password && !validPassword ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                8 to 24 characters.<br />
+                Must include uppercase and lowercase letters, a number and a special character.<br />
+                Allowed special characters: ! @ # $ %
+              </FormText>
             </Form.Group>
             <Form.Group className="mt-3">
-              <FormLabel id="registration-labels">Date of birth</FormLabel>
+              <FormLabel id="registration-labels" htmlFor="birthdate">Date of birth:
+                <Container className={validBirthdate ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validBirthdate || !birthdate ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
               <Form.Control
-                name="birthdate"
                 type="date"
+                id="birthdate"
+                name="birthdate"
                 className="form-control"
                 placeholder="Enter your birthdate"
                 onChange={handleChange}
-                required />
+                required
+                aria-invalid={validBirthdate ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+              <FormText id="uidnote" className={birthdateFocus && birthdate && !validBirthdate ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                You must be at least 18 to register
+              </FormText>
             </Form.Group>
             <Container className="d-grid gap-2 mt-2"></Container>
             <Container>{renderRegistrationResult()}</Container>
-            <Button className="mt-3" id="btn-registration" onClick={() => registration()}>
-              Register
-            </Button>
+            <Button
+              type="submit"
+              className="mt-3" id="btn-registration"
+              disabled={validFullName && validUserName && validEmail && validPassword && validBirthdate ? false : true}
+            >Button</Button>
             <NavLink to="/login" id="register-link">Already have an account?</NavLink>
           </Container>
         </Form>
@@ -188,4 +359,4 @@ export const Register = () => {
   );
 }
 
-export default Register;
+export default Register; 

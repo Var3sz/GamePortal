@@ -1,6 +1,4 @@
-import * as React from "react";
-import { Row, Col, Form, Container } from "react-bootstrap";
-import NavLink from "react-router-dom";
+import { Row, Col, Container } from "react-bootstrap";
 import PlayerList from "../components/Admin/PlayerList";
 import { useState, useEffect, useContext } from "react";
 import { UserContext } from "../UserContext";
@@ -24,7 +22,7 @@ export const ManagePlayers = () => {
   }, [playerChanged]);
 
   const getInvestors = () => {
-    if (userContext?.player?.userName === "admin") {    //TODO: Only show if admin
+    if (userContext?.player?.userName === "admin") {    
       fetch("http://localhost:5086/api/players")
         .then((response) => response.json())
         .then((data) => {
