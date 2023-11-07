@@ -12,6 +12,8 @@ import { Container } from 'react-bootstrap';
 import { ManagePlayers } from './pages/ManagePlayers';
 import { Player } from './models/player.model';
 import { IProviderValue, UserContext } from './UserContext';
+import OnlineChess from './pages/OnlineChess';
+import OnlineConnect4 from './pages/OnlineConnect4';
 
 
 function App() {
@@ -34,7 +36,11 @@ function App() {
           {player != null ? (
             <></>
           ) : (
-            <Route path="*" element={<Navigate to="/login" replace />} />
+            <>
+              <Route path="/onlinechess" element={<OnlineChess />} />
+              <Route path="/onlineconnect4" element={<OnlineConnect4 />} />
+              <Route path="*" element={<Navigate to="/login" replace />} />
+            </>
           )}
           <Route path="/login/" element={<Login />}></Route>
           <Route path="/register/" element={<Register />}></Route>

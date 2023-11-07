@@ -1,6 +1,6 @@
 import Referee from "../components/Chess/Referee";
 
-export const Chess = () => {
+export const OnlineChess = () => {
   return(
     <>
       <Referee />
@@ -8,4 +8,4 @@ export const Chess = () => {
   )
 }
 
-export default Chess;
+export default OnlineChess;

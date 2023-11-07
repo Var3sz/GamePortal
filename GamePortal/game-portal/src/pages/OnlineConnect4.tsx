@@ -1,6 +1,6 @@
 import Connect4 from "./Connect4";
 
-export const Chess = () => {
+export const OnlineConnect4 = () => {
   return(
     <>
       <Connect4 />
@@ -8,4 +8,4 @@ export const Chess = () => {
   )
 }
 
-export default Chess;
+export default OnlineConnect4;

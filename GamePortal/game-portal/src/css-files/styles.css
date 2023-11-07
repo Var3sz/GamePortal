@@ -29,56 +29,6 @@
     border: none !important;
 }
 
-/* Login page */
-#login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin-top: 90px;
-}
-  
-#login-form {
-    width: 400px;
-    box-shadow: 1px 1px 10px;
-    padding-top: 20px;
-    padding-bottom: 20px;
-    border-radius: 10px;
-}
-  
-#login-form-content {
-    padding-left: 10%;
-    padding-right: 10%;
-}
-  
-#login-title {
-    text-align: center;
-    font-size: 40px;
-    color: black;
-    font-weight: bold;
-}
-  
-#login-labels {
-    font-size: 20px;
-    font-weight: bold;
-}
-
-#btn-login {
-    background-color: var(--primary-color) !important;
-    border-color: transparent !important;
-    width: 100%;
-    font-weight: bold;
-}
-
-#login-link {
-    display: block;
-    margin-top: 5px;
-    padding-bottom: 0px;
-    margin-bottom: 0px;
-    font-weight: bold;
-    color: var(--primary-color) !important;
-}
-
-
 /* Password strength bar */ 
 .pwd-checker-bar {
   background-color: rgb(223, 223, 223) !important;

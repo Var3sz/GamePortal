@@ -6,4 +6,5 @@ export interface Player
     email: string;
     password: string; 
     birthdate: string;
+    token: string;
 }

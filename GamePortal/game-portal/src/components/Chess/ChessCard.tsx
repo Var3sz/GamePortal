@@ -33,7 +33,7 @@ export const ChessCard = () => {
                                 <Link to="/chess">
                                     <Button variant="primary" className="ml-3 mr-3" id="game-card-btn">Play offline</Button>
                                 </Link>
-                                <Link to="/chess">
+                                <Link to="/onlinechess">
                                     <Button variant="primary" className="ml-3 mr-3" id="game-card-btn">Play online</Button>
                                 </Link>
                             </Stack>

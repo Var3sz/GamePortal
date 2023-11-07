@@ -1,21 +1,19 @@
-import * as React from 'react';
+import "../css-files/registration.css";
+import React, { useState, useContext, useEffect, useRef, RefObject } from 'react';
 import { Button, Form, Container, FormText, FormLabel, Alert } from 'react-bootstrap';
+import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
-import { useState, useContext, useEffect, useRef, RefObject } from 'react';
 import { UserContext } from '../UserContext';
 import { RegistrationForm } from '../models/registrationForm.model';
-import PasswordStrength from '../components/PasswordStrength';
-import axios from '../api/axios';
-import { faCheck, faTimes, faInfoCircle, faCross } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { error } from 'console';
-import "../css-files/registration.css";
+import { PasswordStrength } from '../components/PasswordStrength';
+import axios from "../api/axios";
 
 const FULLNAME_REGEX = /[^a-zA-Z\s]+/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
 const PASSWORD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$/;
 const EMAIL_REGEX = /^(?:(?!.*?[.]{2})[a-zA-Z0-9](?:[a-zA-Z0-9.+!%-]{1,64}|)|"[a-zA-Z0-9.+!% -]{1,64}")@[a-zA-Z0-9][a-zA-Z0-9.-]+\.(?:[a-z]{2,}|[0-9]{1,})$/;
-const REGISTER_URL = "/api/registration";
+const REGISTER_URL = "/api/auth/registration";
 
 export const Register = () => {
 
@@ -43,12 +41,14 @@ export const Register = () => {
     errorMessage: ""
   });
 
-  const [registrationSuccess, setRegistrationSuccess] = useState<boolean | null>(null);
 
   const { fullName, userName, email, password, birthdate,
     validFullName, validUserName, validEmail, validPassword, validBirthdate,
     fullNameFocus, userNameFocus, emailFocus, passwordFocus, birthdateFocus, errorMessage
   } = registrationState;
+
+  const [registrationSuccess, setRegistrationSuccess] = useState<boolean | null>(null);
+
 
   useEffect(() => {
     userRef.current?.focus();
@@ -83,7 +83,6 @@ export const Register = () => {
     setRegistrationState(prevState => ({
       ...prevState,
       errorMessage: '',
-      success: false
     }));
   }, [fullName, userName, email, password, birthdate]);
 
@@ -149,7 +148,6 @@ export const Register = () => {
   /* Registration method wwith axios POST method, inserts a user into database */
   const registration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-
     const data = { fullName, userName, email, password, birthdate };
 
     try {
@@ -160,28 +158,27 @@ export const Register = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: false
         });
-      if (response.status !== 204) {
-        userContext?.setPlayer(response.data);
-        setRegistrationSuccess(true)
-      } else {
-        setRegistrationSuccess(false)
-        setRegistrationState(prevState => ({
-          ...prevState,
-          errorMessage: "Username or email is taken!"
-        }));
-      }
+      userContext?.setPlayer(response.data);
+      console.log(userContext);
+      setRegistrationSuccess(true)
     } catch (error: any) {
       if (!error?.response) {
         setRegistrationState(prevState => ({
           ...prevState,
           errorMessage: "No server response!"
         }));
+      } else if (error.response.status === 409) {
+        setRegistrationState(prevState => ({
+          ...prevState,
+          errorMessage: "Username or e-mail is taken"
+        }));
       } else {
         setRegistrationState(prevState => ({
           ...prevState,
-          errorMessage: "Registration failed"
+          errorMessage: "Username or e-mail is taken"
         }));
       }
+      errorRef.current?.focus();
     }
   }
 
@@ -344,13 +341,12 @@ export const Register = () => {
                 You must be at least 18 to register
               </FormText>
             </Form.Group>
-            <Container className="d-grid gap-2 mt-2"></Container>
             <Container>{renderRegistrationResult()}</Container>
             <Button
               type="submit"
               className="mt-3" id="btn-registration"
               disabled={validFullName && validUserName && validEmail && validPassword && validBirthdate ? false : true}
-            >Button</Button>
+            >Register</Button>
             <NavLink to="/login" id="register-link">Already have an account?</NavLink>
           </Container>
         </Form>
