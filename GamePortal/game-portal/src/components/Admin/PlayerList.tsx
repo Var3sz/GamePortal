@@ -2,7 +2,6 @@ import * as React from "react";
 import { useContext } from "react";
 import { Table } from "react-bootstrap";
 import { Player } from "../../models/player.model";
-import { UserContext } from "../../UserContext";
 import PlayerListRow from "./PlayerListRow";
 
 interface IPlayerListProps {

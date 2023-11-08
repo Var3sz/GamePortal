@@ -2,7 +2,6 @@ import * as React from "react";
 import { useContext } from "react";
 import { Modal, Button, Form, Row, Col, FormText } from "react-bootstrap";
 import { Player } from "../../models/player.model";
-import { UserContext } from "../../UserContext";
 
 interface IRemovePlayerModalProps {
   show: boolean;

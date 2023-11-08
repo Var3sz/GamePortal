@@ -4,6 +4,7 @@ export const OnlineChess = () => {
   return(
     <>
       <Referee />
+      GECI ANYÁD 
     </>
   )
 }

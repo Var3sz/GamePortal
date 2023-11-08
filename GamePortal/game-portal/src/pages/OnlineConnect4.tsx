@@ -4,6 +4,7 @@ export const OnlineConnect4 = () => {
   return(
     <>
       <Connect4 />
+      GECI KURVA ANYÁD
     </>
   )
 }

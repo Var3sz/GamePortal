@@ -3,7 +3,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import { BrowserRouter } from "react-router-dom";
-import { AuthProvider } from './provider/AuthProvider';
+import { AuthProvider } from './auth/AuthProvider';
+import { Routes, Route } from 'react-router-dom';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -11,7 +12,9 @@ const root = ReactDOM.createRoot(
 root.render(
   <BrowserRouter>
     <AuthProvider>
-      <App />
+      <Routes>
+        <Route path='/*' element={<App />} />
+      </Routes>
     </AuthProvider>
   </BrowserRouter>
 );

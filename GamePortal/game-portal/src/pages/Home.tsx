@@ -2,11 +2,9 @@ import { Container, Row, Col } from 'react-bootstrap';
 import ChessCard from '../components/Chess/ChessCard';
 import Connect4Card from '../components/Connect4/Connect4Card';
 import TicTacToeCard from '../components/TicTacToe/TicTacToeCard';
-import { UserContext } from '../UserContext';
 import { useContext } from 'react';
 
 export const Home = () => {
-  const userContext = useContext(UserContext);
 
   return (
     <>
