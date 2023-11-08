@@ -32,17 +32,7 @@ namespace GamePortal.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
-            var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-            var tokenOptions = new JwtSecurityToken(
-                issuer: "http://localhost:5086",
-                audience: "http://localhost:5086",
-                claims: new List<Claim>(),
-                expires: DateTime.Now.AddMinutes(10),
-                signingCredentials: signingCredentials
-            );
-
-            var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+            
 
 
             if (credentials.UserName == "admin" && credentials.Password == "admin")
@@ -50,6 +40,20 @@ namespace GamePortal.Controllers
                 Player adminPlayer = new Player();
                 adminPlayer.UserName = credentials.UserName;
                 adminPlayer.Password = credentials.Password;
+
+                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
+                var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                var tokenOptions = new JwtSecurityToken(
+                    issuer: "http://localhost:5086",
+                    audience: "http://localhost:5086",
+                    claims: new List<Claim>(),
+                    expires: DateTime.Now.AddMinutes(10),
+                    signingCredentials: signingCredentials
+                );
+
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
+
                 return Ok(new AuthenticatedResponse { player = adminPlayer, Token = tokenString });
             }
 
@@ -59,6 +63,18 @@ namespace GamePortal.Controllers
             {
                 if (player.UserName == credentials.UserName && player.Password == credentials.Password)
                 {
+                    var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
+                    var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
+                    var tokenOptions = new JwtSecurityToken(
+                        issuer: "http://localhost:5086",
+                        audience: "http://localhost:5086",
+                        claims: new List<Claim>(),
+                        expires: DateTime.Now.AddMinutes(10),
+                        signingCredentials: signingCredentials
+                    );
+
+                    var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
+
                     return Ok(new AuthenticatedResponse { player = player, Token = tokenString });
                 }
             }

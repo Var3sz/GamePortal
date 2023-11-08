@@ -1,10 +1,11 @@
 import "../css-files/login.css"
-import React, { useState, useRef, RefObject, useEffect, useContext } from 'react';
+import React, { useState, useRef, RefObject, useEffect } from 'react';
 import { Alert, Button, Container, Form, FormLabel, FormText } from 'react-bootstrap';
-import { Link, useNavigate, useLocation, NavLink, Navigate, Route, Routes } from 'react-router-dom';
+import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { LoginCredentials } from '../models/loginCredentials.model';
 import axios from "../api/axios";
 import useAuth from "../auth/useAuth";
+import { jwtDecode } from "jwt-decode";
 
 const LOGIN_URL = "/api/auth/login";
 
@@ -26,8 +27,6 @@ export const Login = () => {
 
   const { userName, password, errorMessage } = loginState;
 
-
-
   useEffect(() => {
     userRef.current?.focus();
   }, []);
@@ -48,9 +47,6 @@ export const Login = () => {
       [evt.currentTarget.name]: value,
     });
   };
-
-
-
 
   const login = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
