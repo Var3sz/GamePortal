@@ -7,6 +7,7 @@ namespace GamePortal.Models
     {
         public Player()
         {
+            HasRoles = new HashSet<HasRole>();
             SavedGames = new HashSet<SavedGame>();
         }
 
@@ -17,6 +18,7 @@ namespace GamePortal.Models
         public string Password { get; set; } = null!;
         public DateTime Birthdate { get; set; }
 
+        public virtual ICollection<HasRole> HasRoles { get; set; }
         public virtual ICollection<SavedGame> SavedGames { get; set; }
     }
 }
