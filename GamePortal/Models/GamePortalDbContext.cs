@@ -56,6 +56,7 @@ namespace GamePortal.Models
                     .WithMany(p => p.HasRoles)
                     .HasForeignKey(d => d.RoleId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_Role_HasRole");
             });
 
             /* Player Entity */
