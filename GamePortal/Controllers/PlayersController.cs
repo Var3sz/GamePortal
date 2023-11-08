@@ -1,7 +1,5 @@
-﻿    using GamePortal.DAOs;
-using GamePortal.Models;
+﻿using GamePortal.Models;
 using GamePortal.Repository;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamePortal.Controllers
@@ -12,16 +10,19 @@ namespace GamePortal.Controllers
     {
         private readonly IPlayerRepository _playerRepository;
         private readonly ISavedGamesRepository _savedGamesRepository;
+        private readonly IHasRoleRepository _hasRoleRepository;
         private readonly ILogger<PlayersController> _logger;
         public PlayersController(
             ILogger<PlayersController> logger, 
             IPlayerRepository playerRepository,
-            ISavedGamesRepository savedGamesRepository
+            ISavedGamesRepository savedGamesRepository,
+            IHasRoleRepository hasRoleRepository
         )
         {
             _logger = logger;
             _playerRepository = playerRepository;
             _savedGamesRepository = savedGamesRepository;
+            _hasRoleRepository = hasRoleRepository;
         }
 
         [HttpGet]
@@ -34,6 +35,7 @@ namespace GamePortal.Controllers
         [HttpPost]
         public void RemovePlayer(Player player)
         {
+            _hasRoleRepository.RemoveHasRoles(player.PlayerId);
             _savedGamesRepository.RemoveSavedGames(player.PlayerId);
             _playerRepository.RemovePlayer(player);
         }

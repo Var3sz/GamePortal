@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace GamePortal.Models
+﻿namespace GamePortal.Models
 {
     public partial class Role
     {
