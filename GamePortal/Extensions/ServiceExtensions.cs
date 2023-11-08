@@ -51,6 +51,10 @@ namespace GamePortal.Extensions
 
             // Add UserRepositories to container
             services.AddScoped<IPlayerRepository, PlayerRepository>();
+            services.AddScoped<IRoleRepository, RoleRepository>();
+            services.AddScoped<IGameRepository, GameRepository>();
+            services.AddScoped<ISavedGamesRepository, SavedGamesRepository>();
+            services.AddScoped<IHasRoleRepository, HasRoleRepository>();
 
             return services;
         }

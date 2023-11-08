@@ -11,11 +11,17 @@ namespace GamePortal.Controllers
     public class PlayersController : ControllerBase
     {
         private readonly IPlayerRepository _playerRepository;
+        private readonly ISavedGamesRepository _savedGamesRepository;
         private readonly ILogger<PlayersController> _logger;
-        public PlayersController(ILogger<PlayersController> logger, IPlayerRepository playerRepository)
+        public PlayersController(
+            ILogger<PlayersController> logger, 
+            IPlayerRepository playerRepository,
+            ISavedGamesRepository savedGamesRepository
+        )
         {
             _logger = logger;
             _playerRepository = playerRepository;
+            _savedGamesRepository = savedGamesRepository;
         }
 
         [HttpGet]
@@ -28,7 +34,7 @@ namespace GamePortal.Controllers
         [HttpPost]
         public void RemovePlayer(Player player)
         {
-            new SavedGameDAO().RemoveSavedGames(player.PlayerId);
+            _savedGamesRepository.RemoveSavedGames(player.PlayerId);
             _playerRepository.RemovePlayer(player);
         }
     }
