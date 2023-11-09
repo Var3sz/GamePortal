@@ -4,7 +4,7 @@ namespace GamePortal.Security
 {
     public class AuthenticatedResponse
     {
-        public int RoleId { get; set; }
+        public List<Role>? roles { get; set; }
         public Player? player {  get; set; }
         public string? Token { get; set; }
     }

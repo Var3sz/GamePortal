@@ -38,33 +38,6 @@ namespace GamePortal.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            
-
-
-            if (credentials.UserName == "admin" && credentials.Password == "admin")
-            {
-                Player adminPlayer = new Player();
-                adminPlayer.UserName = credentials.UserName;
-                adminPlayer.Password = credentials.Password;
-
-                var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
-                var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
-                var tokenOptions = new JwtSecurityToken(
-                    issuer: "http://localhost:5086",
-                    audience: "http://localhost:5086",
-                    claims: new List<Claim>(),
-                    expires: DateTime.Now.AddMinutes(10),
-                    signingCredentials: signingCredentials
-                );
-
-                int adminRoleId = 1;
-
-
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
-
-                return Ok(new AuthenticatedResponse { RoleId = adminRoleId, player = adminPlayer, Token = tokenString });
-            }
-
             List<Player> players = _playerRepository.GetPlayers();
 
             foreach(Player player in players)
@@ -81,15 +54,11 @@ namespace GamePortal.Controllers
                         signingCredentials: signingCredentials
                     );
 
-                    /*Player playerRoles = _gamePortalDbContext.Players.Include(p => p.Roles).ThenInclude(p => p.Players).First(p => p.PlayerId == player.PlayerId);
-
-                    int role = playerRoles.Roles.Select(p => p.RoleId).First();*/
-
-                    int role = _gamePortalDbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == player.PlayerId)).Select(p=>p.RoleId).SingleOrDefault();
+                    List<Role> roles = _gamePortalDbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == player.PlayerId)).ToList();
 
                     var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-                    return Ok(new AuthenticatedResponse { RoleId = role, player = player, Token = tokenString });
+                    return Ok(new AuthenticatedResponse { roles = roles, player = player, Token = tokenString });
                 }
             }
             return Unauthorized();
@@ -124,7 +93,7 @@ namespace GamePortal.Controllers
                 Birthdate = credentials.Birthdate!
             };
 
-            var role = _roleRepository.GetRoleByName("player");
+            Role role = _roleRepository.GetRoleByName("player");
 
             player.Roles.Add(role);
 
