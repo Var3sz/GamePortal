@@ -12,18 +12,9 @@ namespace GamePortal.Repository
             _dbContext = dbContext;
         }
 
-        public void UpdateRefreshToken(int playerId, string refreshToken, DateTime tokenExpiryTime)
+        public List<Player> GetPlayers()
         {
-            var player = _dbContext.Players.Single(q => q.PlayerId == playerId);
-            player.RefreshToken = refreshToken;
-            player.RefreshTokenExpiryTime = tokenExpiryTime;
-            _dbContext.SaveChanges();
-        }
-
-        public Player GetPlayer(string userName, string password)
-        {
-            return _dbContext.Players.SingleOrDefault(
-                q => q.UserName == userName && q.Password == password)!;
+            return _dbContext.Players.ToList();
         }
 
         public Player GetPlayerById(int playerId)
@@ -31,9 +22,15 @@ namespace GamePortal.Repository
             return _dbContext.Players.SingleOrDefault(q => q.PlayerId == playerId)!;
         }
 
-        public List<Player> GetPlayers()
+        public Player GetPlayerByUsername(string userName)
         {
-            return _dbContext.Players.ToList();
+            return _dbContext.Players.SingleOrDefault(q => q.UserName == userName)!;
+        }
+
+        public Player GetPlayerByUsernameAndPassword(string userName, string password)
+        {
+            return _dbContext.Players.SingleOrDefault(
+                q => q.UserName == userName && q.Password == password)!;
         }
 
         public void InsertPlayer(Player player)
@@ -47,5 +44,13 @@ namespace GamePortal.Repository
             _dbContext.Players.Remove(player);
             _dbContext.SaveChanges();
         }
+        public void UpdateRefreshToken(int playerId, string refreshToken, DateTime tokenExpiryTime)
+        {
+            var player = _dbContext.Players.Single(q => q.PlayerId == playerId);
+            player.RefreshToken = refreshToken;
+            player.RefreshTokenExpiryTime = tokenExpiryTime;
+            _dbContext.SaveChanges();
+        }
+
     }
 }

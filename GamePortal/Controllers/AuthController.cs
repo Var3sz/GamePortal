@@ -38,7 +38,7 @@ namespace GamePortal.Controllers
             /* Amennyiben üres a body, akkor BadRequest, egyébként ilyen nem lehet, mert van kliensoldali validáció, ez csak biztonság kedvéért */
             if (credentials == null) { return BadRequest("Invalid client request"); }
 
-            Player player = _playerRepository.GetPlayer(credentials.UserName!, credentials.Password!);
+            Player player = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
 
             if (player is null) { return Unauthorized(); }
 
@@ -92,7 +92,7 @@ namespace GamePortal.Controllers
             if (credentials == null) { return BadRequest("Invalid client request"); }
 
             /* Query, hogy van-e ilyen felhasználó, ha igen, Conflict */
-            var existingUser = _playerRepository.GetPlayer(credentials.UserName!, credentials.Password!);
+            var existingUser = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
             if (existingUser is not null) { return Conflict(); }
             
             /* Csinálunk új Player-t */
