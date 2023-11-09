@@ -156,7 +156,7 @@ export const Register = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: false
         });
-      console.log(response.data);
+      console.log(response.data.player.hasRoles.values.role.Roleid);
       setRegistrationSuccess(true)
     } catch (error: any) {
       if (!error?.response) {

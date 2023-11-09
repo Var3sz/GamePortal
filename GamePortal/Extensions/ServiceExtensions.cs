@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace GamePortal.Extensions
 {
@@ -31,7 +32,10 @@ namespace GamePortal.Extensions
             });
 
             // Add Controllers to container
-            services.AddControllers();
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+            });
 
             // Add DatabaseContext to container
             services.AddDbContext<GamePortalDbContext>(options =>
@@ -54,7 +58,6 @@ namespace GamePortal.Extensions
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<ISavedGamesRepository, SavedGamesRepository>();
-            services.AddScoped<IHasRoleRepository, HasRoleRepository>();
 
             return services;
         }

@@ -4,7 +4,6 @@
     {
         public Player()
         {
-            HasRoles = new HashSet<HasRole>();
             SavedGames = new HashSet<SavedGame>();
         }
 
@@ -15,7 +14,7 @@
         public string Password { get; set; } = null!;
         public DateTime Birthdate { get; set; }
 
-        public virtual ICollection<HasRole> HasRoles { get; set; }
+        public List<Role> Roles { get; set; } = new();
         public virtual ICollection<SavedGame> SavedGames { get; set; }
     }
 }

@@ -2,14 +2,9 @@
 {
     public partial class Role
     {
-        public Role()
-        {
-            HasRoles = new HashSet<HasRole>();
-        }
-
         public int RoleId { get; set; }
         public string Name { get; set; } = null!;
 
-        public virtual ICollection<HasRole> HasRoles { get; set; }
+        public List<Player> Players { get; set; } = new();
     }
 }

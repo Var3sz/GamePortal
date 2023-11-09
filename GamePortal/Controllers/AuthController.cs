@@ -4,6 +4,7 @@ using GamePortal.Repository;
 using GamePortal.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -17,10 +18,14 @@ namespace GamePortal.Controllers
     {
         private readonly ILogger<AuthController> _logger;
         private readonly IPlayerRepository _playerRepository;
+        private readonly IRoleRepository _roleRepository;
+        private readonly GamePortalDbContext _gamePortalDbContext;
 
-        public AuthController(IPlayerRepository playerRepository, ILogger<AuthController> logger)
+        public AuthController(IPlayerRepository playerRepository, IRoleRepository roleRepository,GamePortalDbContext gamePortalDbContext , ILogger<AuthController> logger)
         {
             _playerRepository = playerRepository;
+            _roleRepository = roleRepository;
+            _gamePortalDbContext = gamePortalDbContext;
             _logger = logger;
         }
 
@@ -51,8 +56,8 @@ namespace GamePortal.Controllers
                     signingCredentials: signingCredentials
                 );
 
-                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
+                var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
                 return Ok(new AuthenticatedResponse { player = adminPlayer, Token = tokenString });
             }
@@ -90,7 +95,6 @@ namespace GamePortal.Controllers
                 return BadRequest("Invalid client request");
             }
 
-            Player player = new Player();
             var players = _playerRepository.GetPlayers();
             foreach (Player p in players)
             {
@@ -100,14 +104,22 @@ namespace GamePortal.Controllers
                 }
             }
 
-            player.FullName = credentials.FullName!;
-            player.UserName = credentials.UserName!;
-            player.Email = credentials.Email!;
-            player.Password = credentials.Password!;
-            player.Birthdate = credentials.Birthdate!;
+
+
+            Player player = new Player
+            {
+                FullName = credentials.FullName!,
+                UserName = credentials.UserName!,
+                Email = credentials.Email!,
+                Password = credentials.Password!,
+                Birthdate = credentials.Birthdate!
+            };
+
+            var role = _roleRepository.GetRoleByName("player");
+
+            player.Roles.Add(role);
 
             _playerRepository.InsertPlayer(player);
-
 
             var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
             var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
