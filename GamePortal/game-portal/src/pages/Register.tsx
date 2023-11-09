@@ -1,12 +1,13 @@
 import "../css-files/registration.css";
-import React, { useState, useContext, useEffect, useRef, RefObject } from 'react';
+import React, { useState, useEffect, useRef, RefObject } from 'react';
 import { Button, Form, Container, FormText, FormLabel, Alert } from 'react-bootstrap';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NavLink, Navigate, Route, Routes } from 'react-router-dom';
+import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
 import { RegistrationForm } from '../models/registrationForm.model';
 import { PasswordStrength } from '../components/PasswordStrength';
 import axios from "../api/axios";
+import useAuth from "../auth/useAuth";
 
 const FULLNAME_REGEX = /[^a-zA-Z\s]+/;
 const USER_REGEX = /^[A-z][A-z0-9-_]{3,23}$/;
@@ -16,6 +17,10 @@ const REGISTER_URL = "/api/auth/registration";
 
 export const Register = () => {
 
+  const { setAuth } = useAuth();
+  const navigate = useNavigate();
+  const location = useLocation();
+  const from = location.state?.from?.pathname || "/home";
 
   const userRef: RefObject<HTMLInputElement> = useRef(null);
   const errorRef: RefObject<HTMLDivElement> = useRef(null);
@@ -44,9 +49,6 @@ export const Register = () => {
     validFullName, validUserName, validEmail, validPassword, validBirthdate,
     fullNameFocus, userNameFocus, emailFocus, passwordFocus, birthdateFocus, errorMessage
   } = registrationState;
-
-  const [registrationSuccess, setRegistrationSuccess] = useState<boolean | null>(null);
-
 
   useEffect(() => {
     userRef.current?.focus();
@@ -86,7 +88,6 @@ export const Register = () => {
 
   /* Handle if an input element value has changed */
   const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    setRegistrationSuccess(null);
     const value = evt.target.value
     setRegistrationState({
       ...registrationState,
@@ -132,17 +133,6 @@ export const Register = () => {
     return false;
   }
 
-  /* Navigate to home if registration has succedd! */
-  const renderRegistrationResult = () => {
-    if (registrationSuccess) {
-      return (
-        <Routes>
-          <Route path="*" element={<Navigate to="/" replace />} />
-        </Routes>
-      );
-    }
-  }
-
   /* Registration method wwith axios POST method, inserts a user into database */
   const registration = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -156,8 +146,10 @@ export const Register = () => {
           headers: { 'Content-Type': 'application/json' },
           withCredentials: false
         });
-      console.log(response.data.player.hasRoles.values.role.Roleid);
-      setRegistrationSuccess(true)
+      const token = response.data.token;
+      const roles = response.data.roleIds;
+      setAuth({ roles, userName, password, token });
+      navigate(from, {replace: true});
     } catch (error: any) {
       if (!error?.response) {
         setRegistrationState(prevState => ({
@@ -181,177 +173,172 @@ export const Register = () => {
 
   return (
     <>
-      {registrationSuccess ? (
-        <h1>Successful registration</h1>
-      ) : (
-        <Container id="registration-container">
-          <Form id="registration-form" onSubmit={registration}>
-            <Container id="registration-form-content">
-              <Alert
-                variant="danger"
-                ref={errorRef}
-                className={errorMessage ? "errorMessage" : "offscreen"}
-                aria-live='assertive'>{errorMessage}</Alert>
-              <FormText id="registration-title">Registration</FormText>
-              <Form.Group className="mt-3">
-                <FormLabel id="registration-labels" htmlFor="fullname">Full name:
-                  <Container className={validFullName ? "valid" : "hide"}>
-                    <FontAwesomeIcon icon={faCheck} />
-                  </Container>
-                  <Container className={validFullName || !fullName ? "hide" : "invalid"}>
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Container>
-                </FormLabel>
-                <Form.Control
-                  type="text"
-                  id="fullname"
-                  name="fullName"
-                  className="form-control"
-                  ref={userRef}
-                  placeholder="Enter your fullname"
-                  onChange={handleChange}
-                  required
-                  aria-invalid={validFullName ? "false" : "true"}
-                  aria-describedby="uidnote"
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  autoComplete="off"
-                />
-                <FormText
-                  id="uidnote"
-                  className={fullNameFocus && fullName && !validFullName ? "instructions" : "offscreen"}
-                >
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                  Provide your fullname
-                </FormText>
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <FormLabel id="registration-labels" htmlFor='username'>Username:
-                  <Container className={validUserName ? "valid" : "hide"}>
-                    <FontAwesomeIcon icon={faCheck} />
-                  </Container>
-                  <Container className={validUserName || !userName ? "hide" : "invalid"}>
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Container>
-                </FormLabel>
-                <Form.Control
-                  type="text"
-                  id="username"
-                  name="userName"
-                  className="form-control"
-                  placeholder="Enter your username"
-                  onChange={handleChange}
-                  required
-                  aria-invalid={validUserName ? "false" : "true"}
-                  aria-describedby="uidnote"
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  autoComplete="off"
-                />
-                <FormText id="uidnote" className={userNameFocus && userName && !validUserName ? "instructions" : "offscreen"}>
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                  4 to 24 characters.<br />
-                  Must begin with a letter.<br />
-                  Letters, numbers, underscores, hyphens allowed.
-                </FormText>
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <FormLabel id="registration-labels" htmlFor="email">E-mail:
-                  <Container className={validEmail ? "valid" : "hide"}>
-                    <FontAwesomeIcon icon={faCheck} />
-                  </Container>
-                  <Container className={validEmail || !email ? "hide" : "invalid"}>
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Container>
-                </FormLabel>
-                <Form.Control
-                  type="text"
-                  id="email"
-                  name="email"
-                  className="form-control"
-                  placeholder="Enter your email"
-                  onChange={handleChange}
-                  required
-                  aria-invalid={validEmail ? "false" : "true"}
-                  aria-describedby="uidnote"
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                  autoComplete="off"
-                />
-                <FormText id="uidnote" className={emailFocus && email && !validEmail ? "instructions" : "offscreen"}>
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                  Provide a correct e-mail address format. <br />
-                  E.g. yourname@email.com
-                </FormText>
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <FormLabel id="registration-labels" htmlFor="password">Password
-                  <Container className={validPassword ? "valid" : "hide"}>
-                    <FontAwesomeIcon icon={faCheck} />
-                  </Container>
-                  <Container className={validPassword || !password ? "hide" : "invalid"}>
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Container>
-                </FormLabel>
-                <Form.Control
-                  type="password"
-                  id="password"
-                  name="password"
-                  className="form-control"
-                  placeholder="Enter your password"
-                  onChange={handleChange}
-                  required
-                  aria-invalid={validPassword ? "false" : "true"}
-                  aria-describedby="uidnote"
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                />
-                <PasswordStrength password={password} />
-                <FormText id="uidnote" className={passwordFocus && password && !validPassword ? "instructions" : "offscreen"}>
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                  8 to 24 characters.<br />
-                  Must include uppercase and lowercase letters, a number and a special character.<br />
-                  Allowed special characters: ! @ # $ %
-                </FormText>
-              </Form.Group>
-              <Form.Group className="mt-3">
-                <FormLabel id="registration-labels" htmlFor="birthdate">Date of birth:
-                  <Container className={validBirthdate ? "valid" : "hide"}>
-                    <FontAwesomeIcon icon={faCheck} />
-                  </Container>
-                  <Container className={validBirthdate || !birthdate ? "hide" : "invalid"}>
-                    <FontAwesomeIcon icon={faTimes} />
-                  </Container>
-                </FormLabel>
-                <Form.Control
-                  type="date"
-                  id="birthdate"
-                  name="birthdate"
-                  className="form-control"
-                  placeholder="Enter your birthdate"
-                  onChange={handleChange}
-                  required
-                  aria-invalid={validBirthdate ? "false" : "true"}
-                  aria-describedby="uidnote"
-                  onFocus={handleFocus}
-                  onBlur={handleBlur}
-                />
-                <FormText id="uidnote" className={birthdateFocus && birthdate && !validBirthdate ? "instructions" : "offscreen"}>
-                  <FontAwesomeIcon icon={faInfoCircle} />
-                  You must be at least 18 to register
-                </FormText>
-              </Form.Group>
-              <Container>{renderRegistrationResult()}</Container>
-              <Button
-                type="submit"
-                className="mt-3" id="btn-registration"
-                disabled={validFullName && validUserName && validEmail && validPassword && validBirthdate ? false : true}
-              >Register</Button>
-              <NavLink to="/login" id="register-link">Already have an account?</NavLink>
-            </Container>
-          </Form>
-        </Container>
-      )}
+      <Container id="registration-container">
+        <Form id="registration-form" onSubmit={registration}>
+          <Container id="registration-form-content">
+            <Alert
+              variant="danger"
+              ref={errorRef}
+              className={errorMessage ? "errorMessage" : "offscreen"}
+              aria-live='assertive'>{errorMessage}</Alert>
+            <FormText id="registration-title">Registration</FormText>
+            <Form.Group className="mt-3">
+              <FormLabel id="registration-labels" htmlFor="fullname">Full name:
+                <Container className={validFullName ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validFullName || !fullName ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
+              <Form.Control
+                type="text"
+                id="fullname"
+                name="fullName"
+                className="form-control"
+                ref={userRef}
+                placeholder="Enter your fullname"
+                onChange={handleChange}
+                required
+                aria-invalid={validFullName ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              <FormText
+                id="uidnote"
+                className={fullNameFocus && fullName && !validFullName ? "instructions" : "offscreen"}
+              >
+                <FontAwesomeIcon icon={faInfoCircle} />
+                Provide your fullname
+              </FormText>
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <FormLabel id="registration-labels" htmlFor='username'>Username:
+                <Container className={validUserName ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validUserName || !userName ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
+              <Form.Control
+                type="text"
+                id="username"
+                name="userName"
+                className="form-control"
+                placeholder="Enter your username"
+                onChange={handleChange}
+                required
+                aria-invalid={validUserName ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              <FormText id="uidnote" className={userNameFocus && userName && !validUserName ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                4 to 24 characters.<br />
+                Must begin with a letter.<br />
+                Letters, numbers, underscores, hyphens allowed.
+              </FormText>
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <FormLabel id="registration-labels" htmlFor="email">E-mail:
+                <Container className={validEmail ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validEmail || !email ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
+              <Form.Control
+                type="text"
+                id="email"
+                name="email"
+                className="form-control"
+                placeholder="Enter your email"
+                onChange={handleChange}
+                required
+                aria-invalid={validEmail ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+                autoComplete="off"
+              />
+              <FormText id="uidnote" className={emailFocus && email && !validEmail ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                Provide a correct e-mail address format. <br />
+                E.g. yourname@email.com
+              </FormText>
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <FormLabel id="registration-labels" htmlFor="password">Password
+                <Container className={validPassword ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validPassword || !password ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
+              <Form.Control
+                type="password"
+                id="password"
+                name="password"
+                className="form-control"
+                placeholder="Enter your password"
+                onChange={handleChange}
+                required
+                aria-invalid={validPassword ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+              <PasswordStrength password={password} />
+              <FormText id="uidnote" className={passwordFocus && password && !validPassword ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                8 to 24 characters.<br />
+                Must include uppercase and lowercase letters, a number and a special character.<br />
+                Allowed special characters: ! @ # $ %
+              </FormText>
+            </Form.Group>
+            <Form.Group className="mt-3">
+              <FormLabel id="registration-labels" htmlFor="birthdate">Date of birth:
+                <Container className={validBirthdate ? "valid" : "hide"}>
+                  <FontAwesomeIcon icon={faCheck} />
+                </Container>
+                <Container className={validBirthdate || !birthdate ? "hide" : "invalid"}>
+                  <FontAwesomeIcon icon={faTimes} />
+                </Container>
+              </FormLabel>
+              <Form.Control
+                type="date"
+                id="birthdate"
+                name="birthdate"
+                className="form-control"
+                placeholder="Enter your birthdate"
+                onChange={handleChange}
+                required
+                aria-invalid={validBirthdate ? "false" : "true"}
+                aria-describedby="uidnote"
+                onFocus={handleFocus}
+                onBlur={handleBlur}
+              />
+              <FormText id="uidnote" className={birthdateFocus && birthdate && !validBirthdate ? "instructions" : "offscreen"}>
+                <FontAwesomeIcon icon={faInfoCircle} />
+                You must be at least 18 to register
+              </FormText>
+            </Form.Group>
+            <Button
+              type="submit"
+              className="mt-3" id="btn-registration"
+              disabled={validFullName && validUserName && validEmail && validPassword && validBirthdate ? false : true}
+            >Register</Button>
+            <NavLink to="/login" id="register-link">Already have an account?</NavLink>
+          </Container>
+        </Form>
+      </Container>
     </>
   );
 }

@@ -12,6 +12,14 @@ namespace GamePortal.Repository
             _dbContext = dbContext;
         }
 
+        public void UpdateRefreshToken(int playerId, string refreshToken, DateTime tokenExpiryTime)
+        {
+            var player = _dbContext.Players.Single(q => q.PlayerId == playerId);
+            player.RefreshToken = refreshToken;
+            player.RefreshTokenExpiryTime = tokenExpiryTime;
+            _dbContext.SaveChanges();
+        }
+
         public Player GetPlayer(string userName, string password)
         {
             return _dbContext.Players.SingleOrDefault(

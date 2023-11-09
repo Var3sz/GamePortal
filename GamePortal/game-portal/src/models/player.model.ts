@@ -1,5 +1,6 @@
 export interface Player 
 {
+    roles: any;
     playerId: number;
     fullName: string;
     userName: string;

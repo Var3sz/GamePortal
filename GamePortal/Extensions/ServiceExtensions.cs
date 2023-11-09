@@ -1,5 +1,6 @@
 ﻿using GamePortal.Models;
 using GamePortal.Repository;
+using GamePortal.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
@@ -53,11 +54,14 @@ namespace GamePortal.Extensions
             });
 
 
-            // Add UserRepositories to container
+            // Add repositories to container
             services.AddScoped<IPlayerRepository, PlayerRepository>();
             services.AddScoped<IRoleRepository, RoleRepository>();
             services.AddScoped<IGameRepository, GameRepository>();
             services.AddScoped<ISavedGamesRepository, SavedGamesRepository>();
+
+            // Add services to container
+            services.AddTransient<ITokenService, TokenService>();
 
             return services;
         }

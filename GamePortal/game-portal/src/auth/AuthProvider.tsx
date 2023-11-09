@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 interface Auth {
+    roles: [];
     userName: string;
     password: string;
     token: string;
@@ -13,6 +14,7 @@ interface AuthContextInterface {
 
 const AuthContext = createContext<AuthContextInterface>({
     auth: {
+        roles: [],
         userName: "",
         password: "",
         token: ""
@@ -21,6 +23,7 @@ const AuthContext = createContext<AuthContextInterface>({
 });
 
 export const initialAuth: Auth = {
+    roles: [],
     userName: "",
     password: "",
     token: ""

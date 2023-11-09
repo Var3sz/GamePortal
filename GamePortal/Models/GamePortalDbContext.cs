@@ -67,6 +67,13 @@ namespace GamePortal.Models
                         .IsRequired()
                         .HasColumnType("date");
 
+                entity.Property(e => e.RefreshToken).HasColumnName("RefreshToken")
+                        .HasMaxLength(500)
+                        .IsUnicode(false);
+
+                entity.Property(e => e.RefreshTokenExpiryTime).HasColumnName("RefreshTokenExpiryTime")
+                        .HasColumnType("date");
+
                 entity.HasMany(e => e.Roles).WithMany(e => e.Players);
             });
 

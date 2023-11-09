@@ -5,16 +5,17 @@ import { useNavigate, useLocation, NavLink } from 'react-router-dom';
 import { LoginCredentials } from '../models/loginCredentials.model';
 import axios from "../api/axios";
 import useAuth from "../auth/useAuth";
-import { jwtDecode } from "jwt-decode";
 
 const LOGIN_URL = "/api/auth/login";
 
-export const Login = () => {
+export const Login = ({ message }: any) => {
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/";
+  const from = location.state?.from?.pathname || "/home";
+
+  const isUnauthorized = location.state?.unathorized;
 
   const userRef: RefObject<HTMLInputElement> = useRef(null);
   const errorRef: RefObject<HTMLDivElement> = useRef(null);
@@ -60,7 +61,8 @@ export const Login = () => {
         }
       );
       const token = response.data.token;
-      setAuth({ userName, password, token });
+      const roles = response.data.roleIds;
+      setAuth({ roles, userName, password, token });
       setLoginState((prevCredentials) => ({
         userName: '',
         password: '',
@@ -96,6 +98,7 @@ export const Login = () => {
 
   return (
     <>
+      {isUnauthorized && <Alert variant="danger"> Please sign in </Alert>}
       <Container id="login-container">
         <Form id="login-form" onSubmit={login}>
           <Container id="login-form-content">

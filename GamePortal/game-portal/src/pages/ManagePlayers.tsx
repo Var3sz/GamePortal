@@ -1,11 +1,12 @@
-import { Row, Col, Container } from "react-bootstrap";
+import { Row, Col, Container, FormText } from "react-bootstrap";
 import PlayerList from "../components/Admin/PlayerList";
-import { useState, useEffect, useContext } from "react";
+import { useState, useEffect } from "react";
 import { Player } from "../models/player.model";
+import axios from "../api/axios";
 
-export const ManagePlayers = () => {
+export const ManagePlayers = ({ message }: any) => {
 
-  const [players, setInvestors] = useState<Player[]>([]);
+  const [players, setPlayers] = useState<Player[]>([]);
   const [playerChanged, setPlayerChanged] = useState(false);
 
   const playerChangedListener = () => {
@@ -13,16 +14,37 @@ export const ManagePlayers = () => {
   };
 
   useEffect(() => {
-    getInvestors();
+    let isMounted = true;
+    const controller = new AbortController();
+
+    const getPlayers = async () => {
+      try { 
+        const response = await axios.get("/api/players", {
+          signal: controller.signal
+        });
+        console.log(response.data);
+        isMounted && setPlayers(response.data)
+
+      } catch(error: any) {
+        console.error(error);
+      } 
+    }
+
+    getPlayers();
+
+    return () => {
+      isMounted = false;
+      controller.abort();
+    }
   }, [playerChanged]);
 
-  const getInvestors = () => {
+  /*const getInvestors = () => {
     fetch("http://localhost:5086/api/players")
       .then((response) => response.json())
       .then((data) => {
-        setInvestors(data);
+        setPlayers(data);
       });
-  };
+  };*/
 
 
   return (
@@ -43,10 +65,12 @@ export const ManagePlayers = () => {
         </Row>
         <Row className="justify-content-center mx-0">
           <Col lg={8} md={10} sm={12} align="center">
-            <PlayerList
+            {players.length > 1 ? (<PlayerList
               players={players}
               playerChangedListener={playerChangedListener}
-            ></PlayerList>
+            ></PlayerList>) : (
+              <FormText className="h2"> No users to display </FormText>
+            )}
           </Col>
         </Row>
       </Container>

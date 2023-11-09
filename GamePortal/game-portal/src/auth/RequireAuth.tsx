@@ -3,14 +3,16 @@ import useAuth from "./useAuth"
 
 
 
-const RequireAuth = () => {
+const RequireAuth = ({ allowedRoles }: any) => {
     const { auth } = useAuth();
     const location = useLocation();
 
     return (
-        auth?.userName
+        auth?.roles?.find(role => allowedRoles.includes(role))
             ? <Outlet />
-            : <Navigate to="/login" state={{from: location}} replace /> 
+            : auth.userName ? <Navigate to="/unauthorized" state={{ from: location }} replace />
+                : <Navigate to="/login" state={{ unathorized: true, from: location }} replace />
+
     )
 
 }

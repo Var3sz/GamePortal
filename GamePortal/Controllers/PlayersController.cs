@@ -1,5 +1,6 @@
 ﻿using GamePortal.Models;
 using GamePortal.Repository;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamePortal.Controllers
@@ -22,7 +23,7 @@ namespace GamePortal.Controllers
             _savedGamesRepository = savedGamesRepository;
         }
 
-        [HttpGet]
+        [HttpGet, Authorize(Roles = "admin")]
         public List<Player> GetPlayers()
         {
             return _playerRepository.GetPlayers();
