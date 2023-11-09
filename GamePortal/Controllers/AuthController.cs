@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
+using System.Numerics;
 using System.Security.Claims;
 using System.Text;
 
@@ -56,10 +57,12 @@ namespace GamePortal.Controllers
                     signingCredentials: signingCredentials
                 );
 
+                int adminRoleId = 1;
+
 
                 var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-                return Ok(new AuthenticatedResponse { player = adminPlayer, Token = tokenString });
+                return Ok(new AuthenticatedResponse { RoleId = adminRoleId, player = adminPlayer, Token = tokenString });
             }
 
             List<Player> players = _playerRepository.GetPlayers();
@@ -78,9 +81,15 @@ namespace GamePortal.Controllers
                         signingCredentials: signingCredentials
                     );
 
+                    /*Player playerRoles = _gamePortalDbContext.Players.Include(p => p.Roles).ThenInclude(p => p.Players).First(p => p.PlayerId == player.PlayerId);
+
+                    int role = playerRoles.Roles.Select(p => p.RoleId).First();*/
+
+                    int role = _gamePortalDbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == player.PlayerId)).Select(p=>p.RoleId).SingleOrDefault();
+
                     var tokenString = new JwtSecurityTokenHandler().WriteToken(tokenOptions);
 
-                    return Ok(new AuthenticatedResponse { player = player, Token = tokenString });
+                    return Ok(new AuthenticatedResponse { RoleId = role, player = player, Token = tokenString });
                 }
             }
             return Unauthorized();
