@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.IdentityModel.Tokens.Jwt;
+using System.Runtime.Serialization;
 using System.Security.Claims;
 using System.Text;
 
@@ -52,7 +53,7 @@ namespace GamePortal.Controllers
 
                 var accessToken = _tokenService.GenerateToken(claims);
                 var refreshToken = _tokenService.GenerateRefreshToken();
-                var tokenExpiryTime = DateTime.Now.AddDays(7);
+                var tokenExpiryTime = DateTime.Now.AddMinutes(5);
 
                 _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
@@ -72,7 +73,7 @@ namespace GamePortal.Controllers
 
                 var accessToken = _tokenService.GenerateToken(claims);
                 var refreshToken = _tokenService.GenerateRefreshToken();
-                var tokenExpiryTime = DateTime.Now.AddDays(7);
+                var tokenExpiryTime = DateTime.Now.AddMinutes(5);
 
                 _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
@@ -106,7 +107,7 @@ namespace GamePortal.Controllers
             };
 
             /* Elkérjük a sima Playerhez tartozó Role-t, mindig fixen Player */
-            Role role = _roleRepository.GetRoleByName("player");
+            Role role = _roleRepository.GetRoleByName("admin");
 
             /* Hozzáadjuk a Role-okhoz a kapott role-t, ezzel együtt a kapcsolat is létrejön */
             player.Roles.Add(role);
@@ -120,7 +121,7 @@ namespace GamePortal.Controllers
 
             var accessToken = _tokenService.GenerateToken(claims);
             var refreshToken = _tokenService.GenerateRefreshToken();
-            var tokenExpiryTime = DateTime.Now.AddDays(7);
+            var tokenExpiryTime = DateTime.Now.AddMinutes(5);
 
             player.RefreshToken = refreshToken;
             player.RefreshTokenExpiryTime = tokenExpiryTime;

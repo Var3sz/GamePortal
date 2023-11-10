@@ -1,4 +1,6 @@
-﻿namespace GamePortal.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GamePortal.Models
 {
     public partial class Player
     {
@@ -14,7 +16,8 @@
         public string Password { get; set; } = null!;
         public DateTime Birthdate { get; set; }
         public string RefreshToken { get; set; }
-        public DateTime? RefreshTokenExpiryTime { get; set; }
+
+        public DateTime RefreshTokenExpiryTime { get; set; }
 
         public List<Role> Roles { get; set; } = new();
         public virtual ICollection<SavedGame> SavedGames { get; set; }

@@ -57,12 +57,13 @@ export const Login = ({ message }: any) => {
         JSON.stringify({ userName, password }),
         {
           headers: { 'Content-Type': 'application/json' },
-          withCredentials: false
+          withCredentials: true
         }
       );
       const token = response.data.token;
       const roles = response.data.roleIds;
-      setAuth({ roles, userName, password, token });
+      const refresh = response.data.refreshToken;
+      setAuth({ roles, userName, password, token, refresh });
       setLoginState((prevCredentials) => ({
         userName: '',
         password: '',

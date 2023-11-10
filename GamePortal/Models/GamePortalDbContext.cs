@@ -72,7 +72,7 @@ namespace GamePortal.Models
                         .IsUnicode(false);
 
                 entity.Property(e => e.RefreshTokenExpiryTime).HasColumnName("RefreshTokenExpiryTime")
-                        .HasColumnType("date");
+                        .HasColumnType("datetime2");
 
                 entity.HasMany(e => e.Roles).WithMany(e => e.Players);
             });

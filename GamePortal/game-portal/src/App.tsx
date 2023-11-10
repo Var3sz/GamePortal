@@ -24,6 +24,7 @@ function App() {
       <AppNavbar />
       <Routes>
         <Route path="/" element={<Layout />}>
+          <Route index element={<Home />} />
           {/* public routes */}
           <Route path="home" element={<Home />}></Route>
           <Route path="login" element={<Login />}></Route>

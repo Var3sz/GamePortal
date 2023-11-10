@@ -1,13 +1,18 @@
-import { Row, Col, Container, FormText } from "react-bootstrap";
+import { Row, Col, Container, FormText, Button } from "react-bootstrap";
 import PlayerList from "../components/Admin/PlayerList";
 import { useState, useEffect } from "react";
 import { Player } from "../models/player.model";
-import axios from "../api/axios";
+import useAxiosPrivate from "../auth/useAxiosPrivate";
+import { useNavigate, useLocation } from "react-router-dom";
 
 export const ManagePlayers = ({ message }: any) => {
-
   const [players, setPlayers] = useState<Player[]>([]);
   const [playerChanged, setPlayerChanged] = useState(false);
+
+  const axiosPrivate = useAxiosPrivate();
+
+  const location = useLocation();
+  const navigate = useNavigate();
 
   const playerChangedListener = () => {
     setPlayerChanged((playerChanged) => !playerChanged);
@@ -18,16 +23,17 @@ export const ManagePlayers = ({ message }: any) => {
     const controller = new AbortController();
 
     const getPlayers = async () => {
-      try { 
-        const response = await axios.get("/api/players", {
+      try {
+        const response = await axiosPrivate.get("/api/players", {
           signal: controller.signal
         });
         console.log(response.data);
         isMounted && setPlayers(response.data)
 
-      } catch(error: any) {
+      } catch (error: any) {
         console.error(error);
-      } 
+        navigate('/login', { state: { from: location }, replace: true });
+      }
     }
 
     getPlayers();

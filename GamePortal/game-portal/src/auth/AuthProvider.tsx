@@ -5,6 +5,7 @@ interface Auth {
     userName: string;
     password: string;
     token: string;
+    refresh: string;
 }
 
 interface AuthContextInterface {
@@ -17,16 +18,18 @@ const AuthContext = createContext<AuthContextInterface>({
         roles: [],
         userName: "",
         password: "",
-        token: ""
+        token: "",
+        refresh: ""
     },
-    setAuth: () => { }
+    setAuth: () => { } 
 });
 
 export const initialAuth: Auth = {
     roles: [],
     userName: "",
     password: "",
-    token: ""
+    token: "",
+    refresh: ""
 };
 
 export const AuthProvider = ({ children }: any) => {

@@ -3,7 +3,7 @@ import React, { useState, useEffect, useRef, RefObject } from 'react';
 import { Button, Form, Container, FormText, FormLabel, Alert } from 'react-bootstrap';
 import { faCheck, faTimes, faInfoCircle } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { NavLink, Navigate, Route, Routes, useLocation, useNavigate } from 'react-router-dom';
+import { NavLink, useLocation, useNavigate } from 'react-router-dom';
 import { RegistrationForm } from '../models/registrationForm.model';
 import { PasswordStrength } from '../components/PasswordStrength';
 import axios from "../api/axios";
@@ -144,11 +144,12 @@ export const Register = () => {
         JSON.stringify(data),
         {
           headers: { 'Content-Type': 'application/json' },
-          withCredentials: false
+          withCredentials: true
         });
       const token = response.data.token;
       const roles = response.data.roleIds;
-      setAuth({ roles, userName, password, token });
+      const refresh = response.data.refreshToken;
+      setAuth({ roles, userName, password, token, refresh });
       navigate(from, {replace: true});
     } catch (error: any) {
       if (!error?.response) {

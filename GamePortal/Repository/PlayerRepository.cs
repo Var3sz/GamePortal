@@ -51,6 +51,5 @@ namespace GamePortal.Repository
             player.RefreshTokenExpiryTime = tokenExpiryTime;
             _dbContext.SaveChanges();
         }
-
     }
 }

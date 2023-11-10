@@ -47,10 +47,13 @@ namespace GamePortal.Extensions
             //Add Cors to container
             services.AddCors(options =>
             {
-                options.AddPolicy("CorsPolicy",
+                options.AddPolicy(name: "CorsPolicy",
                     builder => builder
                         .AllowAnyMethod()
-                        .AllowAnyHeader().WithOrigins("http://localhost:44421"));
+                        .AllowAnyHeader()
+                        .AllowCredentials()
+                        .AllowAnyOrigin()
+                        .WithOrigins("http://localhost:44421"));
             });
 
 

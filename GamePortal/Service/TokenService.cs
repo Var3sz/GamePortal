@@ -16,7 +16,7 @@ namespace GamePortal.Service
                 issuer: "http://localhost:5086",
                 audience: "http://localhost:5086",
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(5),
+                expires: DateTime.Now.AddSeconds(10),
                 signingCredentials: signingCredentials
             );
 

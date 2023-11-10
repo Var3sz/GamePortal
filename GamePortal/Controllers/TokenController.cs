@@ -53,7 +53,7 @@ namespace GamePortal.Controllers
 
             var newAccessToken = _tokenService.GenerateToken(principal.Claims);
             var newRefreshToken = _tokenService.GenerateRefreshToken();
-            var newExpiryTime = DateTime.Now.AddDays(7);
+            var newExpiryTime = DateTime.Now.AddMinutes(5);
 
             _playerRepository.UpdateRefreshToken(player.PlayerId, newRefreshToken, newExpiryTime);
 
