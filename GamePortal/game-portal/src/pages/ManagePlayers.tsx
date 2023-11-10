@@ -44,15 +44,6 @@ export const ManagePlayers = ({ message }: any) => {
     }
   }, [playerChanged]);
 
-  /*const getInvestors = () => {
-    fetch("http://localhost:5086/api/players")
-      .then((response) => response.json())
-      .then((data) => {
-        setPlayers(data);
-      });
-  };*/
-
-
   return (
     <>
       <Container className="px-0" fluid>

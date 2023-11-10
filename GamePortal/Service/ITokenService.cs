@@ -6,6 +6,6 @@ namespace GamePortal.Service
     {
         string GenerateToken(IEnumerable<Claim> claims);
         string GenerateRefreshToken();
-        ClaimsPrincipal GetPrincipalFromExpiredToken(string refreshToken);
+        ClaimsPrincipal GetPrincipalFromExpiredToken(string token);
     }
 }
