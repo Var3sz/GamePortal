@@ -14,6 +14,109 @@ export class Board {
         this.turns = turns;
     }
 
+    generateFEN(): string {
+        const piecePlacement = this.getPiecePlacement();
+        const activeColor = this.getActiveColor();
+        const castlingAvailability = this.getCastlingAvailability();
+
+        return `${piecePlacement} ${activeColor} ${castlingAvailability}`;
+    }
+
+    getPiecePlacement(): string {
+        let fenPlacement = '';
+        for (let row = 7; row >= 0; row--) {
+            let emptySquares = 0;
+            for (let col = 0; col < 8; col++) {
+                const piece = this.pieces.find(p => p.position.x === col && p.position.y === row);
+                if (piece) {
+                    if (emptySquares > 0) {
+                        fenPlacement += emptySquares;
+                        emptySquares = 0;
+                    }
+                    fenPlacement += this.getPieceChar(piece);
+                } else {
+                    emptySquares++;
+                }
+            }
+            if (emptySquares > 0) {
+                fenPlacement += emptySquares;
+            }
+            fenPlacement += '/';
+        }
+        fenPlacement = fenPlacement.slice(0, -1);
+        return fenPlacement;
+    }
+
+    getPieceChar(piece: Piece): string {
+        let result;
+
+        switch (piece.type) {
+            case 'pawn':
+                result = 'p';
+                break;
+            case 'rook':
+                result = 'r';
+                break;
+            case 'knight':
+                result = 'n';
+                break;
+            case 'bishop':
+                result = 'b';
+                break;
+            case 'queen':
+                result = 'q';
+                break;
+            case 'king':
+                result = 'k';
+                break;
+            default:
+                result = piece.type.charAt(0);
+        }
+        return piece.color === PieceColor.WHITE ? result.toUpperCase() : result;
+    }
+
+    getActiveColor(): string {
+        return this.getCurrentColor() === PieceColor.WHITE ? 'w' : 'b';
+    }
+
+    getCastlingAvailability(): string {
+        const whiteKing = this.pieces.find(p => p.color === PieceColor.WHITE && p.isKing());
+        const blackKing = this.pieces.find(p => p.color === PieceColor.BLACK && p.isKing());
+
+        const whiteKingSideRook = this.pieces.find(p => p.color === PieceColor.WHITE && p.isRook() && p.position.x === 7 && p.position.y === 0);
+        const whiteQueenSideRook = this.pieces.find(p => p.color === PieceColor.WHITE && p.isRook() && p.position.x === 0 && p.position.y === 0);
+
+        const blackKingSideRook = this.pieces.find(p => p.color === PieceColor.BLACK && p.isRook() && p.position.x === 7 && p.position.y === 7);
+        const blackQueenSideRook = this.pieces.find(p => p.color === PieceColor.BLACK && p.isRook() && p.position.x === 0 && p.position.y === 7);
+
+        let castlingFen = '';
+
+        if (whiteKing && !whiteKing.hasMoved) {
+            if (whiteKingSideRook && !whiteKingSideRook.hasMoved) {
+                castlingFen += 'K';
+            }
+            if (whiteQueenSideRook && !whiteQueenSideRook.hasMoved) {
+                castlingFen += 'Q';
+            }
+        }
+
+        if (blackKing && !blackKing.hasMoved) {
+            if (blackKingSideRook && !blackKingSideRook.hasMoved) {
+                castlingFen += 'k';
+            }
+            if (blackQueenSideRook && !blackQueenSideRook.hasMoved) {
+                castlingFen += 'q';
+            }
+        }
+
+        if (castlingFen === '') {
+            castlingFen += '-';
+        }
+
+        return castlingFen;
+    }
+
+
     getAllMoves() {
         for (const piece of this.pieces) {
             piece.availableMoves = this.getAvailableMoves(piece, this.pieces);

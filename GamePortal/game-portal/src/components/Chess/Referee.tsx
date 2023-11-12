@@ -2,7 +2,7 @@ import ChessBoard from './Chessboard';
 import { Piece } from '../../models/chess/Pieces';
 import { Position } from '../../models/chess/Position';
 import { useEffect, useRef, useState } from 'react';
-import { BLACK_PAWN_STARTING_ROW, BLACK_PROMOTION_ROW, DOWN, LEFT, RIGHT, UP, WHITE_PAWN_STARTING_ROW, WHITE_PROMOTION_ROW, defaultBoard } from '../../constants/ChessConstants';
+import { BLACK_PROMOTION_ROW, DOWN, UP, WHITE_PROMOTION_ROW, defaultBoard } from '../../constants/ChessConstants';
 import { PieceColor, PieceType } from '../../enums/ChessEnums';
 import { Button, Container } from 'react-bootstrap';
 import { Pawn } from '../../models/chess/Pawn';
@@ -18,6 +18,10 @@ export const Referee = () => {
     useEffect(() => {
         board.getAllMoves();
     }, []);
+
+    useEffect(() => {
+        console.log(board.generateFEN());
+    }, [board])
 
 
 
