@@ -1,24 +1,23 @@
-import { Button, Container } from "react-bootstrap";
-import "../css-files/unauthorized.css"
+import { Button, Card, Container, FormText } from "react-bootstrap";
+import "../css-files/unauthorized.css";
 import { useNavigate } from "react-router-dom";
 
 export const Unauthorized = () => {
     const navigate = useNavigate();
 
-    const back = () => navigate(-1);
-
     return (
-        <>
-
-            <Container id="auth-container">
-                <Container>403</Container>
-                <Container className="txt">
-                    Forbidden<span className="blink">_</span>
-                </Container>
-                <Button id="btn-back" onClick={back}>Go back</Button>
-            </Container>
-        </>
+        <Container id="unauth">
+            <Card.Title id="unauth-title">
+                <FormText className="display-4">Unauthorized Access</FormText>
+            </Card.Title>
+            <FormText className="lead">
+                Sorry, you do not have the necessary permissions to access this page.
+            </FormText>
+            <Button className='home-btn mt-3' onClick={() => navigate("/home")}>
+                Go to Home
+            </Button>
+        </Container>
     );
-}
+};
 
 export default Unauthorized;

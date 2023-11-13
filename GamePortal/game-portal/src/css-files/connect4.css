@@ -1,0 +1,36 @@
+/* Connect4 game CSS properties */
+
+#board {
+  background-color: var(--primary-color);
+  width: 700px;
+  margin: auto;
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  grid-gap: 8px;
+}
+
+#board>.cell {
+  width: 100%;
+  padding-top: 100%;
+  background: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-sizing: border-box;
+  border-radius: 50%;
+}
+
+#board>.cell[data-player='yellow'] {
+  background-color: yellow;
+}
+
+#board>.cell[data-player='red'] {
+  background-color: red;
+}
+
+#connect4-game-menu {
+  width: 21rem;
+  box-shadow: 1px 1px 5px;
+  margin-top: 240px;
+}

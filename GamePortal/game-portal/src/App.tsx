@@ -3,7 +3,7 @@ import { Home } from "./pages/Home";
 import { Login } from "./pages/Login";
 import { Register } from "./pages/Register";
 import Chess from './pages/Chess';
-import Connect4 from "./pages/Connect4"
+import Connect4 from "./components/Connect4/Connect4"
 import AppNavbar from './components/AppNavbar';
 import { Route, Routes } from 'react-router-dom';
 import { ManagePlayers } from './pages/ManagePlayers';
