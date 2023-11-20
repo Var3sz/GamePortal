@@ -1,7 +1,8 @@
 using GamePortal.Extensions;
-
+using GamePortal.MultiHub;
 
 var builder = WebApplication.CreateBuilder(args);
+
 
 // Add different services through own extension class
 builder.Services.AddApplicationExtension(builder.Configuration);
@@ -22,6 +23,8 @@ app.UseCors("CorsPolicy");
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller}/{action=Index}/{id?}");
+
+app.MapHub<ChessHub>("/chesshub");
 
 app.MapFallbackToFile("index.html");
 

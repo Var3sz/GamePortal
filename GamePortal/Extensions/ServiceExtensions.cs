@@ -13,6 +13,9 @@ namespace GamePortal.Extensions
     {
         public static IServiceCollection AddApplicationExtension(this IServiceCollection services, IConfiguration configuration) 
         {
+            // Add SignalR to container
+            services.AddSignalR();
+
             // Add JWT config to container
             services.AddAuthentication(options =>
             {

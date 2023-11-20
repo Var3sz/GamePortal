@@ -7,22 +7,40 @@ import { PieceColor, PieceType } from '../../enums/ChessEnums';
 import { Button, Container } from 'react-bootstrap';
 import { Pawn } from '../../models/chess/Pawn';
 import { Board } from '../../models/chess/Board';
+import Connector from '../../connection/ChessConnector';
 
-export const Referee = () => {
+
+interface RefereeProps {
+    isMultiplayer: boolean
+}
+
+export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     const [board, setBoard] = useState<Board>(defaultBoard.clone());
     const [pawnToPromote, setPawnToPromote] = useState<Piece>();
     const modalRef = useRef<HTMLDivElement>(null);
     const checkMateModalRef = useRef<HTMLDivElement>(null);
 
-    // Show possible moves on the first move
+    const { newMessage, events, sendFEN, receiveFEN } = Connector();
+    const [currentFEN, setCurrentFEN] = useState<string>(board.generateFEN());
+
+    const [message, setMessage] = useState("initial value");
+    useEffect(() => {
+        events((_, message) => setMessage(message));
+    });
+
     useEffect(() => {
         board.getAllMoves();
     }, []);
 
     useEffect(() => {
-        console.log(board.generateFEN());
-    }, [board])
+        // Send the FEN when the board changes
+        sendFEN(board.generateFEN());
 
+        // Receive and update the board when FEN is received
+        receiveFEN((fen) => {
+            setBoard(Board.fromFEN(fen)); // Assuming you have a method to load the board from FEN
+        });
+    }, [board]); // Add board as a dependency to the useEffect
 
 
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
@@ -135,6 +153,11 @@ export const Referee = () => {
                 </Container>
             </Container>
             <ChessBoard makeMove={makeMove} pieces={board.pieces} />
+            <div>
+                <span>message from signalR: <span style={{ color: "green" }}>{message}</span> </span>
+                <br />
+                <button onClick={() => newMessage((new Date()).toISOString())}>send date </button>
+            </div>
         </>
     )
 };

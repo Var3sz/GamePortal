@@ -9,9 +9,57 @@ export class Board {
     turns: number;
     winningColor?: PieceColor;
 
-    constructor(pieces: Piece[], turns: number) {
+
+    private constructor(pieces: Piece[], turns: number) {
         this.pieces = pieces;
         this.turns = turns;
+    }
+
+    static fromFEN(fen: string): Board{
+        const parts = fen.split(' ');
+
+        const piecePlacement = parts[0];
+        const activeColor = parts[1];
+        const castlingAvailability = parts[2];
+        const turn = parseInt(parts[3]);
+
+        // Logic to create pieces from FEN
+        const pieces: Piece[] = [];
+        const rows = piecePlacement.split('/');
+        
+        for (let rank = 7; rank >= 0; rank--) {
+            const row = rows[7 - rank];
+            let file = 0;
+
+            for (const char of row) {
+                if (/[1-8]/.test(char)) {
+                    file += parseInt(char);
+                } else {
+                    const pieceColor = char === char.toUpperCase() ? PieceColor.WHITE : PieceColor.BLACK;
+                    const pieceType = this.getPieceType(char);
+
+                    pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, false));
+                    file++;
+                }
+            }
+        }
+
+        // Set the turns
+        const turns = turn;
+
+        return new Board(pieces, turns);
+    }
+
+    private static getPieceType(char: string): PieceType {
+        switch (char.toLowerCase()) {
+            case 'p': return PieceType.PAWN;
+            case 'n': return PieceType.KNIGHT;
+            case 'b': return PieceType.BISHOP;
+            case 'r': return PieceType.ROOK;
+            case 'q': return PieceType.QUEEN;
+            case 'k': return PieceType.KING;
+            default: throw new Error(`Invalid piece type: ${char}`);
+        }
     }
 
     generateFEN(): string {

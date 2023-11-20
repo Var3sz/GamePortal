@@ -1,9 +1,11 @@
 import Referee from "../components/Chess/Referee";
 
 export const Chess = () => {
-  return(
+  const isMultiplayer = false;
+
+  return (
     <>
-      <Referee />
+      <Referee isMultiplayer={isMultiplayer} />
     </>
   )
 }

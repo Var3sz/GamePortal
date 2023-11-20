@@ -2,11 +2,17 @@ import '../../css-files/connect4.css'
 import { useState, useEffect } from 'react';
 import { Container, Row, Col } from "react-bootstrap";
 import { Piece, GameState } from "../../helpers/connect4.helpers/connect4.enums";
-import { getCurrentColor, nextColor, findEmptyCell, checkForWin } from '../../helpers/connect4.helpers/connect4.functions';
+import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } from '../../helpers/connect4.helpers/connect4.functions';
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
-import { defaultBoard } from '../../helpers/connect4.helpers/connect4.constants';
 import WinnerModal from "../WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
+
+const defaultBoard: Connect4State = {
+    board: createBoard(),
+    playerTurn: Piece.Yellow,
+    gameState: GameState.InProgress,
+    isModalOpen: false
+};
 
 const Connect4 = () => {
   const [state, setState] = useState<Connect4State>(defaultBoard);  // GameState

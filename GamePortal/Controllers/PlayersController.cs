@@ -1,7 +1,6 @@
 ﻿using GamePortal.Models;
 using GamePortal.Repository;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Mvc;
 
 namespace GamePortal.Controllers

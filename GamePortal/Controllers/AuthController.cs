@@ -107,7 +107,7 @@ namespace GamePortal.Controllers
             };
 
             /* Elkérjük a sima Playerhez tartozó Role-t, mindig fixen Player */
-            Role role = _roleRepository.GetRoleByName("admin");
+            Role role = _roleRepository.GetRoleByName("player");
 
             /* Hozzáadjuk a Role-okhoz a kapott role-t, ezzel együtt a kapcsolat is létrejön */
             player.Roles.Add(role);
