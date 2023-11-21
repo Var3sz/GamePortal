@@ -11,10 +11,10 @@ const defaultBoard: Connect4State = {
     board: createBoard(),
     playerTurn: Piece.Yellow,
     gameState: GameState.InProgress,
-    isModalOpen: false
+    isModalOpen: false,
 };
 
-const Connect4 = () => {
+const Connect4Referee = () => {
   const [state, setState] = useState<Connect4State>(defaultBoard);  // GameState
 
   // Hook for opening WinnerModal
@@ -31,6 +31,9 @@ const Connect4 = () => {
     }
   };
 
+  /* Get the state of the board for multiplayer */
+  const getBoardString = (board: Piece[]) => JSON.stringify(board);
+
   /* Determine is a colum is full */
   const isColumnFull = (column: number) => state.board[column] !== Piece.None;
 
@@ -39,6 +42,11 @@ const Connect4 = () => {
     const index = findEmptyCell(state.board, column);
     const newBoard = [...state.board];
     newBoard[index] = state.playerTurn;
+
+    const boardString = getBoardString(newBoard);
+
+    // Use the boardString variable as needed (e.g., log to console)
+    console.log(boardString);
 
     setState({
       ...state,
@@ -109,4 +117,4 @@ const Connect4 = () => {
   );
 };
 
-export default Connect4;
+export default Connect4Referee;

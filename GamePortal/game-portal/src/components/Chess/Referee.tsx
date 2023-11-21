@@ -7,8 +7,7 @@ import { PieceColor, PieceType } from '../../enums/ChessEnums';
 import { Button, Container } from 'react-bootstrap';
 import { Pawn } from '../../models/chess/Pawn';
 import { Board } from '../../models/chess/Board';
-import Connector from '../../connection/ChessConnector';
-
+import ChessConnector from '../../connection/ChessConnector';
 
 interface RefereeProps {
     isMultiplayer: boolean
@@ -19,32 +18,20 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     const [pawnToPromote, setPawnToPromote] = useState<Piece>();
     const modalRef = useRef<HTMLDivElement>(null);
     const checkMateModalRef = useRef<HTMLDivElement>(null);
-
-    const { newMessage, events, sendFEN, receiveFEN } = Connector();
-    const [currentFEN, setCurrentFEN] = useState<string>(board.generateFEN());
-
-    const [message, setMessage] = useState("initial value");
-    useEffect(() => {
-        events((_, message) => setMessage(message));
-    });
-
-    const fenRef = useRef(board.generateFEN());
+    const { events, sendFEN } = ChessConnector();
 
     useEffect(() => {
         board.getAllMoves();
     }, [board]);
-    
+
     useEffect(() => {
         board.getAllMoves();
-        // Send the FEN when the board changes
-        sendFEN(fenRef.current);
-    
-        // Receive and update the board when FEN is received
-        receiveFEN((fen) => {
-            setBoard(Board.fromFEN(fen));
-        });
-    }, [currentFEN]);
-   
+        if (isMultiplayer) {
+            sendFEN(board.generateFEN());
+            events((fen) => setBoard(Board.fromFEN(fen)));
+        }
+    }, []);
+
     const handleFENChange = (newFEN: string) => {
         sendFEN(newFEN);
         setBoard(Board.fromFEN(newFEN));
@@ -84,7 +71,9 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
                 checkMateModalRef.current?.classList.remove("hidden");
             }
 
-            handleFENChange(clone.generateFEN());
+            if (isMultiplayer) {
+                handleFENChange(clone.generateFEN());
+            }
 
             return clone;
         });
@@ -163,11 +152,6 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
                 </Container>
             </Container>
             <ChessBoard makeMove={makeMove} pieces={board.pieces} />
-            <div>
-                <span>message from signalR: <span style={{ color: "green" }}>{message}</span> </span>
-                <br />
-                <button onClick={() => newMessage((new Date()).toISOString())}>send date </button>
-            </div>
         </>
     )
 };

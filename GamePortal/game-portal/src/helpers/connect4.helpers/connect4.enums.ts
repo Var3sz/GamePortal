@@ -6,8 +6,8 @@ export enum Piece {
 }
 
 export enum GameState {
-    InProgress,
-    Draw,
-    PlayerOneWin,
-    PlayerTwoWin
+    InProgress = -1,
+    Draw = 0,
+    PlayerOneWin = Piece.Yellow,
+    PlayerTwoWin = Piece.Red
 }

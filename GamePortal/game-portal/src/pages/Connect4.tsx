@@ -1,6 +1,6 @@
 import Connect4Referee from "../components/Connect4/Connect4Referee";
 
-export const OnlineConnect4 = () => {
+export const Connect4 = () => {
   return(
     <>
       <Connect4Referee />
@@ -8,4 +8,4 @@ export const OnlineConnect4 = () => {
   )
 }
 
-export default OnlineConnect4;
+export default Connect4;
