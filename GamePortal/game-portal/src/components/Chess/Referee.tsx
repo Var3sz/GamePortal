@@ -31,6 +31,14 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
         }
     }, []);
 
+    useEffect(() => {
+        if (board.winningColor !== undefined) {
+            checkMateModalRef.current?.classList.remove("hidden");
+        } else {
+            checkMateModalRef.current?.classList.add("hidden");
+        }
+    }, [board.winningColor]);
+
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
         // no available move
         if (movedPiece.availableMoves === undefined) {
@@ -60,12 +68,9 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
             clone.turns++;
             moveIsValid = clone.makeMove(validMove, enPassantMove, desiredPos, movedPiece);
 
-            if (clone.winningColor !== undefined) {
-                checkMateModalRef.current?.classList.remove("hidden");
-            }
-
             if (isMultiplayer) {
                 sendFEN(clone.generateFEN());
+                console.log(clone.generateFEN());
             }
 
             return clone;
@@ -127,7 +132,6 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     }
 
     function restartGame() {
-        checkMateModalRef.current?.classList.add("hidden");
         setBoard(() => {
             sendFEN(defaultBoard.clone().generateFEN());
             return defaultBoard.clone()

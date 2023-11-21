@@ -10,9 +10,10 @@ export class Board {
     winningColor?: PieceColor;
 
 
-    private constructor(pieces: Piece[], turns: number) {
+    private constructor(pieces: Piece[], turns: number, winningColor?: PieceColor) {
         this.pieces = pieces;
         this.turns = turns;
+        this.winningColor = winningColor;
     }
 
     static fromFEN(fen: string): Board{
@@ -22,6 +23,8 @@ export class Board {
         const activeColor = parts[1];
         const castlingAvailability = parts[2];
         const turn = parseInt(parts[3]);
+        const winner = parts[4];
+
 
         // Logic to create pieces from FEN
         const pieces: Piece[] = [];
@@ -46,8 +49,12 @@ export class Board {
 
         // Set the turns
         const turns = turn;
+        let winningColor = undefined;
+        if (winner !== "n") {
+            winningColor = winner === "w" ? PieceColor.WHITE : PieceColor.BLACK;
+        }
 
-        return new Board(pieces, turns);
+        return new Board(pieces, turns, winningColor);
     }
 
     private static getPieceType(char: string): PieceType {
@@ -67,7 +74,14 @@ export class Board {
         const activeColor = this.getActiveColor();
         const castlingAvailability = this.getCastlingAvailability();
 
-        return `${piecePlacement} ${activeColor} ${castlingAvailability} ${this.turns}`;
+        return `${piecePlacement} ${activeColor} ${castlingAvailability} ${this.turns} ${this.getWinningColor()}`;
+    }
+
+    getWinningColor(): string {
+        if (this.winningColor) {
+            return this.winningColor === PieceColor.WHITE ? "w" : "b";
+        }
+        return "n";
     }
 
     getPiecePlacement(): string {

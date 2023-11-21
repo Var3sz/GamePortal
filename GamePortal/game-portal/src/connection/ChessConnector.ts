@@ -21,7 +21,6 @@ class ChessConnector {
     }
 
     public sendFEN = (fen: string) => {
-        console.log(this.connection.connectionId);
         this.connection.send("sendFEN", fen).then(() => console.log("Sent FEN"));
     }
 
