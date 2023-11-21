@@ -67,7 +67,7 @@ export class Board {
         const activeColor = this.getActiveColor();
         const castlingAvailability = this.getCastlingAvailability();
 
-        return `${piecePlacement} ${activeColor} ${castlingAvailability}`;
+        return `${piecePlacement} ${activeColor} ${castlingAvailability} ${this.turns}`;
     }
 
     getPiecePlacement(): string {

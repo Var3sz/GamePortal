@@ -28,19 +28,27 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
         events((_, message) => setMessage(message));
     });
 
+    const fenRef = useRef(board.generateFEN());
+
     useEffect(() => {
         board.getAllMoves();
-    }, []);
-
+    }, [board]);
+    
     useEffect(() => {
+        board.getAllMoves();
         // Send the FEN when the board changes
-        sendFEN(board.generateFEN());
-
+        sendFEN(fenRef.current);
+    
         // Receive and update the board when FEN is received
         receiveFEN((fen) => {
-            setBoard(Board.fromFEN(fen)); // Assuming you have a method to load the board from FEN
+            setBoard(Board.fromFEN(fen));
         });
-    }, [board]); // Add board as a dependency to the useEffect
+    }, [currentFEN]);
+   
+    const handleFENChange = (newFEN: string) => {
+        sendFEN(newFEN);
+        setBoard(Board.fromFEN(newFEN));
+    };
 
 
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
@@ -67,14 +75,16 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
 
         const enPassantMove = isEnPassantMove(movedPiece.position, desiredPos, movedPiece.type, movedPiece.color);
 
-        setBoard(() => {
-            const clone = board.clone();
+        setBoard((prevBoard) => {
+            const clone = prevBoard.clone();
             clone.turns++;
             moveIsValid = clone.makeMove(validMove, enPassantMove, desiredPos, movedPiece);
 
             if (clone.winningColor !== undefined) {
                 checkMateModalRef.current?.classList.remove("hidden");
             }
+
+            handleFENChange(clone.generateFEN());
 
             return clone;
         });
