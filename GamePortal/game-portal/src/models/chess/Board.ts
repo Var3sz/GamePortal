@@ -16,7 +16,7 @@ export class Board {
         this.winningColor = winningColor;
     }
 
-    static fromFEN(fen: string): Board{
+    static fromFEN(fen: string): Board {
         const parts = fen.split(' ');
 
         const piecePlacement = parts[0];
@@ -29,7 +29,7 @@ export class Board {
         // Logic to create pieces from FEN
         const pieces: Piece[] = [];
         const rows = piecePlacement.split('/');
-        
+
         for (let rank = 7; rank >= 0; rank--) {
             const row = rows[7 - rank];
             let file = 0;
@@ -41,7 +41,33 @@ export class Board {
                     const pieceColor = char === char.toUpperCase() ? PieceColor.WHITE : PieceColor.BLACK;
                     const pieceType = this.getPieceType(char);
 
-                    pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, false));
+                    let hasWhiteKingMoved = !castlingAvailability.includes("K") && !castlingAvailability.includes('Q');
+                    let hasBlackKingMoved = !castlingAvailability.includes("k") && !castlingAvailability.includes('q');
+                    let hasWhiteRookQueenSideMoved = !castlingAvailability.includes("Q")
+                    let hasWhiteRookKingSideMoved = !castlingAvailability.includes("K")
+                    let hasBlackRookQueenSideMoved = !castlingAvailability.includes("q")
+                    let hasBlackRookKingSideMoved = !castlingAvailability.includes("k")
+
+                    if (pieceType === PieceType.KING && PieceColor.WHITE && file === 4 && rank === 0) {
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteKingMoved));
+                    }
+                    else if (pieceType === PieceType.KING && PieceColor.BLACK && file === 4 && rank === 7) {
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackKingMoved));
+                    }
+                    else if (pieceType === PieceType.ROOK && PieceColor.WHITE && file === 0 && rank === 0) {
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteRookQueenSideMoved));
+                    }
+                    else if (pieceType === PieceType.ROOK && PieceColor.WHITE && file === 7 && rank === 0) {
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteRookKingSideMoved));
+                    }
+                    else if (pieceType === PieceType.ROOK && PieceColor.BLACK && file === 0 && rank === 7) {
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackRookQueenSideMoved));
+                    }
+                    else if (pieceType === PieceType.ROOK && PieceColor.BLACK && file === 7 && rank === 7) {
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackRookKingSideMoved));
+                    } else {
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, true));
+                    }
                     file++;
                 }
             }
@@ -65,7 +91,7 @@ export class Board {
             case 'r': return PieceType.ROOK;
             case 'q': return PieceType.QUEEN;
             case 'k': return PieceType.KING;
-            default: throw new Error(`Invalid piece type: ${char}`);
+            default: throw new Error(`Inletid piece type: ${char}`);
         }
     }
 
@@ -244,7 +270,7 @@ export class Board {
         }
     }
 
-    makeMove(validMove: boolean, enPassantMove: boolean, desiredPos: Position, movedPiece: Piece): boolean {
+    makeMove(letidMove: boolean, enPassantMove: boolean, desiredPos: Position, movedPiece: Piece): boolean {
         const pawnDirection = movedPiece.color === PieceColor.WHITE ? UP : DOWN;
 
         const desiredPosPiece = this.pieces.find((p) => p.samePosition(desiredPos));
@@ -290,7 +316,7 @@ export class Board {
                 return results;
             }, [] as Piece[]);
             this.getAllMoves();
-        } else if (validMove) {
+        } else if (letidMove) {
             this.pieces = this.pieces.reduce((results, piece) => {
                 if (piece.samePiecePosition(movedPiece)) {
                     if (piece.isPawn()) {
@@ -359,25 +385,25 @@ export class Board {
 
             const enemyPieces = boardstate.filter((p) => p.color !== king.color);
 
-            let valid = true;
+            let letid = true;
 
             for (const opponent of enemyPieces) {
                 if (opponent.availableMoves === undefined) continue;
 
                 for (const move of opponent.availableMoves) {
                     if (tilesBetween.some(t => t.samePosition(move))) {
-                        valid = false;
+                        letid = false;
                     }
 
-                    if (!valid)
+                    if (!letid)
                         break;
                 }
 
-                if (!valid)
+                if (!letid)
                     break;
             }
 
-            if (!valid) continue;
+            if (!letid) continue;
 
             availableMoves.push(rook.position.clone());
         }

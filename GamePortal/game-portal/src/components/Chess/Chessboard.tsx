@@ -26,6 +26,8 @@ export const ChessBoard = ({ makeMove, pieces }: ChessBoardProps) => {
             const grabY = Math.abs(Math.ceil((e.clientY - chessboard.offsetTop - 600) / TILE_SIZE));
             setGrabPos(new Position(grabX, grabY));
 
+            console.log(grabX, grabY);
+
             const x = e.clientX - TILE_SIZE / 2;
             const y = e.clientY - TILE_SIZE / 2;
             element.style.position = "absolute";
