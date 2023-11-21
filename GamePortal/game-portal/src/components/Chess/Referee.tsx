@@ -112,6 +112,11 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
                 return results;
             }, [] as Piece[]);
             clone.getAllMoves();
+
+            if (isMultiplayer) {
+                sendFEN(clone.generateFEN());
+            }
+
             return clone;
         });
         modalRef.current?.classList.add("hidden");
@@ -123,7 +128,10 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
 
     function restartGame() {
         checkMateModalRef.current?.classList.add("hidden");
-        setBoard(defaultBoard.clone());
+        setBoard(() => {
+            sendFEN(defaultBoard.clone().generateFEN());
+            return defaultBoard.clone()
+        });
     }
 
     return (
