@@ -6,16 +6,24 @@ import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } f
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
 import WinnerModal from "../WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
+import Connect4Connector from '../../connection/Connect4Connector';
+
+interface Connect4MultiProps {
+  isMultiplayer: boolean;
+}
 
 const defaultBoard: Connect4State = {
-    board: createBoard(),
-    playerTurn: Piece.Yellow,
-    gameState: GameState.InProgress,
-    isModalOpen: false,
+  board: createBoard(),
+  playerTurn: Piece.Yellow,
+  gameState: GameState.InProgress,
+  isModalOpen: false,
 };
 
-const Connect4Referee = () => {
+export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer }) => {
   const [state, setState] = useState<Connect4State>(defaultBoard);  // GameState
+
+  const { sendBoardState, events } = Connect4Connector();
+
 
   // Hook for opening WinnerModal
   useEffect(() => {
@@ -23,6 +31,21 @@ const Connect4Referee = () => {
       manageWinnerModal();
     }
   }, [state.gameState]);
+
+  useEffect(() => {
+    if (isMultiplayer) {
+      events((boardState) => {
+        const parsedBoardState = JSON.parse(boardState);
+        setState({
+          ...state,
+          board: parsedBoardState,
+          playerTurn: nextColor(state.playerTurn),
+          gameState: checkForWin(parsedBoardState),
+        });
+      });
+    }
+  }, [isMultiplayer, state]);
+
 
   /* Handling onClick */
   const handleOnClick = (index: number) => {
@@ -43,10 +66,11 @@ const Connect4Referee = () => {
     const newBoard = [...state.board];
     newBoard[index] = state.playerTurn;
 
-    const boardString = getBoardString(newBoard);
-
-    // Use the boardString variable as needed (e.g., log to console)
-    console.log(boardString);
+    if (isMultiplayer) {
+      const boardString = getBoardString(newBoard);
+      console.log(boardString);
+      sendBoardState(boardString);
+    }
 
     setState({
       ...state,

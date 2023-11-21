@@ -1,9 +1,11 @@
 import Connect4Referee from "../components/Connect4/Connect4Referee";
 
 export const OnlineConnect4 = () => {
-  return(
+  const isMultiplayer = true;
+
+  return (
     <>
-      <Connect4Referee />
+      <Connect4Referee isMultiplayer={isMultiplayer} />
     </>
   )
 }
