@@ -20,6 +20,7 @@ class Connect4Connector {
     }
 
     public sendBoardState = (boardState: string) => {
+        console.log(this.connection.connectionId);
         this.connection.send("sendBoardState", boardState).then(() => console.log("BoardState sent"));
     }
 

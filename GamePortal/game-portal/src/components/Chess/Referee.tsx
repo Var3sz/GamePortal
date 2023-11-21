@@ -27,16 +27,9 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     useEffect(() => {
         board.getAllMoves();
         if (isMultiplayer) {
-            sendFEN(board.generateFEN());
             events((fen) => setBoard(Board.fromFEN(fen)));
         }
     }, []);
-
-    const handleFENChange = (newFEN: string) => {
-        sendFEN(newFEN);
-        setBoard(Board.fromFEN(newFEN));
-    };
-
 
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
         // no available move
@@ -72,7 +65,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
             }
 
             if (isMultiplayer) {
-                handleFENChange(clone.generateFEN());
+                sendFEN(clone.generateFEN());
             }
 
             return clone;
