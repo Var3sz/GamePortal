@@ -21,7 +21,7 @@ const AuthContext = createContext<AuthContextInterface>({
         token: "",
         refresh: ""
     },
-    setAuth: () => { } 
+    setAuth: () => { }
 });
 
 export const initialAuth: Auth = {
@@ -33,7 +33,21 @@ export const initialAuth: Auth = {
 };
 
 export const AuthProvider = ({ children }: any) => {
-    const [auth, setAuth] = useState(initialAuth);
+    const [auth, setAuth] = useState(() => {
+        const storedToken = localStorage.getItem('accessToken');
+        const storedRoles = localStorage.getItem('roles');
+        const storedRefreshToken = localStorage.getItem('refreshToken');
+    
+        return storedToken
+          ? {
+              roles: storedRoles ? JSON.parse(storedRoles) : [], // Convert string to array
+              userName: "",
+              password: "",
+              token: storedToken,
+              refresh: storedRefreshToken || ""
+            }
+          : initialAuth;
+      });
 
     return (
         <AuthContext.Provider value={{ auth, setAuth }}>

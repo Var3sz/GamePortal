@@ -1,3 +1,4 @@
+import * as React from 'react';
 import '../src/css-files/styles.css'
 import { Home } from "./pages/guest/Home";
 import { Login } from "./pages/guest/Login";

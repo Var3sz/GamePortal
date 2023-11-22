@@ -64,6 +64,12 @@ export const Login = ({ message }: any) => {
       const roles = response.data.roleIds;
       const refresh = response.data.refreshToken;
       setAuth({ roles, userName, password, token, refresh });
+      console.log(typeof(roles));
+      localStorage.setItem("roles", JSON.stringify(roles));
+      localStorage.setItem("accessToken", token);
+      localStorage.setItem("refreshToken", refresh);
+      console.log(typeof(localStorage.getItem("roles")));
+      
       setLoginState((prevCredentials) => ({
         userName: '',
         password: '',
