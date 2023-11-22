@@ -1,4 +1,4 @@
-import { PieceColor, PieceType } from "../../enums/ChessEnums"
+import { PieceColor, PieceType } from "../../helpers/chess.helpers/chess.enums"
 import { Position } from "./Position";
 
 export class Piece {

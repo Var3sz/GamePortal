@@ -1,7 +1,7 @@
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 interface Auth {
-    roles: [];
+    roles: number[];
     userName: string;
     password: string;
     token: string;

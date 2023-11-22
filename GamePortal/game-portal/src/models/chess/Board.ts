@@ -1,5 +1,5 @@
-import { BLACK_PAWN_STARTING_ROW, DOWN, LEFT, RIGHT, UP, WHITE_PAWN_STARTING_ROW } from "../../constants/ChessConstants";
-import { PieceColor, PieceType } from "../../enums/ChessEnums";
+import { BLACK_PAWN_STARTING_ROW, DOWN, LEFT, RIGHT, UP, WHITE_PAWN_STARTING_ROW } from "../../helpers/chess.helpers/chess.constants";
+import { PieceColor, PieceType } from "../../helpers/chess.helpers/chess.enums";
 import { Pawn } from "./Pawn";
 import { Piece } from "./Pieces";
 import { Position } from "./Position";
@@ -20,13 +20,10 @@ export class Board {
         const parts = fen.split(' ');
 
         const piecePlacement = parts[0];
-        const activeColor = parts[1];
         const castlingAvailability = parts[2];
         const turn = parseInt(parts[3]);
         const winner = parts[4];
 
-
-        // Logic to create pieces from FEN
         const pieces: Piece[] = [];
         const rows = piecePlacement.split('/');
 
@@ -48,25 +45,29 @@ export class Board {
                     let hasBlackRookQueenSideMoved = !castlingAvailability.includes("q")
                     let hasBlackRookKingSideMoved = !castlingAvailability.includes("k")
 
-                    if (pieceType === PieceType.KING && PieceColor.WHITE && file === 4 && rank === 0) {
-                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteKingMoved));
-                    }
-                    else if (pieceType === PieceType.KING && PieceColor.BLACK && file === 4 && rank === 7) {
-                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackKingMoved));
-                    }
-                    else if (pieceType === PieceType.ROOK && PieceColor.WHITE && file === 0 && rank === 0) {
-                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteRookQueenSideMoved));
-                    }
-                    else if (pieceType === PieceType.ROOK && PieceColor.WHITE && file === 7 && rank === 0) {
-                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteRookKingSideMoved));
-                    }
-                    else if (pieceType === PieceType.ROOK && PieceColor.BLACK && file === 0 && rank === 7) {
-                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackRookQueenSideMoved));
-                    }
-                    else if (pieceType === PieceType.ROOK && PieceColor.BLACK && file === 7 && rank === 7) {
-                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackRookKingSideMoved));
+                    if (pieceType === PieceType.KING || pieceType === PieceType.ROOK) {
+                        if (pieceType === PieceType.KING && PieceColor.WHITE && file === 4 && rank === 0) {
+                            pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteKingMoved));
+                        }
+                        else if (pieceType === PieceType.KING && PieceColor.BLACK && file === 4 && rank === 7) {
+                            pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackKingMoved));
+                        }
+                        else if (pieceType === PieceType.ROOK && PieceColor.WHITE && file === 0 && rank === 0) {
+                            pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteRookQueenSideMoved));
+                        }
+                        else if (pieceType === PieceType.ROOK && PieceColor.WHITE && file === 7 && rank === 0) {
+                            pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasWhiteRookKingSideMoved));
+                        }
+                        else if (pieceType === PieceType.ROOK && PieceColor.BLACK && file === 0 && rank === 7) {
+                            pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackRookQueenSideMoved));
+                        }
+                        else if (pieceType === PieceType.ROOK && PieceColor.BLACK && file === 7 && rank === 7) {
+                            pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, hasBlackRookKingSideMoved));
+                        } else {
+                            pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, true));
+                        }
                     } else {
-                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, true));
+                        pieces.push(new Piece(new Position(file, rank), pieceType, pieceColor, false));
                     }
                     file++;
                 }

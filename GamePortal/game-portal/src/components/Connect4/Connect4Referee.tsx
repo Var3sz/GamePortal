@@ -6,7 +6,7 @@ import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } f
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
 import WinnerModal from "../WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
-import Connect4Connector from '../../connection/Connect4Connector';
+import Connect4Connector from '../../connection/connect4.connector';
 
 interface Connect4MultiProps {
   isMultiplayer: boolean;

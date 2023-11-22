@@ -2,12 +2,12 @@ import ChessBoard from './Chessboard';
 import { Piece } from '../../models/chess/Pieces';
 import { Position } from '../../models/chess/Position';
 import { useEffect, useRef, useState } from 'react';
-import { BLACK_PROMOTION_ROW, DOWN, UP, WHITE_PROMOTION_ROW, defaultBoard } from '../../constants/ChessConstants';
-import { PieceColor, PieceType } from '../../enums/ChessEnums';
+import { BLACK_PROMOTION_ROW, DOWN, UP, WHITE_PROMOTION_ROW, defaultBoard } from '../../helpers/chess.helpers/chess.constants';
+import { PieceColor, PieceType } from '../../helpers/chess.helpers/chess.enums';
 import { Button, Container } from 'react-bootstrap';
 import { Pawn } from '../../models/chess/Pawn';
 import { Board } from '../../models/chess/Board';
-import ChessConnector from '../../connection/ChessConnector';
+import ChessConnector from '../../connection/chess.connector';
 
 interface RefereeProps {
     isMultiplayer: boolean

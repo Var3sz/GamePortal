@@ -2,7 +2,7 @@ import * as React from 'react';
 import { useState, useRef } from 'react';
 import { Container } from 'react-bootstrap';
 import Tile from './Tile';
-import { ROWS, COLS, TILE_SIZE } from '../../constants/ChessConstants';
+import { ROWS, COLS, TILE_SIZE } from '../../helpers/chess.helpers/chess.constants';
 import { Position } from '../../models/chess/Position';
 import { Piece } from '../../models/chess/Pieces';
 

@@ -2,11 +2,11 @@ import * as React from "react";
 import { Card, Button, Container, Stack } from "react-bootstrap";
 import chess from "../../images/chess.png";
 import { Link } from "react-router-dom";
-import { useContext } from "react";
+import useAuth from "../../auth/useAuth";
 
 
 export const ChessCard = () => {
-
+    const { auth } = useAuth();
 
     return (
         <>
@@ -20,12 +20,21 @@ export const ChessCard = () => {
                     </Card.Text>
                     <Container id="game-card-btn-container">
                         <Stack direction="horizontal">
-                            <Link to="/chess">
-                                <Button variant="primary" className="ml-3 mr-3" id="game-card-btn">Play offline</Button>
-                            </Link>
-                            <Link to="/onlinechess">
-                                <Button variant="primary" className="ml-3 mr-3" id="game-card-btn">Play online</Button>
-                            </Link>
+                            {auth?.roles.includes(1) ? (
+                                <>
+                                    <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" disabled>Play offline</Button>
+                                    <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" disabled>Play online</Button>
+                                </>
+                            ) : (
+                                <>
+                                    <Link to="/chess">
+                                        <Button variant="primary" className="ml-3 mr-3" id="game-card-btn">Play offline</Button>
+                                    </Link>
+                                    <Link to="/onlinechess">
+                                        <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" >Play online</Button>
+                                    </Link>
+                                </>
+                            )}
                         </Stack>
                     </Container>
                 </Card.Body>
