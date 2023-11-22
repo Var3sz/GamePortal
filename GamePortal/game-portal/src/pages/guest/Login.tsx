@@ -8,7 +8,7 @@ import useAuth from "../../auth/useAuth";
 
 const LOGIN_URL = "/api/auth/login";
 
-export const Login = ({ message }: any) => {
+export const Login = () => {
   const { setAuth } = useAuth();
 
   const navigate = useNavigate();
@@ -63,11 +63,11 @@ export const Login = ({ message }: any) => {
       const token = response.data.token;
       const roles = response.data.roleIds;
       const refresh = response.data.refreshToken;
-      setAuth({ roles, userName, password, token, refresh });
+      setAuth({ roles, token, refresh });
       console.log(typeof(roles));
-      localStorage.setItem("roles", JSON.stringify(roles));
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("refreshToken", refresh);
+      sessionStorage.setItem("roles", JSON.stringify(roles));
+      sessionStorage.setItem("accessToken", token);
+      sessionStorage.setItem("refreshToken", refresh);
       console.log(typeof(localStorage.getItem("roles")));
       
       setLoginState((prevCredentials) => ({

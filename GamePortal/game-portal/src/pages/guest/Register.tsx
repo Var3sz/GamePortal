@@ -149,10 +149,10 @@ export const Register = () => {
       const token = response.data.token;
       const roles = response.data.roleIds;
       const refresh = response.data.refreshToken;
-      setAuth({ roles, userName, password, token, refresh });
-      localStorage.setItem("roles", roles);
-      localStorage.setItem("accessToken", token);
-      localStorage.setItem("refreshToken", refresh);
+      setAuth({ roles, token, refresh });
+      sessionStorage.setItem("roles", JSON.stringify(roles));
+      sessionStorage.setItem("accessToken", token);
+      sessionStorage.setItem("refreshToken", refresh);
       navigate(from, {replace: true});
     } catch (error: any) {
       if (!error?.response) {

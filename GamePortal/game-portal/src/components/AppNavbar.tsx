@@ -12,9 +12,9 @@ export const AppNavbar: React.FunctionComponent = () => {
 
     const logout = async () => {
         setAuth(initialAuth);
-        localStorage.removeItem("accessToken");
-        localStorage.removeItem("roles");
-        localStorage.removeItem("refreshToken");
+        sessionStorage.removeItem("accessToken");
+        sessionStorage.removeItem("roles");
+        sessionStorage.removeItem("refreshToken");
         navigate('/login');
     };
 

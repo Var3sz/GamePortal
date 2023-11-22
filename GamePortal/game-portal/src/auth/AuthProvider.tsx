@@ -2,8 +2,6 @@ import { Dispatch, SetStateAction, createContext, useState } from "react";
 
 interface Auth {
     roles: number[];
-    userName: string;
-    password: string;
     token: string;
     refresh: string;
 }
@@ -16,8 +14,6 @@ interface AuthContextInterface {
 const AuthContext = createContext<AuthContextInterface>({
     auth: {
         roles: [],
-        userName: "",
-        password: "",
         token: "",
         refresh: ""
     },
@@ -26,28 +22,24 @@ const AuthContext = createContext<AuthContextInterface>({
 
 export const initialAuth: Auth = {
     roles: [],
-    userName: "",
-    password: "",
     token: "",
     refresh: ""
 };
 
 export const AuthProvider = ({ children }: any) => {
     const [auth, setAuth] = useState(() => {
-        const storedToken = localStorage.getItem('accessToken');
-        const storedRoles = localStorage.getItem('roles');
-        const storedRefreshToken = localStorage.getItem('refreshToken');
-    
+        const storedToken = sessionStorage.getItem('accessToken');
+        const storedRoles = sessionStorage.getItem('roles');
+        const storedRefreshToken = sessionStorage.getItem('refreshToken');
+
         return storedToken
-          ? {
-              roles: storedRoles ? JSON.parse(storedRoles) : [], // Convert string to array
-              userName: "",
-              password: "",
-              token: storedToken,
-              refresh: storedRefreshToken || ""
+            ? {
+                roles: storedRoles ? JSON.parse(storedRoles) : [],
+                token: storedToken,
+                refresh: storedRefreshToken || ""
             }
-          : initialAuth;
-      });
+            : initialAuth;
+    });
 
     return (
         <AuthContext.Provider value={{ auth, setAuth }}>
