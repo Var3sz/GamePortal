@@ -1,4 +1,4 @@
-import { Box, Text, Stack, Link, Collapse, Icon, useColorModeValue, useDisclosure } from '@chakra-ui/react'
+import { Text, Stack, Link, Collapse, Icon, useDisclosure } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { NAV_LINKS, LinkProps } from '../helpers/navbar.helper';
 import LargeScreenNavbar from './LargeScreenNavbar';

@@ -1,4 +1,4 @@
-import { Box, Flex, HStack, IconButton, Button, Collapse, Image, useDisclosure, Link } from '@chakra-ui/react'
+import { Box, Flex, HStack, IconButton, Collapse, Image, useDisclosure, Link } from '@chakra-ui/react'
 import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
 import { useNavigate } from 'react-router-dom';
 import { initialAuth } from '../auth/AuthProvider';

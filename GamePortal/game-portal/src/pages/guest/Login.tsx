@@ -24,7 +24,7 @@ export const Login: React.FC = () => {
   const location = useLocation();
   const from = location.state?.from?.pathname || '/home';
   const isUnauthorized = location.state?.unauthorized;
-  const [generalError, setGeneralError] = useState<string | null>(null);
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   const {
     handleSubmit,
@@ -62,14 +62,11 @@ export const Login: React.FC = () => {
       navigate(from, { replace: true });
     } catch (error: any) {
       if (!error.response) {
-        console.error('No server response');
-        setGeneralError('No server response');
+        setLoginError('No server response');
       } else if (error.response.status === 401) {
-        console.error('Unauthorized');
-        setGeneralError('Incorrect credentials');
+        setLoginError('Incorrect credentials');
       } else {
-        console.error('Login failed');
-        setGeneralError('Login failed');
+        setLoginError('Login failed');
       }
     }
   };
@@ -116,9 +113,9 @@ export const Login: React.FC = () => {
             <Button type="submit" variant={'authButton'} isLoading={isSubmitting}>
               Login
             </Button>
-            {generalError && (
+            {loginError && (
               <Text color="red" mt={2}>
-                {generalError}
+                {loginError}
               </Text>
             )}
           </Form>
