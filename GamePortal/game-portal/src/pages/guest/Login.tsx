@@ -1,160 +1,140 @@
-import "../../css-files/login.css"
-import React, { useState, useRef, RefObject, useEffect } from 'react';
-import { Alert, Button, Container, Form, FormLabel, FormText } from 'react-bootstrap';
-import { useNavigate, useLocation, NavLink } from 'react-router-dom';
-import { LoginCredentials } from '../../models/loginCredentials.model';
-import axios from "../../api/axios";
-import useAuth from "../../auth/useAuth";
+import React, { useEffect, useState } from 'react';
+import { useNavigate, useLocation } from 'react-router-dom';
+import { useForm, SubmitHandler } from 'react-hook-form';
+import { Form } from 'react-bootstrap';
+import {
+  Alert, AlertIcon, AlertTitle, AlertDescription,
+  FormControl, FormErrorMessage, FormLabel, Input,
+  Card, CardHeader, CardBody,
+  Container, Heading, Button, Link, Text
+} from '@chakra-ui/react';
+import useAuth from '../../auth/useAuth';
+import axios from '../../api/axios';
 
-const LOGIN_URL = "/api/auth/login";
+interface LoginForm {
+  userName: string;
+  password: string;
+}
 
-export const Login = () => {
+const LOGIN_URL = '/api/auth/login';
+
+export const Login: React.FC = () => {
   const { setAuth } = useAuth();
-
   const navigate = useNavigate();
   const location = useLocation();
-  const from = location.state?.from?.pathname || "/home";
+  const from = location.state?.from?.pathname || '/home';
+  const isUnauthorized = location.state?.unauthorized;
+  const [generalError, setGeneralError] = useState<string | null>(null);
 
-  const isUnauthorized = location.state?.unathorized;
-
-  const userRef: RefObject<HTMLInputElement> = useRef(null);
-  const errorRef: RefObject<HTMLDivElement> = useRef(null);
-
-  const [loginState, setLoginState] = useState<LoginCredentials>({
-    userName: "",
-    password: "",
-    errorMessage: "",
-  });
-
-  const { userName, password, errorMessage } = loginState;
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting },
+    setValue,
+  } = useForm<LoginForm>();
 
   useEffect(() => {
-    userRef.current?.focus();
-  }, []);
+    register('userName', { required: 'Username is required' });
+    register('password', { required: 'Password is required' });
+  }, [register]);
 
-  useEffect(() => {
-    setLoginState((prevCredentials) => ({
-      ...prevCredentials,
-      errorMessage: "",
-    }));
-  }, [userName, password]);
-
-
-
-  const handleChange = (evt: React.ChangeEvent<HTMLInputElement>) => {
-    const value = evt.target.value;
-    setLoginState({
-      ...loginState,
-      [evt.currentTarget.name]: value,
-    });
-  };
-
-  const login = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const login: SubmitHandler<LoginForm> = async (data) => {
     try {
-      const response = await axios.post(LOGIN_URL,
-        JSON.stringify({ userName, password }),
+      const response = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ userName: data.userName, password: data.password }),
         {
           headers: { 'Content-Type': 'application/json' },
-          withCredentials: true
+          withCredentials: true,
         }
       );
       const token = response.data.token;
       const roles = response.data.roleIds;
       const refresh = response.data.refreshToken;
       setAuth({ roles, token, refresh });
-      console.log(typeof(roles));
-      sessionStorage.setItem("roles", JSON.stringify(roles));
-      sessionStorage.setItem("accessToken", token);
-      sessionStorage.setItem("refreshToken", refresh);
-      console.log(typeof(localStorage.getItem("roles")));
-      
-      setLoginState((prevCredentials) => ({
-        userName: '',
-        password: '',
-        errorMessage: ''
-      }));
+      sessionStorage.setItem('roles', JSON.stringify(roles));
+      sessionStorage.setItem('accessToken', token);
+      sessionStorage.setItem('refreshToken', refresh);
+
+      setValue('userName', '');
+      setValue('password', '');
+
       navigate(from, { replace: true });
     } catch (error: any) {
-      if (!error?.response) {
-        setLoginState((prevCredentials) => ({
-          ...prevCredentials,
-          errorMessage: "No server response",
-        }));
-      } else if (error.response.status === 400) {
-        setLoginState((prevCredentials) => ({
-          ...prevCredentials,
-          errorMessage: "Missing username or password",
-        }));
+      if (!error.response) {
+        console.error('No server response');
+        setGeneralError('No server response');
       } else if (error.response.status === 401) {
-        setLoginState((prevCredentials) => ({
-          ...prevCredentials,
-          errorMessage: "Unauthorized",
-        }));
+        console.error('Unauthorized');
+        setGeneralError('Incorrect credentials');
       } else {
-        setLoginState((prevCredentials) => ({
-          ...prevCredentials,
-          errorMessage: "Login failed",
-        }));
+        console.error('Login failed');
+        setGeneralError('Login failed');
       }
-      errorRef.current?.focus();
     }
   };
 
-
   return (
-    <>
-      {isUnauthorized && <Alert variant="danger"> Please sign in </Alert>}
-      <Container id="login-container">
-        <Form id="login-form" onSubmit={login}>
-          <Container id="login-form-content">
-            <Alert
-              variant="danger"
-              ref={errorRef}
-              className={errorMessage ? "errorMessage" : "offscreen"}
-              aria-live='assertive'>{errorMessage}</Alert>
-            <FormText id="login-title">Login</FormText>
-
-            <Form.Group className="mt-3">
-              <FormLabel id="login-labels" htmlFor="username">Username</FormLabel>
-              <Form.Control
-                type="text"
-                id="username"
-                name="userName"
-                className="form-control"
-                placeholder="Enter username"
+    <Container className="d-flex flex-column justify-content-center col-lg- mt-3">
+      <Card variant={'loginCard'}>
+        <CardHeader>
+          {isUnauthorized && (
+            <Alert status="error">
+              <AlertIcon />
+              <AlertTitle>Please Sign In!</AlertTitle>
+              <AlertDescription>For playing online, please sign in.</AlertDescription>
+            </Alert>
+          )}
+          <Heading variant={'authTitle'}>Sign In</Heading>
+        </CardHeader>
+        <CardBody mb={"0px"}>
+          <Form onSubmit={handleSubmit(login)}>
+            <FormControl mt={'15px'} isRequired isInvalid={!!errors.userName}>
+              <FormLabel>Username</FormLabel>
+              <Input
+                type={'text'}
+                placeholder='Your Username'
                 autoComplete="off"
-                ref={userRef}
-                onChange={handleChange}
-                value={userName}
-                required
+                {...register('userName')}
               />
-            </Form.Group>
-
-            <Form.Group className="mt-3">
-              <FormLabel id="login-labels" htmlFor="password">Password</FormLabel>
-              <Form.Control
-                type="password"
-                id="password"
-                name="password"
-                className="form-control"
-                placeholder="Enter password"
-                onChange={handleChange}
-                value={password}
-                required
+              <FormErrorMessage>
+                {errors.userName && errors.userName.message}
+              </FormErrorMessage>
+            </FormControl>
+            <FormControl mt={'25px'} pb={'30px'} isRequired isInvalid={!!errors.password}>
+              <FormLabel>Password</FormLabel>
+              <Input
+                type={'password'}
+                placeholder='Your password'
+                autoComplete="off"
+                {...register('password')}
               />
-            </Form.Group>
-            <Button type="submit" className="mt-3" id="btn-login">
+              <FormErrorMessage>
+                {errors.password && errors.password.message}
+              </FormErrorMessage>
+            </FormControl>
+            <Button type="submit" variant={'authButton'} isLoading={isSubmitting}>
               Login
             </Button>
-            <NavLink to="/register" id="login-link">Register</NavLink>
-          </Container>
-        </Form>
-      </Container>
-    </>
+            {generalError && (
+              <Text color="red" mt={2}>
+                {generalError}
+              </Text>
+            )}
+          </Form>
+          <Link
+            href={'/register'}
+            color={'primary'}
+            fontSize={'md'}
+            _hover={{
+              textDecoration: 'none',
+              color: 'black',
+            }}
+          >
+            Sign Up
+          </Link>
+        </CardBody>
+      </Card>
+    </Container>
   );
-}
-
-
-export default Login;
+};

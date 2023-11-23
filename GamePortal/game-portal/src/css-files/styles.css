@@ -79,28 +79,6 @@
   border-color: transparent !important;
 }
 
-/* Game cards */
-#game-card {
-  width: 21rem;
-}
-
-#game-card-body{
-  display: flex;
-  flex-direction: column;
-}
-
-#game-card-title {
-  text-align: center;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-#game-card-btn {
-  font-size: 15px;
-  font-weight: bold;
-  background-color: var(--primary-color) !important;
-  border-color: transparent !important;
-}
 
 /* Winner modal */
 #winner-modal-header {

@@ -1,8 +1,7 @@
-import { Container, Row, Col, Alert } from 'react-bootstrap';
+import { Container, Row, Col } from 'react-bootstrap';
 import ChessCard from '../../components/Chess/ChessCard';
 import Connect4Card from '../../components/Connect4/Connect4Card';
 import TicTacToeCard from '../../components/TicTacToe/TicTacToeCard';
-import { useLocation, useNavigate } from 'react-router-dom';
 
 export const Home = () => {
   return (
