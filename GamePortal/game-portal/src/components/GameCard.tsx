@@ -1,6 +1,5 @@
 import React from 'react';
-import { Card, CardHeader, CardBody, Image, Heading, Text, HStack, ButtonGroup } from '@chakra-ui/react';
-import { Link } from 'react-router-dom';
+import { Card, CardHeader, CardBody, Image, Heading, Text, HStack, ButtonGroup, Link } from '@chakra-ui/react';
 import GameButton from './GameButton';
 
 interface GameCardProps {
@@ -33,10 +32,10 @@ const GameCard: React.FC<GameCardProps> = ({ title, imageURL, description, offli
                             </ButtonGroup>
                         ) : (
                             <ButtonGroup>
-                                <Link to={offlineLink}>
+                                <Link href={offlineLink}>
                                     <GameButton>Play offline</GameButton>
                                 </Link>
-                                <Link to={onlineLink}>
+                                <Link href={onlineLink}>
                                     <GameButton>Play online</GameButton>
                                 </Link>
                             </ButtonGroup>

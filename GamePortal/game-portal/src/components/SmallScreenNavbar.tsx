@@ -1,26 +1,50 @@
-import { Box, Text, Stack, Collapse, Icon, useColorModeValue, useDisclosure } from '@chakra-ui/react'
+import { Box, Text, Stack, Link, Collapse, Icon, useColorModeValue, useDisclosure } from '@chakra-ui/react'
 import { ChevronDownIcon } from '@chakra-ui/icons'
 import { NAV_LINKS, LinkProps } from '../helpers/navbar.helper';
-import { Link } from 'react-router-dom';
 import LargeScreenNavbar from './LargeScreenNavbar';
+import { customColors } from '../theme/theme';
 
-export const SmallScreenNavbar = () => {
+interface SmallScreenNavbarProps {
+    isAdmin: boolean;
+}
+
+export const SmallScreenNavbar: React.FC<SmallScreenNavbarProps> = ({ isAdmin }) => {
+    let filteredNavLinks;
+
+    if (isAdmin) {
+        filteredNavLinks = NAV_LINKS.filter(item => item.label === 'Admin' || item.label === 'Home');
+    } else {
+        filteredNavLinks = NAV_LINKS.filter(item => item.label !== 'Admin');
+    }
+
     return (
-        <Stack bg={useColorModeValue('white', 'gray.800')} p={4} display={{ md: 'none' }}>
-            {NAV_LINKS.map((navItem) => (
+        <Stack bg={customColors.primary} p={3}>
+            {filteredNavLinks.map((navItem) => (
                 <SmallScreenNavbarItem key={navItem.label} {...navItem} />
             ))}
         </Stack>
-    )
+    );
 }
 
 const SmallScreenNavbarItem = ({ label, children, to }: LinkProps) => {
     const { isOpen, onToggle } = useDisclosure()
 
     return (
-        <Stack spacing={4} onClick={children && onToggle}>
-            <Link to={to!}>
-                <Text fontWeight={600} color={useColorModeValue('gray.600', 'gray.200')}>
+        <Stack onClick={children && onToggle}>
+            <Link
+                href={to!}
+                _hover={{
+                    textDecoration: 'none',
+                    color: customColors.secondary
+                }}
+            >
+                <Text
+                    fontWeight={600}
+                    color={customColors.black}
+                    _hover={{
+                        color: customColors.secondary
+                    }}
+                >
                     {label}
                 </Text>
                 {children && (
@@ -34,19 +58,25 @@ const SmallScreenNavbarItem = ({ label, children, to }: LinkProps) => {
                 )}
             </Link>
 
-            <Collapse in={isOpen} animateOpacity style={{ marginTop: '0!important' }}>
+            <Collapse in={isOpen} >
                 <Stack
                     mt={2}
                     pl={4}
                     borderLeft={1}
                     borderStyle={'solid'}
-                    borderColor={useColorModeValue('gray.200', 'gray.700')}
-                    align={'start'}>
+                    borderColor={customColors.black}
+                    align={'start'}
+                >
                     {children &&
                         children.map((child) => (
-                            <Box as="a" key={child.label} py={2} href={child.to}>
+                            <Link key={child.label} py={2} href={child.to}
+                                _hover={{
+                                    color: customColors.secondary,
+                                    textDecoration: 'none'
+                                }}
+                            >
                                 {child.label}
-                            </Box>
+                            </Link>
                         ))}
                 </Stack>
             </Collapse>

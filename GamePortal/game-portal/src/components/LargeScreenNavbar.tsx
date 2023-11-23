@@ -1,19 +1,34 @@
-import { Box, Flex, HStack, Text, Stack, Icon, Popover, PopoverTrigger, PopoverContent } from '@chakra-ui/react'
-import { ChevronRightIcon } from '@chakra-ui/icons'
-import { Link } from 'react-router-dom';
+import { Box, HStack, Text, Stack, Popover, Link, PopoverTrigger, PopoverContent } from '@chakra-ui/react'
 import { NAV_LINKS, LinkProps } from '../helpers/navbar.helper';
 import { customColors } from '../theme/theme';
 
-export const LargeScreenNavbar = () => {
+interface LargeScreenNavbarProps {
+    isAdmin: boolean;
+}
+
+export const LargeScreenNavbar: React.FC<LargeScreenNavbarProps> = ({ isAdmin }) => {
+    let filteredNavLinks;
+
+    if (isAdmin) {
+        filteredNavLinks = NAV_LINKS.filter(item => item.label === 'Admin' || item.label === 'Home');
+    } else {
+        filteredNavLinks = NAV_LINKS.filter(item => item.label !== 'Admin');
+    }
+
     return (
-        <Stack direction={'row'} spacing={4}>
-            {NAV_LINKS.map((navItem) => (
+        <HStack gap={24}>
+            {filteredNavLinks.map((navItem) => (
                 <Box key={navItem.label}>
                     <Popover trigger={'hover'} placement={'bottom-start'}>
                         <PopoverTrigger>
                             <Link
-                                to={navItem.to!}
+                                href={navItem.to!}
                                 color={customColors.secondary}
+                                fontSize={'x-large'}
+                                _hover={{
+                                    textDecoration: 'none',
+                                    color: 'black',
+                                }}
                             >
                                 {navItem.label}
                             </Link>
@@ -21,12 +36,9 @@ export const LargeScreenNavbar = () => {
 
                         {navItem.children && (
                             <PopoverContent
-                                border={0}
                                 boxShadow={'xl'}
-                                bg={customColors.secondary}
                                 p={4}
-                                rounded={'xl'}
-                                minW={'sm'}>
+                                rounded={'md'}>
                                 <Stack>
                                     {navItem.children.map((child) => (
                                         <LargeScreenSubNav key={child.label} {...child} />
@@ -37,32 +49,25 @@ export const LargeScreenNavbar = () => {
                     </Popover>
                 </Box>
             ))}
-        </Stack>
+        </HStack>
     )
 }
 
 const LargeScreenSubNav = ({ label, to }: LinkProps) => {
     return (
-        <Link to={to!}>
+        <Link href={to!}
+            _hover={{
+                text: 'none',
+                color: 'gray'
+            }}
+        >
             <HStack>
                 <Box>
                     <Text
-                        transition={'all .3s ease'}
-                        _groupHover={{ color: 'pink.400' }}
                         fontWeight={500}>
                         {label}
                     </Text>
                 </Box>
-                <Flex
-                    transition={'all .3s ease'}
-                    transform={'translateX(-10px)'}
-                    opacity={0}
-                    _groupHover={{ opacity: '100%', transform: 'translateX(0)' }}
-                    justify={'flex-end'}
-                    align={'center'}
-                    flex={1}>
-                    <Icon color={'pink.400'} w={5} h={5} as={ChevronRightIcon} />
-                </Flex>
             </HStack>
         </Link>
     )
