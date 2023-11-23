@@ -1,47 +1,29 @@
-import * as React from "react";
-import { Card, Button, Container, Stack } from "react-bootstrap";
 import chess from "../../images/chess.png";
-import { Link } from "react-router-dom";
 import useAuth from "../../auth/useAuth";
+import GameCard from "../GameCard";
 
 
 export const ChessCard = () => {
     const { auth } = useAuth();
+    const title = "Chess";
+    const description = `Chess is a timeless board game that's easy to learn yet offers endless depth,
+    making it a favorite pastime for players of all ages. Let's play now!`;
+    const offlineLink = "/chess"
+    const onlineLink = "/onlinechess"
+    const isPlayable = true;
+    const isAuthorized = auth.roles.includes(1) ? true : false
 
     return (
-        <>
-            <Card id="game-card">
-                <Card.Img variant="top" src={chess} alt="Chess-game-wallpaper" />
-                <Card.Body id="game-card-body">
-                    <Card.Title id="game-card-title">Chess</Card.Title>
-                    <Card.Text className="mt-3">
-                        Chess is a timeless board game that's easy to learn yet offers endless depth,
-                        making it a favorite pastime for players of all ages. Let's play now!
-                    </Card.Text>
-                    <Container id="game-card-btn-container">
-                        <Stack direction="horizontal">
-                            {auth?.roles.includes(1) ? (
-                                <>
-                                    <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" disabled>Play offline</Button>
-                                    <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" disabled>Play online</Button>
-                                </>
-                            ) : (
-                                <>
-                                    <Link to="/chess">
-                                        <Button variant="primary" className="ml-3 mr-3" id="game-card-btn">Play offline</Button>
-                                    </Link>
-                                    <Link to="/onlinechess">
-                                        <Button variant="primary" className="ml-3 mr-3" id="game-card-btn" >Play online</Button>
-                                    </Link>
-                                </>
-                            )}
-                        </Stack>
-                    </Container>
-                </Card.Body>
-            </Card>
-        </>
+        <GameCard
+            title={title}
+            imageURL={chess}
+            description={description}
+            offlineLink={offlineLink}
+            onlineLink={onlineLink}
+            isPlayable={isPlayable}
+            isAuthorized={isAuthorized}
+        />
     );
 }
-
 
 export default ChessCard;

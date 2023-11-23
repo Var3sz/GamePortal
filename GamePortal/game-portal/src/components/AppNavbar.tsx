@@ -1,79 +1,66 @@
-import * as React from "react";
-import { Navbar, Container, Nav, Button, Image, Stack } from "react-bootstrap";
+import { Box, Flex, HStack, IconButton, Button, Collapse, Image, useDisclosure } from '@chakra-ui/react'
+import { HamburgerIcon, CloseIcon } from '@chakra-ui/icons'
+import { Link } from 'react-router-dom';
+import { LargeScreenNavbar } from './LargeScreenNavbar';
+import { SmallScreenNavbar } from './SmallScreenNavbar';
+import { customColors } from '../theme/theme';
 import logo from '../images/logo.png';
-import { NavLink, Link, useNavigate } from "react-router-dom";
-import { initialAuth } from "../auth/AuthProvider";
-import useAuth from "../auth/useAuth";
-import "../css-files/navbar.css"
 
-export const AppNavbar: React.FunctionComponent = () => {
-    const { auth, setAuth } = useAuth();
-    const navigate = useNavigate();
-
-    const logout = async () => {
-        setAuth(initialAuth);
-        sessionStorage.removeItem("accessToken");
-        sessionStorage.removeItem("roles");
-        sessionStorage.removeItem("refreshToken");
-        navigate('/login');
-    };
+export default function AppNavbar() {
+    const { isOpen, onToggle } = useDisclosure()
 
     return (
-        <>
-            <Navbar className="navbar bg-dark navbar-expand-lg bg-body-tertiary" id="navbar" collapseOnSelect expand="lg">
-                <Container>
-                    <Nav.Link as={NavLink} className="navbar-brand" to="/home">
-                        <Image src={logo} className="d-inline-block align-top me-2" alt="Brand-logo" />
-                    </Nav.Link>
+        <Box backgroundColor={customColors.primary}>
+            <Flex
+                py={{ base: 2 }}
+                px={{ base: 4 }}
+                align={'center'}>
+                <Flex
+                    flex={{ base: 1, md: 'auto' }}
+                    ml={{ base: -2 }}
+                    display={{ base: 'flex', md: 'none' }}>
+                    <IconButton
+                        onClick={onToggle}
+                        icon={isOpen ? <CloseIcon w={3} h={3} /> : <HamburgerIcon w={5} h={5} />}
+                        variant={'ghost'}
+                        aria-label={'Toggle Navigation'}
+                    />
+                </Flex>
+                <Flex flex={{ base: 1 }} justify={{ base: 'center', md: 'start' }}>
+                    <Image src={logo} />
 
-                    <Navbar.Toggle aria-controls="navbarNav" />
-                    <Navbar.Collapse id="navbarNav">
-                        <Container className="mr-5">
-                            <Nav className="me-auto mb-2 mb-lg-0 bg-dark">
-                                <Nav.Item id="listgroup-item">
-                                    <Nav.Link as={NavLink} to="/home" id="nav-link">Home</Nav.Link>
-                                </Nav.Item>
-                                {auth?.roles.includes(1) ? (
-                                    <Nav.Item id="listgroup-item">
-                                        <Nav.Link as={NavLink} to="/admin" id="nav-link">Admin</Nav.Link>
-                                    </Nav.Item>
-                                ) : (
-                                    <>
-                                        <Nav.Item id="listgroup-item">
-                                            <Nav.Link as={NavLink} to="/chess" id="nav-link">Chess</Nav.Link>
-                                        </Nav.Item>
-                                        <Nav.Item id="listgroup-item">
-                                            <Nav.Link as={NavLink} to="/connect4" id="nav-link">Connect4</Nav.Link>
-                                        </Nav.Item>
-                                    </>
-                                )}
-                            </Nav>
-                        </Container>
-                        <Container className="ml-5">
-                            <Nav className="me-auto mb-2 mb-lg-0 bg-dark border-0">
-                                {auth?.token ? (
-                                    <Button id="navbar-btn" className="mx-3 mb-lg-0 mb-2" onClick={logout}> Logout </Button>
-                                ) : (
-                                    <Stack direction="horizontal">
-                                        <Nav.Item id="listgroup-item">
-                                            <Link to="/login">
-                                                <Button id="navbar-btn" className="mx-3 mb-lg-0 mb-2"> Login </Button>
-                                            </Link>
-                                        </Nav.Item>
-                                        <Nav.Item id="listgroup-item">
-                                            <Link to="/register">
-                                                <Button id="navbar-btn" className="mx-3 mb-lg-0 mb-2"> Register </Button>
-                                            </Link>
-                                        </Nav.Item>
-                                    </Stack>
-                                )}
-                            </Nav>
-                        </Container>
-                    </Navbar.Collapse>
-                </Container>
-            </Navbar>
-        </>
-    );
-};
+                    <Flex display={{ base: 'none', md: 'flex' }} ml={10}>
+                        <LargeScreenNavbar />
+                    </Flex>
+                </Flex>
 
-export default AppNavbar;
+                <HStack
+                    flex={{ base: 1, md: 0 }}
+                    justify={'flex-end'}
+                    gap={8}>
+                    <Link to="/login">
+                        <Button fontSize={'sm'} fontWeight={600} color={customColors.black} >
+                            Sign In
+                        </Button>
+                    </Link>
+                    <Link to="/register">
+                        <Button
+                            fontSize={'sm'}
+                            fontWeight={600}
+                            color={customColors.black}
+                            bg={customColors.secondary}>
+                            Sign Up
+                        </Button>
+                    </Link>
+                </HStack>
+            </Flex>
+
+            <Collapse in={isOpen} animateOpacity>
+                <SmallScreenNavbar />
+            </Collapse>
+        </Box>
+    )
+}
+
+
+
