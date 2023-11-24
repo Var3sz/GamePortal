@@ -1,26 +1,15 @@
-import * as React from "react";
-import { Card, Container } from "react-bootstrap";
+import { Card, CardBody, Heading, Text } from "@chakra-ui/react";
 
-export const Connect4Menu = ({ renderGameStatus, currentPlayer } : any) => {
-
-    return(
-        <>
-            <Card id="connect4-game-menu">
-                <Card.Body id="game-card-body">
-                    <Card.Title id="game-card-title">Connect4</Card.Title>
-                    <Card.Text className="mt-3">
-                        {renderGameStatus}
-                    </Card.Text>
-                    <Container>
-                        <Card.Text>
-                            Current player: {currentPlayer}
-                        </Card.Text>
-                    </Container>
-                </Card.Body>
-            </Card>
-        </>
+export const Connect4Menu = ({ renderGameStatus, currentPlayer }: any) => {
+    return (
+        <Card boxShadow="md" maxW="lg">
+            <CardBody>
+                <Heading>Connect4</Heading>
+                <Text mt={'5px'}>{renderGameStatus}</Text>
+                <Text>Current player: {currentPlayer}</Text>
+            </CardBody>
+        </Card>
     );
-}
-
+};
 
 export default Connect4Menu;

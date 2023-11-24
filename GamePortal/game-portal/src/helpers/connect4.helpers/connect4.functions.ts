@@ -15,7 +15,7 @@ export const getCurrentColor = (piece: Piece) => {
     return playerClassMap[piece] || "";
 };
 
-// Determine next player
+/* Determine next player */
 export const nextColor = (piece: Piece) => (piece === Piece.Yellow ? Piece.Red : Piece.Yellow);
 
 /* Find lowest empty cell in a column */
@@ -64,7 +64,6 @@ export const checkForWin = (board: Piece[]) => {
 
   return board.includes(Piece.None) ? GameState.InProgress : GameState.Draw;
 };
-
 
 /*********************** Helper functions which are used in place *******************************/
 
