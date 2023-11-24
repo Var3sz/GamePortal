@@ -3,6 +3,8 @@
  * I was using this YouTube tutorial as a reference to create a basic chess game
  */
 
+import { Box } from "@chakra-ui/react";
+
 interface TileProps {
   image?: string;
   number: number;
@@ -24,9 +26,9 @@ const Tile: React.FC<TileProps> = ({ number, image, highlight }) => {
     .join(' ');
 
   return (
-    <div className={className}>
-      {image && <div style={{ backgroundImage: `url(${image})` }} className="chess-piece"></div>}
-    </div>
+    <Box className={className}>
+      {image && <Box style={{ backgroundImage: `url(${image})` }} className="chess-piece"></Box>}
+    </Box>
   );
 };
 

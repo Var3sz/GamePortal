@@ -1,13 +1,15 @@
 import ChessBoard from './Chessboard';
 import { Piece } from '../../models/chess/Pieces';
 import { Position } from '../../models/chess/Position';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { BLACK_PROMOTION_ROW, DOWN, UP, WHITE_PROMOTION_ROW, defaultBoard } from '../../helpers/chess.helpers/chess.constants';
 import { PieceColor, PieceType } from '../../helpers/chess.helpers/chess.enums';
-import { Button, Container } from 'react-bootstrap';
+import { Container } from 'react-bootstrap';
 import { Pawn } from '../../models/chess/Pawn';
 import { Board } from '../../models/chess/Board';
 import ChessConnector from '../../connection/chess.connector';
+import PawnPromotionModal from './PawnPromotionModal';
+import CheckmateModal from './CheckMateModal';
 
 /**
  * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
@@ -21,8 +23,8 @@ interface RefereeProps {
 export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     const [board, setBoard] = useState<Board>(defaultBoard.clone());
     const [pawnToPromote, setPawnToPromote] = useState<Piece>();
-    const modalRef = useRef<HTMLDivElement>(null);
-    const checkMateModalRef = useRef<HTMLDivElement>(null);
+    const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
+    const [isCheckmateModalOpen, setIsCheckmateModalOpen] = useState(false);
     const { events, sendFEN } = ChessConnector();
 
     useEffect(() => {
@@ -38,9 +40,9 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
 
     useEffect(() => {
         if (board.winningColor !== undefined) {
-            checkMateModalRef.current?.classList.remove("hidden");
+            setIsCheckmateModalOpen(true);
         } else {
-            checkMateModalRef.current?.classList.add("hidden");
+            setIsCheckmateModalOpen(false);
         }
     }, [board.winningColor]);
 
@@ -84,7 +86,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
 
         let promotionRow = (movedPiece.color === PieceColor.WHITE) ? WHITE_PROMOTION_ROW : BLACK_PROMOTION_ROW;
         if (desiredPos.y === promotionRow && movedPiece.isPawn()) {
-            modalRef.current?.classList.remove("hidden");
+            setIsPromotionModalOpen(true);
             setPawnToPromote((prevPromotionPawn) => {
                 const clone = movedPiece.clone();
                 clone.position = desiredPos.clone();
@@ -129,7 +131,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
 
             return clone;
         });
-        modalRef.current?.classList.add("hidden");
+        setIsPromotionModalOpen(false);
     }
 
     function pawnPromotionColor() {
@@ -144,27 +146,20 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     }
 
     return (
-        <>
-            <Container className='chess-modal hidden' ref={modalRef}>
-                <Container className="modal-body">
-                    <img onClick={() => promotePawn(PieceType.ROOK)} src={`chess-pieces/${pawnPromotionColor()}_rook.png`} />
-                    <img onClick={() => promotePawn(PieceType.BISHOP)} src={`chess-pieces/${pawnPromotionColor()}_bishop.png`} />
-                    <img onClick={() => promotePawn(PieceType.KNIGHT)} src={`chess-pieces/${pawnPromotionColor()}_knight.png`} />
-                    <img onClick={() => promotePawn(PieceType.QUEEN)} src={`chess-pieces/${pawnPromotionColor()}_queen.png`} />
-                </Container>
-            </Container>
-            <Container className="chess-modal hidden" ref={checkMateModalRef}>
-                <Container className="modal-body">
-                    <Container className="checkmate-body">
-                        <span>The winner is {board.winningColor === PieceColor.WHITE ? "White" : "Black"}!</span>
-                        <Button onClick={restartGame}>Rematch</Button>
-                    </Container>
-                </Container>
-            </Container>
+        <Container>
+            <PawnPromotionModal
+                isOpen={isPromotionModalOpen}
+                promotePawn={promotePawn}
+                pawnPromotionColor={pawnPromotionColor}
+            />
+            <CheckmateModal
+                isOpen={isCheckmateModalOpen}
+                winningColor={board.winningColor}
+                restartGame={restartGame}
+            />
             <ChessBoard makeMove={makeMove} pieces={board.pieces} />
-        </>
+        </Container>
     )
 };
-
 
 export default Referee;

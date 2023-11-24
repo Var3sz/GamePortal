@@ -43,9 +43,10 @@ namespace GamePortal.Controllers
             if (credentials == null) { return BadRequest("Invalid client request"); }
 
             Player player = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
-            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
 
             if (player is null) { return Unauthorized(); }
+
+            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
 
             /* Admin role is 1 */
             if (roleIds.Contains(1))

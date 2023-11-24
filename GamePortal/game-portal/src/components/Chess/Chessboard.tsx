@@ -112,17 +112,15 @@ export const ChessBoard = ({ makeMove, pieces }: ChessBoardProps) => {
     }
 
     return (
-        <>
-            <Container
-                onMouseMove={e => movePiece(e)}
-                onMouseDown={e => grabPiece(e)}
-                onMouseUp={e => dropPiece(e)}
-                id="chessboard"
-                ref={chessboardRef}
-            >
-                {board}
-            </Container>
-        </>
+        <Container
+            onMouseMove={e => movePiece(e)}
+            onMouseDown={e => grabPiece(e)}
+            onMouseUp={e => dropPiece(e)}
+            id="chessboard"
+            ref={chessboardRef}
+        >
+            {board}
+        </Container>
     );
 }
 
