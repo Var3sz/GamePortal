@@ -9,6 +9,11 @@ import { Pawn } from '../../models/chess/Pawn';
 import { Board } from '../../models/chess/Board';
 import ChessConnector from '../../connection/chess.connector';
 
+/**
+ * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
+ * I was using this YouTube tutorial as a reference to create a basic chess game
+ */
+
 interface RefereeProps {
     isMultiplayer: boolean
 }

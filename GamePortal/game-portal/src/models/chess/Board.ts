@@ -4,6 +4,11 @@ import { Pawn } from "./Pawn";
 import { Piece } from "./Pieces";
 import { Position } from "./Position";
 
+/**
+ * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
+ * I was using this YouTube tutorial as a reference to create a basic chess game
+ */
+
 export class Board {
     pieces: Piece[];
     turns: number;

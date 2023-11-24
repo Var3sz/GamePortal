@@ -16,13 +16,11 @@ const useRefreshToken = () => {
                 withCredentials: true,
             },
         );
-        setAuth(prevState => {
-            console.log(JSON.stringify(prevState));
-            console.log(response.data.token);
-            return {
-                ...prevState, token: response.data.token, refresh: response.data.refreshToken
-            }
-        });
+        setAuth((prevState) => ({
+            ...prevState,
+            token: response.data.token,
+            refresh: response.data.refreshToken,
+        }));
         return response.data.token;
     }
     return refresh;

@@ -9,18 +9,18 @@ const useAxiosPrivate = () => {
 
     useEffect(() => {
         const requestIntercept = axiosPrivate.interceptors.request.use(
-            config => {
-                if(!config.headers['Authorization']) {
+            (config) => {
+                if (!config.headers['Authorization']) {
                     config.headers['Authorization'] = `Bearer ${auth?.token}`;
                 }
                 return config;
-            }, (error) => Promise.reject(error)
+            },
+            (error) => Promise.reject(error)
         );
 
-
         const responseIntercept = axiosPrivate.interceptors.response.use(
-            response => response,
-            async(error) => {
+            (response) => response,
+            async (error) => {
                 const prevRequest = error?.config;
                 if (error.response.status === 401 && !prevRequest.sent) {
                     prevRequest.sent = true;
@@ -31,15 +31,14 @@ const useAxiosPrivate = () => {
                 return Promise.reject(error);
             }
         );
-        
+
         return () => {
             axiosPrivate.interceptors.request.eject(requestIntercept);
             axiosPrivate.interceptors.response.eject(responseIntercept);
-        }
-
+        };
     }, [auth, refresh]);
 
     return axiosPrivate;
-}
+};
 
 export default useAxiosPrivate;

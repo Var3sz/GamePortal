@@ -6,6 +6,11 @@ import { ROWS, COLS, TILE_SIZE } from '../../helpers/chess.helpers/chess.constan
 import { Position } from '../../models/chess/Position';
 import { Piece } from '../../models/chess/Pieces';
 
+/**
+ * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
+ * I was using this YouTube tutorial as a reference to create a basic chess game
+ */
+
 interface ChessBoardProps {
     makeMove: (piece: Piece, desiredPos: Position) => boolean;
     pieces: Piece[]

@@ -1,9 +1,14 @@
+/**
+ * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
+ * I was using this YouTube tutorial as a reference to create a basic chess game
+ */
+
 interface TileProps {
-    image?: string;
-    number: number;
-    highlight: boolean;
-  }
-  
+  image?: string;
+  number: number;
+  highlight: boolean;
+}
+
 const Tile: React.FC<TileProps> = ({ number, image, highlight }) => {
   const classNames = {
     tile: true,
