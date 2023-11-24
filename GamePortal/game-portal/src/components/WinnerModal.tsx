@@ -1,18 +1,7 @@
 import React from "react";
 import {
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalCloseButton,
-  ModalBody,
-  ModalFooter,
-  Button,
-  Image,
-  Stack,
-  Text,
-  Flex,
-  HStack,
+  Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter,
+  Button, Image, Text, HStack,
 } from "@chakra-ui/react";
 import trophy from '../images/trophy.png';
 import { customColors } from "../theme/theme";
@@ -21,7 +10,7 @@ interface WinnerModalProps {
   isOpen: boolean;
   winnerName: string;
   onClose: () => void;
-  restart: () =>void;
+  restart: () => void;
 }
 
 const WinnerModal: React.FC<WinnerModalProps> = ({ isOpen, winnerName, onClose, restart }) => {
@@ -35,9 +24,7 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ isOpen, winnerName, onClose, 
             <Image src={trophy} alt="Trophy" boxSize="20px" />
           </HStack>
         </ModalHeader>
-        <ModalCloseButton
-          colorScheme="blue" // Change this to your desired color
-        />
+        <ModalCloseButton />
         <ModalBody>
           <Text fontSize="lg" mt={3}>
             Congratulations, <strong>{winnerName}</strong>!

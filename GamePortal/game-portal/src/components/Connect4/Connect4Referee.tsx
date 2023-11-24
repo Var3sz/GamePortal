@@ -1,7 +1,7 @@
 import '../../css-files/connect4.css'
 import { useState, useEffect } from 'react';
-import { Container, Row, Col } from "react-bootstrap";
 import { Piece, GameState } from "../../helpers/connect4.helpers/connect4.enums";
+import { Container, Box, Grid, GridItem } from '@chakra-ui/react';
 import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } from '../../helpers/connect4.helpers/connect4.functions';
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
 import WinnerModal from "../WinnerModal";
@@ -125,18 +125,32 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
   };
 
   return (
-    <Container className="Connect4">
-      <Row>
-        <Col lg={3} className="side-menu mt-3">
-          <Connect4Menu
-            renderGameStatus={renderGameStatus()}
-            currentPlayer={state.playerTurn === Piece.Yellow ? "Yellow" : "Red"}
-          />
-        </Col>
-        <Col lg={9} className="board-container mt-3">
-          <Container id="board"> {renderCells()} </Container>
-        </Col>
-      </Row>
+    <Container maxW="container.lg" >
+      <Grid templateColumns="repeat(12, 1fr)" gap={4}>
+        <GridItem colSpan={3} className="side-menu mt-3">
+          <Box boxShadow="base" p="4" rounded="md" mt="3">
+            <Connect4Menu
+              renderGameStatus={renderGameStatus()}
+              currentPlayer={state.playerTurn === Piece.Yellow ? 'Yellow' : 'Red'}
+            />
+          </Box>
+        </GridItem>
+        <GridItem colSpan={9} className="board-container mt-3">
+          <Box
+            id="board"
+            bg="var(--primary-color)"
+            borderRadius="lg"
+            width="700px"
+            margin="auto"
+            padding="16px"
+            display="grid"
+            gridTemplateColumns="repeat(7, 1fr)"
+            gridGap="8px"
+          >
+            {renderCells()}
+          </Box>
+        </GridItem>
+      </Grid>
 
       <WinnerModal
         isOpen={state.isModalOpen}
