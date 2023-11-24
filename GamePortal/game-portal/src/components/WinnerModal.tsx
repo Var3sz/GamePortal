@@ -1,38 +1,62 @@
 import React from "react";
-import { Modal, Button, Form, Image, Container } from "react-bootstrap";
+import {
+  Modal,
+  ModalOverlay,
+  ModalContent,
+  ModalHeader,
+  ModalCloseButton,
+  ModalBody,
+  ModalFooter,
+  Button,
+  Image,
+  Stack,
+  Text,
+  Flex,
+  HStack,
+} from "@chakra-ui/react";
 import trophy from '../images/trophy.png';
+import { customColors } from "../theme/theme";
 
 interface WinnerModalProps {
-  show: boolean
+  isOpen: boolean;
   winnerName: string;
   onClose: () => void;
+  restart: () =>void;
 }
 
-const WinnerModal: React.FunctionComponent<WinnerModalProps> = ({ show, winnerName, onClose }) => {
+const WinnerModal: React.FC<WinnerModalProps> = ({ isOpen, winnerName, onClose, restart }) => {
   return (
-    <Modal show={show} onHide={onClose} centered>
-      <Modal.Header closeButton id="winner-modal-header">
-        <Modal.Title>
-          <Container>
-            Winner
-            <Image id="trophy" src={trophy} alt="Trophy" />
-          </Container>
-        </Modal.Title>
-      </Modal.Header>
-      <Modal.Body id="winner-modal-body">
-        <Container>
-          <Form.Text>Congratulations, <strong>{winnerName}</strong>!</Form.Text>
-          <Form.Text className="mt-3">You are the winner.</Form.Text>
-        </Container>
-      </Modal.Body>
-      <Modal.Footer>
-        <Button variant="primary" onClick={onClose} id="restart-btn">
-          Restart
-        </Button>
-        <Button variant="danger" onClick={onClose}>
-          Close
-        </Button>
-      </Modal.Footer>
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+      <ModalOverlay />
+      <ModalContent borderRadius={'0px'}>
+        <ModalHeader backgroundColor={customColors.primary} mb={'0px'}>
+          <HStack gap={2}>
+            <Text mt={'10px'}>Winner</Text>
+            <Image src={trophy} alt="Trophy" boxSize="20px" />
+          </HStack>
+        </ModalHeader>
+        <ModalCloseButton
+          colorScheme="blue" // Change this to your desired color
+        />
+        <ModalBody>
+          <Text fontSize="lg" mt={3}>
+            Congratulations, <strong>{winnerName}</strong>!
+          </Text>
+          <Text fontSize="md" mt={3}>
+            You are the winner.
+          </Text>
+        </ModalBody>
+        <ModalFooter>
+          <HStack gap={3}>
+            <Button variant="modalButton" onClick={restart}>
+              Restart
+            </Button>
+            <Button colorScheme="red" onClick={onClose}>
+              Close
+            </Button>
+          </HStack>
+        </ModalFooter>
+      </ModalContent>
     </Modal>
   );
 };

@@ -9,6 +9,17 @@ export const customColors = {
 const customTheme = extendTheme({
     colors: customColors,
     components: {
+        Divider: {
+            variants: {
+                custom: {
+                    margin: '0 auto',
+                    borderWidth: '5px',
+                    borderStyle: 'solid',
+                    borderRadius: 50,
+                    borderColor: 'var(--chakra-colors-primary)',
+                }
+            }
+        },
         Button: {
             variants: {
                 gameButton: {

@@ -24,7 +24,6 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
 
   const { sendBoardState, events } = Connect4Connector();
 
-
   // Hook for opening WinnerModal
   useEffect(() => {
     if (state.gameState === GameState.PlayerOneWin || state.gameState === GameState.PlayerTwoWin) {
@@ -88,6 +87,15 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
     }));
   };
 
+  const restartGame = () => {
+    setState({
+      board: createBoard(),
+      playerTurn: Piece.Yellow,
+      gameState: GameState.InProgress,
+      isModalOpen: false,
+    });
+  };
+
   /* Rendering cells */
   const renderCells = () => state.board.map((player, index) => renderCell(player, index));
 
@@ -130,13 +138,12 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
         </Col>
       </Row>
 
-      {state.gameState === GameState.PlayerOneWin || state.gameState === GameState.PlayerTwoWin ? (
-        <WinnerModal
-          show={state.isModalOpen}
-          onClose={manageWinnerModal}
-          winnerName={state.gameState === GameState.PlayerOneWin ? 'Player One' : 'Player Two'}
-        />
-      ) : <></>}
+      <WinnerModal
+        isOpen={state.isModalOpen}
+        onClose={manageWinnerModal}
+        winnerName={state.gameState === GameState.PlayerOneWin ? 'Player One' : 'Player Two'}
+        restart={restartGame}
+      />
     </Container>
   );
 };

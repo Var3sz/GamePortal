@@ -1,5 +1,5 @@
 import { Row, Col } from "react-bootstrap";
-import { Container, Heading } from '@chakra-ui/react';
+import { Container, Heading, Divider, Box, AbsoluteCenter } from '@chakra-ui/react';
 import PlayerList from "../../components/Admin/PlayerList";
 import { useState, useEffect } from "react";
 import { Player } from "../../models/player.model";
@@ -53,19 +53,15 @@ export const ManagePlayers = () => {
   return (
     <>
       <Container className="px-0" maxW={"full"}>
-        <Container>
+        <Container className="mb-5">
           <Row className="justify-content-center">
-            <Col className="mt-5" align="center" lg={8} md={10} sm={12}>
+            <Col className="mt-5" align="center" lg={12} md={10} sm={12}>
               <Heading>Track and manage user information</Heading>
             </Col>
           </Row>
         </Container>
-        <Row className="justify-content-center my-4 mx-0">
-          <Col align="center">
-            <Container className="table-horizontal-line"></Container>
-          </Col>
-        </Row>
-        <Row className="justify-content-center mx-0">
+        <Divider variant={'custom'} width={'25%'} />
+        <Row className="justify-content-center mx-0 mt-5">
           <Col lg={8} md={10} sm={12} align="center">
             {players.length > 1 ?
               (<PlayerList

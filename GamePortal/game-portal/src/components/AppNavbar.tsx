@@ -13,7 +13,7 @@ import NavbarButton from './NavbarButton';
  *  Navbar UI example: https://chakra-templates.dev/navigation/navbar 
  */
 
-export default function AppNavbar() {
+export function AppNavbar() {
     const { auth, setAuth } = useAuth();
     const isAdmin = auth?.roles.includes(1);
     const navigate = useNavigate();
@@ -81,6 +81,8 @@ export default function AppNavbar() {
         </Box>
     )
 }
+
+export default AppNavbar;
 
 
 

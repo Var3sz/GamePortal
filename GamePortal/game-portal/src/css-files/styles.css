@@ -3,50 +3,6 @@
     --secondary-color: white;
 }
 
-/* Admin page */
-.table-horizontal-line{
-  border-top: 4px solid var(--primary-color);
-  width: 300px;
-}
-
-/* Winner modal */
-#winner-modal-header {
-  background-color: var(--primary-color);
-  color: white;
-}
-
-#trophy {
-  margin-left: 5px;
-  width: 25px;
-}
-
-#winner-modal-body{
-  color: #4B4B5C;
-  font-size: 20px;
-  font-weight: 450;
-}
-
-#restart-btn {
-  background-color: #769656 !important;
-  border-color: transparent !important;
-}
-
-/* Define the animation */
-.circle-drop {
-  animation: dropAnimation 0.5s linear forwards;
-}
-
-/* Keyframes for the animation */
-@keyframes dropAnimation {
-  0% {
-    transform: translateY(-100%);
-  }
-  100% {
-    transform: translateY(0);
-  }
-}
-
-
 /************************************************************ CHESS ***********************************************************/
 #chessboard {
   display: flex;
