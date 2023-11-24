@@ -2,9 +2,7 @@
 using GamePortal.Models;
 using GamePortal.Repository;
 using GamePortal.Service;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Numerics;
 
 namespace GamePortal.Controllers
 {
@@ -15,6 +13,7 @@ namespace GamePortal.Controllers
         private readonly GamePortalDbContext _gamePortalDbContext;
         private readonly ITokenService _tokenService;
         private readonly IPlayerRepository _playerRepository;
+        private readonly IRoleRepository _roleRepository;
         private readonly ILogger<TokenController> _logger;
 
 
@@ -22,16 +21,20 @@ namespace GamePortal.Controllers
                 GamePortalDbContext gamePortalDbContext,
                 ITokenService tokenService,
                 IPlayerRepository playerRepository,
+                IRoleRepository roleRepository,
                 ILogger<TokenController> logger
             ) 
         {
             _gamePortalDbContext = gamePortalDbContext;
             _tokenService = tokenService;
             _playerRepository = playerRepository;
+            _roleRepository = roleRepository;
             _logger = logger;
         }
 
-
+        /*
+         * Source: https://code-maze.com/using-refresh-tokens-in-asp-net-core-authentication/ 
+         */
         [HttpPost]
         [Route("refresh")]
         public IActionResult Refresh([FromBody] TokenDTO token)
@@ -57,26 +60,9 @@ namespace GamePortal.Controllers
 
             _playerRepository.UpdateRefreshToken(player.PlayerId, newRefreshToken, newExpiryTime);
 
+            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
 
-            /* TODO: Do something with this */
-            List<Role> roles = _gamePortalDbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == player.PlayerId)).ToList();
-            List<int> roleIds = roles.Select(r => r.RoleId).ToList();
-
-            return Ok(new AuthenticatedResponse { roleIds = roleIds, player = player, Token = newAccessToken, RefreshToken = newRefreshToken });
-        }
-
-        [HttpPost]
-        [Route("revoke")]
-        public IActionResult Revoke()
-        {
-            var userName = User.Identity!.Name;
-            var user = _playerRepository.GetPlayerByUsername(userName!);
-            if (user is null) { return BadRequest(); }
-
-            user.RefreshToken = null;
-            _gamePortalDbContext.SaveChanges();
-
-            return NoContent();
+            return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = newAccessToken, RefreshToken = newRefreshToken });
         }
     }
 }

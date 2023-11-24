@@ -3,6 +3,11 @@ import useAuth from "./useAuth";
 import useRefreshToken from "./useRefreshToken";
 import { axiosPrivate } from "../api/axios";
 
+/**
+ * Source: https://www.youtube.com/playlist?list=PL0Zuz27SZ-6PRCpm9clX0WiBEMB70FWwd
+ * I used some of the hooks from this video
+ */
+
 const useAxiosPrivate = () => {
     const refresh = useRefreshToken();
     const { auth } = useAuth();

@@ -1,5 +1,6 @@
 ﻿namespace GamePortal.Models
 {
+    /* Role model representing Role table */
     public partial class Role
     {
         public int RoleId { get; set; }

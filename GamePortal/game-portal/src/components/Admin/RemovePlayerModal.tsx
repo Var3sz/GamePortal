@@ -6,7 +6,7 @@ import {
 } from "@chakra-ui/react";
 import { Player } from "../../models/player.model";
 import { customColors } from "../../theme/theme";
-import axios from "../../api/axios";
+import useAxiosPrivate from "../../auth/useAxiosPrivate";
 
 /**
  * 2022-23 Őszi félév
@@ -27,15 +27,16 @@ const RemovePlayerModal: React.FunctionComponent<IRemovePlayerModalProps> = ({
   playerChangedListener,
 }) => {
 
+  const axiosPrivate = useAxiosPrivate();
+
   function formatBirthdateString(birthdateString: string) {
     return birthdateString.split('T')[0];
   }
 
   const removePlayer = async () => {
     try {
-      const response = await axios.post("/api/players", JSON.stringify(player), {
-        headers: { "Content-Type": "application/json" },
-        withCredentials: true
+      const response = await axiosPrivate.delete("/api/players", {
+        data: player
       });
 
       if (response.status === 200) {

@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using Microsoft.Extensions.Configuration;
+using Microsoft.IdentityModel.Tokens;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
@@ -6,11 +7,19 @@ using System.Text;
 
 namespace GamePortal.Service
 {
+    /* 
+     * Source: https://code-maze.com/using-refresh-tokens-in-asp-net-core-authentication/
+     */
     public class TokenService : ITokenService
     {
+        private readonly IConfiguration _configuration;
+        public TokenService(IConfiguration configuration)
+        {
+            _configuration = configuration;
+        }
         public string GenerateToken(IEnumerable<Claim> claims)
         {
-            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345"));
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JwtSettings").GetValue<string>("SecretKey")!));
             var signingCredentials = new SigningCredentials(secretKey, SecurityAlgorithms.HmacSha256);
             var tokenOptions = new JwtSecurityToken(
                 issuer: "http://localhost:5086",
@@ -37,13 +46,14 @@ namespace GamePortal.Service
 
         public ClaimsPrincipal GetPrincipalFromExpiredToken(string token)
         {
+            var secretKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration.GetSection("JwtSettings").GetValue<string>("SecretKey")!));
             var tokenValidationParameters = new TokenValidationParameters
             {
-                ValidateAudience = false, //you might want to validate the audience and issuer depending on your use case
+                ValidateAudience = false,
                 ValidateIssuer = false,
                 ValidateIssuerSigningKey = true,
-                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345")),
-                ValidateLifetime = false //here we are saying that we don't care about the token's expiration date
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secretKey.ToString())),
+                ValidateLifetime = false
             };
             var tokenHandler = new JwtSecurityTokenHandler();
             SecurityToken securityToken;

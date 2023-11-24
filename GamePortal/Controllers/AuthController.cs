@@ -16,15 +16,19 @@ namespace GamePortal.Controllers
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly ILogger<AuthController> _logger;
+        private readonly GamePortalDbContext _gamePortalDbContext;
         private readonly IPlayerRepository _playerRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ITokenService _tokenService;
+        private readonly ILogger<AuthController> _logger;
 
-        /* Do it more efficiently */
-        private readonly GamePortalDbContext _gamePortalDbContext;
 
-        public AuthController(IPlayerRepository playerRepository, IRoleRepository roleRepository,GamePortalDbContext gamePortalDbContext, ITokenService tokenService, ILogger<AuthController> logger)
+        public AuthController(IPlayerRepository playerRepository, 
+            IRoleRepository roleRepository,
+            GamePortalDbContext gamePortalDbContext, 
+            ITokenService tokenService, 
+            ILogger<AuthController> logger
+        )
         {
             _playerRepository = playerRepository;
             _roleRepository = roleRepository;
@@ -36,14 +40,15 @@ namespace GamePortal.Controllers
         [HttpPost("login")]
         public IActionResult Login([FromBody] LoginDTO credentials)
         {
-            /* Amennyiben üres a body, akkor BadRequest, egyébként ilyen nem lehet, mert van kliensoldali validáció, ez csak biztonság kedvéért */
             if (credentials == null) { return BadRequest("Invalid client request"); }
 
             Player player = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
+            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
 
             if (player is null) { return Unauthorized(); }
 
-            if (player.UserName == "admin" && player.Password == "admin")
+            /* Admin role is 1 */
+            if (roleIds.Contains(1))
             {
                 var claims = new List<Claim>
                 {
@@ -57,11 +62,7 @@ namespace GamePortal.Controllers
 
                 _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
-                /* TODO: Do something with this */
-                List<Role> roles = _gamePortalDbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == player.PlayerId)).ToList();
-                List<int> roleIds = roles.Select(r => r.RoleId).ToList();
-
-                return Ok(new AuthenticatedResponse { roleIds = roleIds, player = player, Token = accessToken, RefreshToken = refreshToken });
+                return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = accessToken, RefreshToken = refreshToken });
             }
             else
             {
@@ -77,11 +78,7 @@ namespace GamePortal.Controllers
 
                 _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
-                /* TODO: Do something with this */
-                List<Role> roles = _gamePortalDbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == player.PlayerId)).ToList();
-                List<int> roleIds = roles.Select(r => r.RoleId).ToList();
-
-                return Ok(new AuthenticatedResponse { roleIds = roleIds, player = player, Token = accessToken, RefreshToken = refreshToken });
+                return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = accessToken, RefreshToken = refreshToken });
             }
         }
 
@@ -89,14 +86,11 @@ namespace GamePortal.Controllers
         [HttpPost("registration")]
         public IActionResult Registration([FromBody] RegisterDTO credentials)
         {
-            /* Amennyiben üres a body, akkor BadRequest, egyébként ilyen nem lehet, mert van kliensoldali validáció, ez csak biztonság kedvéért */
             if (credentials == null) { return BadRequest("Invalid client request"); }
 
-            /* Query, hogy van-e ilyen felhasználó, ha igen, Conflict */
             var existingUser = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
             if (existingUser is not null) { return Conflict(); }
             
-            /* Csinálunk új Player-t */
             Player player = new Player
             {
                 FullName = credentials.FullName!,
@@ -106,13 +100,9 @@ namespace GamePortal.Controllers
                 Birthdate = credentials.Birthdate!
             };
 
-            /* Elkérjük a sima Playerhez tartozó Role-t, mindig fixen Player */
             Role role = _roleRepository.GetRoleByName("player");
 
-            /* Hozzáadjuk a Role-okhoz a kapott role-t, ezzel együtt a kapcsolat is létrejön */
             player.Roles.Add(role);
-
-            /* Majd hozzáadjuk a player táblához az új játékost */
 
             var claims = new List<Claim> {
                 new Claim(ClaimTypes.Name, player.UserName),
@@ -128,12 +118,9 @@ namespace GamePortal.Controllers
 
             _playerRepository.InsertPlayer(player);
 
-            /* TODO: Do something with this */
-            List<Role> roles = _gamePortalDbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == player.PlayerId)).ToList();
-            List<int> roleIds = roles.Select(r => r.RoleId).ToList();
+            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
 
-            /* Visszatérünk egy custom response-al, ami tartalmazza a rolet, a playert, a tokent */
-            return Ok(new AuthenticatedResponse { roleIds = roleIds, player = player, Token = accessToken, RefreshToken = refreshToken });
+            return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = accessToken, RefreshToken = refreshToken });
         }
     }
 }

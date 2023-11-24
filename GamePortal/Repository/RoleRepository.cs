@@ -10,20 +10,24 @@ namespace GamePortal.Repository
         {
             _dbContext = dbContext;
         }
-
-        public Role GetRoleById(int id)
-        {
-            return _dbContext.Roles.SingleOrDefault(q => q.RoleId == id)!;
-        }
-
-        public Role GetRoleByName(string role)
-        {
-            return _dbContext.Roles.SingleOrDefault(q => q.Name == role)!;
-        }
-
         public List<Role> GetRoles()
         {
             return _dbContext.Roles.ToList();
         }
+        public Role GetRoleById(int id)
+        {
+            return _dbContext.Roles.SingleOrDefault(q => q.RoleId == id)!;
+        }
+        public Role GetRoleByName(string role)
+        {
+            return _dbContext.Roles.SingleOrDefault(q => q.Name == role)!;
+        }
+        public List<int> GetRoleIdsByPlayerId(int playerId)
+        {
+            var roles = _dbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == playerId)).ToList();
+            return roles.Select(r => r.RoleId).ToList();
+        }
+
+
     }
 }

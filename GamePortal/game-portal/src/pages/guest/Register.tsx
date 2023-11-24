@@ -9,8 +9,9 @@ import { useForm, SubmitHandler } from 'react-hook-form';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { PasswordStrengthBar } from '../../components/PasswordStrengthBar';
 import axios from "../../api/axios";
+import { REGISTER_URL } from '../../api/axios';
 import useAuth from "../../auth/useAuth";
-import { REGISTER_URL, PASSWORD_REGEX, EMAIL_REGEX } from "../../helpers/auth.helper";
+import { PASSWORD_REGEX, EMAIL_REGEX } from "../../helpers/auth.helper";
 
 interface RegistrationForm {
   fullName: string;

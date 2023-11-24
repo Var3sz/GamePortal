@@ -10,13 +10,12 @@ import {
 } from '@chakra-ui/react';
 import useAuth from '../../auth/useAuth';
 import axios from '../../api/axios';
+import { LOGIN_URL } from '../../api/axios';
 
 interface LoginForm {
   userName: string;
   password: string;
 }
-
-const LOGIN_URL = '/api/auth/login';
 
 export const Login: React.FC = () => {
   const { setAuth } = useAuth();

@@ -3,7 +3,6 @@ using GamePortal.MultiHub;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 // Add different services through own extension class
 builder.Services.AddApplicationExtension(builder.Configuration);
 

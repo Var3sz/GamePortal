@@ -32,7 +32,7 @@ const PlayerList: React.FunctionComponent<IPlayerListProps> = ({
         </Thead>
         <Tbody>
           {players
-            .filter(player => player.userName !== 'admin')
+            .filter(player => !player.roles.some((role: any) => role.name === 'admin'))
             .map(player => (
               <PlayerListRow
                 player={player}

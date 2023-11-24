@@ -30,8 +30,8 @@ namespace GamePortal.Controllers
         }
 
 
-        [HttpPost]
-        public void RemovePlayer(Player player)
+        [HttpDelete, Authorize(Roles = "admin")]
+        public void RemovePlayer([FromBody] Player player)
         {
             _savedGamesRepository.RemoveSavedGames(player.PlayerId);
             _playerRepository.RemovePlayer(player);

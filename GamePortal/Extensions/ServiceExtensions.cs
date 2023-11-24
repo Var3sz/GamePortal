@@ -1,4 +1,5 @@
-﻿using GamePortal.Models;
+﻿using GamePortal.Controllers;
+using GamePortal.Models;
 using GamePortal.Repository;
 using GamePortal.Service;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -9,6 +10,7 @@ using System.Text.Json.Serialization;
 
 namespace GamePortal.Extensions
 {
+    /* Class for adding different kind of services */
     public static class ServiceExtensions
     {
         public static IServiceCollection AddApplicationExtension(this IServiceCollection services, IConfiguration configuration) 
@@ -17,6 +19,7 @@ namespace GamePortal.Extensions
             services.AddSignalR();
 
             // Add JWT config to container
+            // Source: https://code-maze.com/authentication-aspnetcore-jwt-1/
             services.AddAuthentication(options =>
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -31,13 +34,14 @@ namespace GamePortal.Extensions
                     ValidateIssuerSigningKey = true,
                     ValidIssuer = "http://localhost:5086",
                     ValidAudience = "http://localhost:5086",
-                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes("superSecretKey@345")),
+                    IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration.GetSection("JwtSettings").GetValue<string>("SecretKey")!))
                 };
             });
 
             // Add Controllers to container
             services.AddControllers().AddJsonOptions(options =>
             {
+                // Ignoring the cycles is JSON, which appears by the connections
                 options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
             });
 
@@ -71,6 +75,5 @@ namespace GamePortal.Extensions
 
             return services;
         }
-
     }
 }

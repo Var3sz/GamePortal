@@ -14,7 +14,7 @@ namespace GamePortal.Repository
 
         public List<Player> GetPlayers()
         {
-            return _dbContext.Players.ToList();
+            return _dbContext.Players.Include(p => p.Roles).ToList();
         }
 
         public Player GetPlayerById(int playerId)
@@ -41,9 +41,22 @@ namespace GamePortal.Repository
 
         public void RemovePlayer(Player player)
         {
-            _dbContext.Players.Remove(player);
-            _dbContext.SaveChanges();
+            var playerToRemove = _dbContext.Players
+                .Include(p => p.Roles)
+                .FirstOrDefault(p => p.PlayerId == player.PlayerId);
+
+            if (playerToRemove != null)
+            {
+                if (playerToRemove.Roles != null)
+                {
+                    playerToRemove.Roles.Clear();
+                }
+
+                _dbContext.Players.Remove(playerToRemove);
+                _dbContext.SaveChanges();
+            }
         }
+
         public void UpdateRefreshToken(int playerId, string refreshToken, DateTime tokenExpiryTime)
         {
             var player = _dbContext.Players.Single(q => q.PlayerId == playerId);

@@ -2,6 +2,8 @@
 
 namespace GamePortal.Models
 {
+    /* Plazer model representing Player table */
+
     public partial class Player
     {
         public Player()

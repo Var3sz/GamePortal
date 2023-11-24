@@ -18,7 +18,7 @@ import customTheme from './theme/theme';
 
 const ROLES = {
   'Admin': 1,
-  'Player': 2
+  'Player': 2002
 }
 
 function App() {
