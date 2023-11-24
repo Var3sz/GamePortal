@@ -1,11 +1,17 @@
-import { Row, Col, Container, FormText, Button } from "react-bootstrap";
+import { Row, Col } from "react-bootstrap";
+import { Container, Heading } from '@chakra-ui/react';
 import PlayerList from "../../components/Admin/PlayerList";
 import { useState, useEffect } from "react";
 import { Player } from "../../models/player.model";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
 
-export const ManagePlayers = ({ message }: any) => {
+/**
+ * 2022-23 Őszi félév
+ * Témalaborból merítve
+ */
+
+export const ManagePlayers = () => {
   const [players, setPlayers] = useState<Player[]>([]);
   const [playerChanged, setPlayerChanged] = useState(false);
 
@@ -46,12 +52,11 @@ export const ManagePlayers = ({ message }: any) => {
 
   return (
     <>
-      <Container className="px-0" fluid>
-        <Container fluid>
+      <Container className="px-0" maxW={"full"}>
+        <Container>
           <Row className="justify-content-center">
-            <Col className="mt-5" align="start" lg={8} md={10} sm={12}>
-              <p className="h1">Manage Users</p>
-              <p className="h3">Track and manage user information</p>
+            <Col className="mt-5" align="center" lg={8} md={10} sm={12}>
+              <Heading>Track and manage user information</Heading>
             </Col>
           </Row>
         </Container>
@@ -62,12 +67,13 @@ export const ManagePlayers = ({ message }: any) => {
         </Row>
         <Row className="justify-content-center mx-0">
           <Col lg={8} md={10} sm={12} align="center">
-            {players.length > 1 ? (<PlayerList
-              players={players}
-              playerChangedListener={playerChangedListener}
-            ></PlayerList>) : (
-              <FormText className="h2"> No users to display </FormText>
-            )}
+            {players.length > 1 ?
+              (<PlayerList
+                players={players}
+                playerChangedListener={playerChangedListener}
+              ></PlayerList>) : (
+                <Heading className="h2"> No users to display </Heading>
+              )}
           </Col>
         </Row>
       </Container>

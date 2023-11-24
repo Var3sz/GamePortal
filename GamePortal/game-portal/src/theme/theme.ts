@@ -33,7 +33,19 @@ const customTheme = extendTheme({
                     width: "100%"
                 },
                 unauthorizedButton: {
-                    mt:'10px',
+                    mt: '10px',
+                    fontSize: "15px",
+                    fontWeight: "bold",
+                    backgroundColor: "var(--chakra-colors-primary)",
+                    textAlign: 'center',
+                    borderColor: "transparent",
+                    color: "var(--chakra-colors-secondary)",
+                    _hover: {
+                        backgroundColor: '#5d7d4f'
+                    },
+                    width: "50%"
+                },
+                modalButton: {
                     fontSize: "15px",
                     fontWeight: "bold",
                     backgroundColor: "var(--chakra-colors-primary)",

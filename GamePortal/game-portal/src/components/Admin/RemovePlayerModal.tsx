@@ -1,7 +1,17 @@
 import * as React from "react";
-import { useContext } from "react";
-import { Modal, Button, Form, Row, Col, FormText } from "react-bootstrap";
+import {
+  Button, Modal, ModalOverlay, ModalContent, ModalHeader,
+  ModalCloseButton, ModalBody, ModalFooter, Text, HStack,
+  Flex, Box
+} from "@chakra-ui/react";
 import { Player } from "../../models/player.model";
+import { customColors } from "../../theme/theme";
+import axios from "../../api/axios";
+
+/**
+ * 2022-23 Őszi félév
+ * Témalaborból merítve, átdolgozva
+ */
 
 interface IRemovePlayerModalProps {
   show: boolean;
@@ -21,75 +31,68 @@ const RemovePlayerModal: React.FunctionComponent<IRemovePlayerModalProps> = ({
     return birthdateString.split('T')[0];
   }
 
-  async function removePlayer() {
-    await fetch("http://localhost:5086/api/players", {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(player),
-    }).then((response) => {
+  const removePlayer = async () => {
+    try {
+      const response = await axios.post("/api/players", JSON.stringify(player), {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true
+      });
+
       if (response.status === 200) {
         console.log("Player removed successfully");
-      } else {
-        console.log("Error");
       }
-    });
-  };
+    } catch (error: any) {
+      console.error("Player has not been removed!");
+    }
+  }
 
   return (
-    <>
-      <Modal show={show} onHide={close} centered>
-        <Modal.Header closeButton id="remove-player-header">
-          <Modal.Title>Remove user</Modal.Title>
-        </Modal.Header>
-        <Modal.Body id="player-modal-body">
-          <Row>
-            <Col>
-              <FormText className="mb-3" id="player-modal-attribute">
-                <strong>Full Name: </strong> {player.fullName}
-              </FormText>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormText className="mb-3" id="player-modal-attribute">
-                <strong>Username: </strong> {player.userName}
-              </FormText>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormText className="mb-3" id="player-modal-attribute">
-                <strong>Email: </strong> {player.email}
-              </FormText>
-            </Col>
-          </Row>
-          <Row>
-            <Col>
-              <FormText id="player-modal-attribute">
-                <strong>Date of birth: </strong> {formatBirthdateString(player.birthdate)}
-              </FormText>
-            </Col>
-          </Row>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button
-            id="remove-btn"
-            variant="primary"
-            onClick={async () => {
-              await removePlayer();
-              playerChangedListener();
-              close(true);
-            }}
-          >
-            Remove
-          </Button>
-          <Button variant="danger" onClick={close}>
-            Close
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+    <Modal isOpen={show} onClose={close} size="lg" isCentered>
+      <ModalOverlay />
+      <ModalContent borderRadius={'0px'}>
+        <ModalHeader color={customColors.secondary} backgroundColor={customColors.primary}>Remove user</ModalHeader>
+        <ModalCloseButton border={"transparent"} backgroundColor={"transparent"} />
+        <ModalBody>
+          <Flex direction="column">
+            <Box fontSize={'20px'}>
+              <Text as="b" display="inline-block" marginRight="2">Fullname: </Text>
+              <Text display="inline-block">{player.fullName}</Text>
+            </Box>
+            <Box fontSize={'20px'}>
+              <Text as="b" display="inline-block" marginRight="2">Username: </Text>
+              <Text display="inline-block">{player.userName}</Text>
+            </Box>
+            <Box fontSize={'20px'}>
+              <Text as="b" display="inline-block" marginRight="2">Email: </Text>
+              <Text display="inline-block">{player.email}</Text>
+            </Box>
+            <Box fontSize={'20px'}>
+              <Text as="b" display="inline-block" marginRight="2">Date of birth: </Text>
+              <Text display="inline-block">{formatBirthdateString(player.birthdate)}</Text>
+            </Box>
+          </Flex>
+        </ModalBody>
+        <ModalFooter>
+          <HStack gap={4}>
+            <Button
+              variant="modalButton"
+              onClick={async () => {
+                await removePlayer();
+                playerChangedListener();
+                close(true);
+              }}
+            >
+              Remove
+            </Button>
+            <Button colorScheme="red" onClick={close}>
+              Close
+            </Button>
+          </HStack>
+        </ModalFooter>
+      </ModalContent>
+    </Modal >
   );
 };
+
 
 export default RemovePlayerModal;

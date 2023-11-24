@@ -1,8 +1,13 @@
 import * as React from "react";
-import { useContext } from "react";
-import { Table } from "react-bootstrap";
+import { TableContainer, Table, Thead, Tbody, Tr, Th } from '@chakra-ui/react';
 import { Player } from "../../models/player.model";
 import PlayerListRow from "./PlayerListRow";
+import { customColors } from "../../theme/theme";
+
+/**
+ * 2022-23 Őszi félév
+ * Témalaborból merítve, átdolgozva
+ */
 
 interface IPlayerListProps {
   players: Player[];
@@ -15,17 +20,17 @@ const PlayerList: React.FunctionComponent<IPlayerListProps> = ({
 }) => {
 
   return (
-    <>
-      <Table striped bordered hover>
-        <thead className="table-header-row">
-          <tr>
-            <th style={{ width: "12%" }}>Username</th>
-            <th style={{ width: "15%" }}>Full Name</th>
-            <th style={{ width: "20%" }}>Email</th>
-            <th style={{ width: "15%" }}>Birth</th>
-          </tr>
-        </thead>
-        <tbody>
+    <TableContainer>
+      <Table variant={'striped'} size="lg">
+        <Thead color={customColors.secondary} backgroundColor={customColors.primary}>
+          <Tr>
+            <Th width={'12%'} color={customColors.secondary}>Username</Th>
+            <Th width={"15%"} color={customColors.secondary}>Fullname</Th>
+            <Th width={"20%"} color={customColors.secondary}>Email</Th>
+            <Th width={"15%"} color={customColors.secondary}>Birth</Th>
+          </Tr>
+        </Thead>
+        <Tbody>
           {players
             .filter(player => player.userName !== 'admin')
             .map(player => (
@@ -35,9 +40,9 @@ const PlayerList: React.FunctionComponent<IPlayerListProps> = ({
                 key={player.playerId}
               ></PlayerListRow>
             ))}
-        </tbody>
+        </Tbody>
       </Table>
-    </>
+    </TableContainer>
   );
 };
 

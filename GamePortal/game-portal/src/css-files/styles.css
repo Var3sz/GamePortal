@@ -3,82 +3,11 @@
     --secondary-color: white;
 }
 
-/* Password strength bar */ 
-.pwd-checker-bar {
-  background-color: rgb(223, 223, 223) !important;
-}
-
-.pwd-checker-bar.strength-.progress .progress-bar {
-  background-color: #e20b07; 
-  border-radius: 3px !important;
-}
-
-.pwd-checker-bar.strength-.progress .progress-bar::after {
-  background-color: transparent !important; 
-  border-radius: 3px !important;
-}
-
-.pwd-checker-bar.strength-unacceptable.progress .progress-bar {
-  background-color: #e20b07; 
-  border-radius: 3px !important;
-}
-
-.pwd-checker-bar.strength-weak.progress .progress-bar {
-  background-color: #ff7a00;
-  border-radius: 3px !important;
-
-}
-
-.pwd-checker-bar.strength-average.progress .progress-bar {
-  background-color: #ebbd04; 
-  border-radius: 3px !important;
-}
-
-.pwd-checker-bar.strength-good.progress .progress-bar {
-  background-color: #6ec291; 
-  border-radius: 3px !important;
-
-}
-
-.pwd-checker-bar.strength-strong.progress .progress-bar {
-  background-color: #1d7c2e; 
-  border-radius: 3px !important;
-}
-
 /* Admin page */
-
 .table-horizontal-line{
   border-top: 4px solid var(--primary-color);
   width: 300px;
 }
-
-.table-header-row{
-  color: white;
-  background-color:  var(--primary-color);
-}
-
-/* Remove player modal */
-
-#remove-player-header {
-    background-color: var(--primary-color);
-    color: white;
-}
-
-#player-modal-attribute{
-    font-size: 20px !important;
-}
-
-#player-modal-body{
-    color: #4B4B5C;
-    font-size: 17px;
-    font-weight: 450;
-}
-
-#remove-btn {
-  background-color: #769656 !important;
-  border-color: transparent !important;
-}
-
 
 /* Winner modal */
 #winner-modal-header {

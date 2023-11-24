@@ -1,14 +1,18 @@
 import * as React from "react";
+import { Tr, Td } from '@chakra-ui/react';
 import { Player } from "../../models/player.model";
-import { useContext, useState } from "react";
+import { useState } from "react";
 import RemovePlayerModal from "./RemovePlayerModal";
 
+/**
+ * 2022-23 Őszi félév
+ * Témalaborból merítve, átdolgozva
+ */
 
 interface IPlayerListRowProps {
   player: Player;
   playerChangedListener: () => void;
 }
-
 
 function formatBirthdateString(birthdateString: string) {
   return birthdateString.split('T')[0];
@@ -22,19 +26,18 @@ const PlayerListRow: React.FunctionComponent<IPlayerListRowProps> = ({
 
   return (
     <>
-      <tr>
+      <Tr>
         <RemovePlayerModal
           show={showRemovePlayer}
           close={() => setShowRemovePlayer(false)}
           player={player}
           playerChangedListener={playerChangedListener}
         />
-        <></>
-        <td onClick={() => setShowRemovePlayer(true)}>{player.userName}</td>
-        <td onClick={() => setShowRemovePlayer(true)}>{player.fullName}</td>
-        <td onClick={() => setShowRemovePlayer(true)}>{player.email}</td>
-        <td onClick={() => setShowRemovePlayer(true)}>{formatBirthdateString(player.birthdate)}</td>
-      </tr>
+        <Td onClick={() => setShowRemovePlayer(true)}>{player.userName}</Td>
+        <Td onClick={() => setShowRemovePlayer(true)}>{player.fullName}</Td>
+        <Td onClick={() => setShowRemovePlayer(true)}>{player.email}</Td>
+        <Td onClick={() => setShowRemovePlayer(true)}>{formatBirthdateString(player.birthdate)}</Td>
+      </Tr>
     </>
   );
 };
