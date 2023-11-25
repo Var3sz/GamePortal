@@ -80,10 +80,10 @@ export const Register = () => {
           withCredentials: true
         });
       const token = response.data.token;
-      const roles = response.data.roleIds;
+      const player = response.data.player;
       const refresh = response.data.refreshToken;
-      setAuth({ roles, token, refresh });
-      sessionStorage.setItem("roles", JSON.stringify(roles));
+      setAuth({ player, token, refresh });
+      sessionStorage.setItem("player", JSON.stringify(player));
       sessionStorage.setItem("accessToken", token);
       sessionStorage.setItem("refreshToken", refresh);
       navigate(from, { replace: true });

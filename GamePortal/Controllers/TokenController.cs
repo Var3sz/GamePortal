@@ -60,9 +60,8 @@ namespace GamePortal.Controllers
 
             _playerRepository.UpdateRefreshToken(player.PlayerId, newRefreshToken, newExpiryTime);
 
-            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
 
-            return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = newAccessToken, RefreshToken = newRefreshToken });
+            return Ok(new AuthenticatedResponse { player = player, Token = newAccessToken, RefreshToken = newRefreshToken });
         }
     }
 }

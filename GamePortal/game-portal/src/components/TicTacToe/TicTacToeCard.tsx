@@ -1,5 +1,5 @@
 import tictactoe from "../../images/tictactoe.png"
-import GameCard from "../GameCard";
+import GameCard from "../Game/GameCard";
 import useAuth from "../../auth/useAuth";
 
 export const TicTacToeCard = () => {
@@ -11,7 +11,7 @@ export const TicTacToeCard = () => {
     const offlineLink = "/tictactoe"
     const onlineLink = "/tictactoe"
     const isPlayable = false;
-    const isAuthorized = auth.roles.includes(1) ? false : true
+    const isAuthorized = auth.player.roles.some((role: any) => role.roleId === 1);
 
     return (
         <GameCard

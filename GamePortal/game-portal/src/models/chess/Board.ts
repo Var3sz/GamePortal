@@ -6,7 +6,7 @@ import { Position } from "./Position";
 
 /**
  * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
- * I was using this YouTube tutorial as a reference to create a basic chess game
+ * I was using this YouTube tutorial as a reference to create the logic of the chess game
  */
 
 export class Board {
@@ -217,7 +217,7 @@ export class Board {
         }
 
         for (const king of this.pieces.filter((p) => p.isKing())) {
-            if (king.availableMoves === undefined) continue;
+            if (!king.availableMoves) continue;
 
             king.availableMoves = [...king.availableMoves, ...this.getCastlingMoves(king, this.pieces)];
         }
@@ -228,7 +228,7 @@ export class Board {
             piece.availableMoves = [];
         }
 
-        if (this.pieces.filter((p) => p.color === this.getCurrentColor()).some((p) => p.availableMoves !== undefined && p.availableMoves.length > 0)) {
+        if (this.pieces.filter((p) => p.color === this.getCurrentColor()).some((p) => p.availableMoves && p.availableMoves.length > 0)) {
             return;
         }
 
@@ -246,7 +246,7 @@ export class Board {
 
     checkCurrentcolorMoves() {
         for (const piece of this.pieces.filter((p) => p.color === this.getCurrentColor())) {
-            if (piece.availableMoves === undefined) continue;
+            if (!piece.availableMoves) continue;
 
             for (const move of piece.availableMoves) {
                 const simulatedBoard = this.clone();
@@ -280,8 +280,6 @@ export class Board {
         const pawnDirection = movedPiece.color === PieceColor.WHITE ? UP : DOWN;
 
         const desiredPosPiece = this.pieces.find((p) => p.samePosition(desiredPos));
-
-        // If the move is a castling move do this
 
         if (movedPiece.isKing() && desiredPosPiece?.isRook && desiredPosPiece.color === movedPiece.color) {
             const direction = (desiredPosPiece.position.x - movedPiece.position.x > 0) ? RIGHT : LEFT;
@@ -394,7 +392,7 @@ export class Board {
             let letid = true;
 
             for (const opponent of enemyPieces) {
-                if (opponent.availableMoves === undefined) continue;
+                if (!opponent.availableMoves) continue;
 
                 for (const move of opponent.availableMoves) {
                     if (tilesBetween.some(t => t.samePosition(move))) {

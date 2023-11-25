@@ -7,6 +7,5 @@ namespace GamePortal.Repository
         List<Role> GetRoles();
         Role GetRoleByName(string role);
         Role GetRoleById(int id);
-        List<int> GetRoleIdsByPlayerId(int playerId);
     }
 }

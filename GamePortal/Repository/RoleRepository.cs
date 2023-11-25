@@ -22,12 +22,5 @@ namespace GamePortal.Repository
         {
             return _dbContext.Roles.SingleOrDefault(q => q.Name == role)!;
         }
-        public List<int> GetRoleIdsByPlayerId(int playerId)
-        {
-            var roles = _dbContext.Roles.Where(r => r.Players.Any(p => p.PlayerId == playerId)).ToList();
-            return roles.Select(r => r.RoleId).ToList();
-        }
-
-
     }
 }

@@ -46,10 +46,7 @@ namespace GamePortal.Controllers
 
             if (player is null) { return Unauthorized(); }
 
-            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
-
-            /* Admin role is 1 */
-            if (roleIds.Contains(1))
+            if (player.Roles.Select(r => r.Name).ToList().Contains("admin"))
             {
                 var claims = new List<Claim>
                 {
@@ -63,7 +60,7 @@ namespace GamePortal.Controllers
 
                 _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
-                return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = accessToken, RefreshToken = refreshToken });
+                return Ok(new AuthenticatedResponse { player = player, Token = accessToken, RefreshToken = refreshToken });
             }
             else
             {
@@ -79,7 +76,7 @@ namespace GamePortal.Controllers
 
                 _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
-                return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = accessToken, RefreshToken = refreshToken });
+                return Ok(new AuthenticatedResponse { player = player, Token = accessToken, RefreshToken = refreshToken });
             }
         }
 
@@ -119,9 +116,8 @@ namespace GamePortal.Controllers
 
             _playerRepository.InsertPlayer(player);
 
-            var roleIds = _roleRepository.GetRoleIdsByPlayerId(player.PlayerId);
 
-            return Ok(new AuthenticatedResponse { roleIds = roleIds, Token = accessToken, RefreshToken = refreshToken });
+            return Ok(new AuthenticatedResponse { player = player,  Token = accessToken, RefreshToken = refreshToken });
         }
     }
 }

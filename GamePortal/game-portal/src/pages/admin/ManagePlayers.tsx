@@ -1,10 +1,12 @@
 import { Row, Col } from "react-bootstrap";
-import { Container, Heading, Divider, Box, AbsoluteCenter } from '@chakra-ui/react';
+import { Container, Heading, Divider } from '@chakra-ui/react';
 import PlayerList from "../../components/Admin/PlayerList";
 import { useState, useEffect } from "react";
 import { Player } from "../../models/player.model";
 import useAxiosPrivate from "../../auth/useAxiosPrivate";
 import { useNavigate, useLocation } from "react-router-dom";
+import useAuth from "../../auth/useAuth";
+import { initialAuth } from "../../auth/AuthProvider";
 
 /**
  * 2022-23 Őszi félév
@@ -17,6 +19,8 @@ export const ManagePlayers = () => {
 
   const axiosPrivate = useAxiosPrivate();
 
+  const { setAuth } = useAuth();
+
   const location = useLocation();
   const navigate = useNavigate();
 
@@ -28,27 +32,34 @@ export const ManagePlayers = () => {
     let isMounted = true;
     const controller = new AbortController();
 
-    const getPlayers = async () => {
+    const getOpponents = async () => {
       try {
         const response = await axiosPrivate.get("/api/players", {
           signal: controller.signal
         });
-        console.log(response.data);
-        isMounted && setPlayers(response.data)
-
+        isMounted && setPlayers(response.data);
       } catch (error: any) {
         console.error(error);
+        setAuth(initialAuth);
+        sessionStorage.removeItem("player");
+        sessionStorage.removeItem('accessToken');
+        sessionStorage.removeItem('refreshToken');
         navigate('/login', { state: { from: location }, replace: true });
       }
-    }
+    };
 
-    getPlayers();
+    getOpponents();
+
+    const intervalId = setInterval(() => {
+      getOpponents();
+    }, 500);
 
     return () => {
       isMounted = false;
       controller.abort();
-    }
-  }, [playerChanged]);
+      clearInterval(intervalId);
+    };
+  }, [axiosPrivate, location, navigate, playerChanged]);
 
   return (
     <>

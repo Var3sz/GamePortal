@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, createContext, useState } from "react";
+import { Player } from "../models/player.model";
 
 interface Auth {
-    roles: number[];
+    player: Player;
     token: string;
     refresh: string;
 }
@@ -13,7 +14,16 @@ interface AuthContextInterface {
 
 const AuthContext = createContext<AuthContextInterface>({
     auth: {
-        roles: [],
+        player: {
+            roles: [],
+            playerId: -1,
+            fullName: '',
+            userName: '',
+            email: '',
+            password: '',
+            birthdate: '',
+            token: ''
+        },
         token: "",
         refresh: ""
     },
@@ -21,7 +31,16 @@ const AuthContext = createContext<AuthContextInterface>({
 });
 
 export const initialAuth: Auth = {
-    roles: [],
+    player: {
+        roles: [],
+        playerId: 0,
+        fullName: '',
+        userName: '',
+        email: '',
+        password: '',
+        birthdate: '',
+        token: ''
+    },
     token: "",
     refresh: ""
 };
@@ -29,12 +48,12 @@ export const initialAuth: Auth = {
 export const AuthProvider = ({ children }: any) => {
     const [auth, setAuth] = useState(() => {
         const storedToken = sessionStorage.getItem('accessToken');
-        const storedRoles = sessionStorage.getItem('roles');
+        const storedPlayer = sessionStorage.getItem('player');
         const storedRefreshToken = sessionStorage.getItem('refreshToken');
 
         return storedToken
             ? {
-                roles: storedRoles ? JSON.parse(storedRoles) : [],
+                player: storedPlayer ? JSON.parse(storedPlayer) : [],
                 token: storedToken,
                 refresh: storedRefreshToken || ""
             }

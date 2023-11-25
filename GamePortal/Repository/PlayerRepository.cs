@@ -19,17 +19,19 @@ namespace GamePortal.Repository
 
         public Player GetPlayerById(int playerId)
         {
-            return _dbContext.Players.SingleOrDefault(q => q.PlayerId == playerId)!;
+            return _dbContext.Players.Include(p => p.Roles)
+                .SingleOrDefault(q => q.PlayerId == playerId)!;
         }
 
         public Player GetPlayerByUsername(string userName)
         {
-            return _dbContext.Players.SingleOrDefault(q => q.UserName == userName)!;
+            return _dbContext.Players.Include(p => p.Roles).
+                SingleOrDefault(q => q.UserName == userName)!;
         }
 
         public Player GetPlayerByUsernameAndPassword(string userName, string password)
         {
-            return _dbContext.Players.SingleOrDefault(
+            return _dbContext.Players.Include(p => p.Roles).SingleOrDefault(
                 q => q.UserName == userName && q.Password == password)!;
         }
 

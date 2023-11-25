@@ -1,6 +1,6 @@
 import chess from "../../images/chess.png";
 import useAuth from "../../auth/useAuth";
-import GameCard from "../GameCard";
+import GameCard from "../Game/GameCard";
 
 
 export const ChessCard = () => {
@@ -9,9 +9,9 @@ export const ChessCard = () => {
     const description = `Chess is a timeless board game that's easy to learn yet offers endless depth,
     making it a favorite pastime for players of all ages. Let's play now!`;
     const offlineLink = "/chess"
-    const onlineLink = "/onlinechess"
+    const onlineLink = "/onlineGame/Chess"
     const isPlayable = true;
-    const isAuthorized = auth.roles.includes(1) ? true : false
+    const isAuthorized = auth.player.roles.some((role: any) => role.roleId === 1);
 
     return (
         <GameCard

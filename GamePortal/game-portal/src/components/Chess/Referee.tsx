@@ -13,7 +13,7 @@ import CheckmateModal from './CheckMateModal';
 
 /**
  * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
- * I was using this YouTube tutorial as a reference to create a basic chess game
+ * I was using this YouTube tutorial as a reference to create the logic of the chess game
  */
 
 interface RefereeProps {
@@ -39,7 +39,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     }, []);
 
     useEffect(() => {
-        if (board.winningColor !== undefined) {
+        if (board.winningColor) {
             setIsCheckmateModalOpen(true);
         } else {
             setIsCheckmateModalOpen(false);
@@ -48,7 +48,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
 
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
         // no available move
-        if (movedPiece.availableMoves === undefined) {
+        if (!movedPiece.availableMoves) {
             return false;
         }
 
@@ -111,7 +111,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     }
 
     function promotePawn(type: PieceType) {
-        if (pawnToPromote === undefined) return;
+        if (!pawnToPromote) return;
 
         setBoard((prevBoard) => {
             const clone = board.clone();

@@ -23,7 +23,7 @@ namespace GamePortal.Controllers
             _savedGamesRepository = savedGamesRepository;
         }
 
-        [HttpGet, Authorize(Roles = "admin")]
+        [HttpGet, Authorize(Roles = "admin, player")]
         public List<Player> GetPlayers()
         {
             return _playerRepository.GetPlayers();

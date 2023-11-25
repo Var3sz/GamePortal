@@ -4,7 +4,7 @@ import { Piece, GameState } from "../../helpers/connect4.helpers/connect4.enums"
 import { Container, Box, Grid, GridItem } from '@chakra-ui/react';
 import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } from '../../helpers/connect4.helpers/connect4.functions';
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
-import WinnerModal from "../WinnerModal";
+import WinnerModal from "./WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
 import Connect4Connector from '../../connection/connect4.connector';
 

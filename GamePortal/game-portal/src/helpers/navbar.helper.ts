@@ -18,7 +18,7 @@ export const NAV_LINKS: Array<LinkProps> = [
             },
             {
                 label: 'Play Online',
-                to: '/onlinechess',
+                to: '/onlinegame/Chess',
             },
         ],
     },
@@ -31,10 +31,10 @@ export const NAV_LINKS: Array<LinkProps> = [
             },
             {
                 label: 'Play Online',
-                to: '/onlineconnect4',
+                to: '/onlinegame/Connect4',
             },
         ],
-    }, 
+    },
     {
         label: "Admin",
         to: "/admin"

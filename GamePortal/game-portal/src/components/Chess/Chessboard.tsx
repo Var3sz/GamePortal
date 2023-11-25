@@ -8,7 +8,7 @@ import { Piece } from '../../models/chess/Pieces';
 
 /**
  * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
- * I was using this YouTube tutorial as a reference to create a basic chess game
+ * I was using this YouTube tutorial as a reference to create the logic of the chess game
  */
 
 interface ChessBoardProps {

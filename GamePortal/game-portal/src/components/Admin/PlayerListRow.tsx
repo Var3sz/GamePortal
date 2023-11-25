@@ -25,20 +25,19 @@ const PlayerListRow: React.FunctionComponent<IPlayerListRowProps> = ({
   const [showRemovePlayer, setShowRemovePlayer] = useState(false);
 
   return (
-    <>
-      <Tr>
-        <RemovePlayerModal
-          show={showRemovePlayer}
-          close={() => setShowRemovePlayer(false)}
-          player={player}
-          playerChangedListener={playerChangedListener}
-        />
-        <Td onClick={() => setShowRemovePlayer(true)}>{player.userName}</Td>
-        <Td onClick={() => setShowRemovePlayer(true)}>{player.fullName}</Td>
-        <Td onClick={() => setShowRemovePlayer(true)}>{player.email}</Td>
-        <Td onClick={() => setShowRemovePlayer(true)}>{formatBirthdateString(player.birthdate)}</Td>
-      </Tr>
-    </>
+    <Tr>
+
+      <RemovePlayerModal
+        show={showRemovePlayer}
+        close={() => setShowRemovePlayer(false)}
+        player={player}
+        playerChangedListener={playerChangedListener}
+      />
+      <Td onClick={() => setShowRemovePlayer(true)}>{player.userName}</Td>
+      <Td onClick={() => setShowRemovePlayer(true)}>{player.fullName}</Td>
+      <Td onClick={() => setShowRemovePlayer(true)}>{player.email}</Td>
+      <Td onClick={() => setShowRemovePlayer(true)}>{formatBirthdateString(player.birthdate)}</Td>
+    </Tr>
   );
 };
 

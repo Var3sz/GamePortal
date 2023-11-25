@@ -6,7 +6,7 @@ import { Login } from "./pages/guest/Login";
 import { Register } from "./pages/guest/Register";
 import { Chess } from './pages/guest/Chess';
 import { Connect4 } from './pages/guest/Connect4';
-import { AppNavbar } from './components/AppNavbar';
+import { AppNavbar } from './components/Navbar/AppNavbar';
 import { Route, Routes } from 'react-router-dom';
 import { ManagePlayers } from './pages/admin/ManagePlayers';
 import { OnlineChess } from './pages/player/OnlineChess';
@@ -15,6 +15,8 @@ import { Layout } from './components/Layout';
 import RequireAuth from './auth/RequireAuth';
 import Unauthorized from './pages/guest/Unauthorized';
 import customTheme from './theme/theme';
+import OnlineGame from './pages/player/OnlineGame';
+import ChooseOpponent from './pages/player/ChooseOpponent';
 
 const ROLES = {
   'Admin': 1,
@@ -38,7 +40,11 @@ function App() {
 
           {/* player routes */}
           <Route element={<RequireAuth allowedRoles={[ROLES.Player]} />}>
-
+            <Route path="chooseopponent/:gameType" element={<ChooseOpponent />} />
+            <Route
+              path="onlinegame/:gameType"
+              element={<OnlineGame />}
+            />
             <Route path="onlinechess" element={<OnlineChess />} />
             <Route path="onlineconnect4" element={<OnlineConnect4 />} />
           </Route>
