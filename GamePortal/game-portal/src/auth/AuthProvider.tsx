@@ -1,6 +1,11 @@
 import { Dispatch, SetStateAction, createContext, useState } from "react";
 import { Player } from "../models/player.model";
 
+/**
+ * Source: https://www.youtube.com/watch?v=nI8PYZNFtac&list=PL0Zuz27SZ-6PRCpm9clX0WiBEMB70FWwd&index=4&pp=iAQB
+ * Basic idea come from this playlist, but I reworked it
+ */
+
 interface Auth {
     player: Player;
     token: string;
