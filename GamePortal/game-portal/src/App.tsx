@@ -17,6 +17,7 @@ import Unauthorized from './pages/guest/Unauthorized';
 import customTheme from './theme/theme';
 import OnlineGame from './pages/player/OnlineGame';
 import ChooseOpponent from './pages/player/ChooseOpponent';
+import ChooseGame from './pages/player/ChooseGame';
 
 const ROLES = {
   'Admin': 1,
@@ -41,12 +42,13 @@ function App() {
           {/* player routes */}
           <Route element={<RequireAuth allowedRoles={[ROLES.Player]} />}>
             <Route path="chooseopponent/:gameType" element={<ChooseOpponent />} />
+            <Route path="choosegame/:gameType" element={<ChooseGame />} />
             <Route
               path="onlinegame/:gameType"
               element={<OnlineGame />}
             />
-            <Route path="onlinechess" element={<OnlineChess />} />
-            <Route path="onlineconnect4" element={<OnlineConnect4 />} />
+            <Route path="onlineChess" element={<OnlineChess />} />
+            <Route path="onlineConnect4" element={<OnlineConnect4 />} />
           </Route>
 
           {/* admin routes */}

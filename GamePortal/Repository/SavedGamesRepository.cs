@@ -1,20 +1,55 @@
 ﻿using GamePortal.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace GamePortal.Repository
 {
     public class SavedGamesRepository : ISavedGamesRepository
     {
-        private readonly GamePortalDbContext _context;
+        private readonly GamePortalDbContext _dbContext;
 
-        public SavedGamesRepository(GamePortalDbContext context)
+        public SavedGamesRepository(GamePortalDbContext dbContext)
         {
-            _context = context;
+            _dbContext = dbContext;
         }
 
-        public void RemoveSavedGames(int playerId)
+        public SavedGame GetSavedGame(int savedGameId)
         {
-            _context.SavedGames.RemoveRange(_context.SavedGames.Where(q => q.PlayerOneId == playerId));
-            _context.SaveChanges();
+            return _dbContext.SavedGames
+                    .Include(s => s.PlayerOne)
+                    .Include(s => s.PlayerTwo)
+                    .Include(s => s.Game)
+                    .FirstOrDefault(s => s.SavedGameId == savedGameId)!;
+        }
+
+        public List<SavedGame> GetSavedGamesByPlayerId(int playerId)
+        {
+            return _dbContext.SavedGames
+                .Include(s => s.PlayerOne)
+                .Include(s => s.PlayerTwo)
+                .Include(s => s.Game)
+                .Where(s => s.PlayerOneId == playerId || s.PlayerTwoId == playerId)
+                .ToList();
+        }
+
+        public void InsertSavedGame(SavedGame savedGame)
+        {
+            _dbContext.SavedGames.Add(savedGame);
+            _dbContext.SaveChanges();
+        }
+
+        public void UpdateSavedGame(SavedGame savedGame)
+        {
+            _dbContext.SavedGames.Update(savedGame);
+            _dbContext.SaveChanges();
+        }
+
+        public void RemoveSavedGame(int playerId)
+        {
+            var savedGamesToRemove = _dbContext.SavedGames
+                .Where(q => q.PlayerOneId == playerId || q.PlayerTwoId == playerId);
+
+            _dbContext.SavedGames.RemoveRange(savedGamesToRemove);
+            _dbContext.SaveChanges();
         }
     }
 }

@@ -33,7 +33,7 @@ namespace GamePortal.Controllers
         [HttpDelete, Authorize(Roles = "admin")]
         public void RemovePlayer([FromBody] Player player)
         {
-            _savedGamesRepository.RemoveSavedGames(player.PlayerId);
+            _savedGamesRepository.RemoveSavedGame(player.PlayerId);
             _playerRepository.RemovePlayer(player);
         }
     }

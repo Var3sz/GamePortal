@@ -11,19 +11,9 @@ namespace GamePortal.Repository
             _dbContext = dbContext;
         }
 
-        public List<Game> GetAllGames()
-        {
-            return _dbContext.Games.ToList();
-        }
-
         public Game GetGameById(int id)
         {
             return _dbContext.Games.SingleOrDefault(q => q.GameId == id)!;
-        }
-
-        public Game GetGameByName(string name)
-        {
-            return _dbContext.Games.SingleOrDefault(q => q.Name == name)!;
         }
     }
 }

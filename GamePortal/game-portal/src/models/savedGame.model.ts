@@ -1,8 +1,14 @@
+import { Game } from "./game.model";
+import { Player } from "./player.model";
+
 export interface SavedGame
 {
     savedgameId: number;
-    name: string;
-    playerOneUsername: string;
-    playerTwoUsername: string;
-    gamestate: string;
+    gameId: number;
+    gameState: string;
+    game: Game;
+    playerOneId: number;
+    playerOne: Player;
+    playerTwoId: number;
+    playerTwo: Player;
 }

@@ -38,7 +38,7 @@ const AuthContext = createContext<AuthContextInterface>({
 export const initialAuth: Auth = {
     player: {
         roles: [],
-        playerId: 0,
+        playerId: -1,
         fullName: '',
         userName: '',
         email: '',

@@ -54,29 +54,27 @@ export const ChooseOpponent = () => {
     }, [axiosPrivate, location, navigate]);
 
     return (
-        <>
-            <Container className="px-0" maxW={"70%"}>
-                <Container className="mb-5">
-                    <Row className="justify-content-center">
-                        <Col className="mt-5" align="center" lg={12} md={10} sm={12}>
-                            <Heading>Choose an opponent you want to play against</Heading>
-                        </Col>
-                    </Row>
-                </Container>
-                <Divider variant={'custom'} width={'25%'} />
-                <Row className="justify-content-center mx-0 mt-5">
-                    <Col lg={8} md={10} sm={12} align="center">
-                        {opponents.length > 1 ?
-                            (<OpponentList
-                                opponents={opponents}
-                                gameType={gameType}
-                            ></OpponentList>) : (
-                                <Heading className="h2"> No opponents to display </Heading>
-                            )}
+        <Container className="px-0" maxW={"70%"}>
+            <Container className="mb-5">
+                <Row className="justify-content-center">
+                    <Col className="mt-5" align="center" lg={12} md={10} sm={12}>
+                        <Heading>Choose an opponent you want to play against</Heading>
                     </Col>
                 </Row>
             </Container>
-        </>
+            <Divider variant={'custom'} width={'25%'} />
+            <Row className="justify-content-center mx-0 mt-5">
+                <Col lg={8} md={10} sm={12} align="center">
+                    {opponents.length > 1 ?
+                        (<OpponentList
+                            opponents={opponents}
+                            gameType={gameType}
+                        ></OpponentList>) : (
+                            <Heading className="h2"> No opponents to display </Heading>
+                        )}
+                </Col>
+            </Row>
+        </Container>
     );
 };
 

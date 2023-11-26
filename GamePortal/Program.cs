@@ -19,9 +19,12 @@ app.UseAuthorization();
 
 app.UseCors("CorsPolicy");
 
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller}/{action=Index}/{id?}");
+
+
+    app.MapControllerRoute(
+        name: "default",
+        pattern: "{controller}/{action=Index}/{id?}"
+    );
 
 app.MapHub<Connect4Hub>("/connect4hub");
 app.MapHub<ChessHub>("/chesshub");

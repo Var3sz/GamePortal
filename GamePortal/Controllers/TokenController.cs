@@ -1,6 +1,7 @@
 ﻿using GamePortal.DTOs;
 using GamePortal.Models;
 using GamePortal.Repository;
+using GamePortal.Response;
 using GamePortal.Service;
 using Microsoft.AspNetCore.Mvc;
 
@@ -15,7 +16,6 @@ namespace GamePortal.Controllers
         private readonly IPlayerRepository _playerRepository;
         private readonly IRoleRepository _roleRepository;
         private readonly ILogger<TokenController> _logger;
-
 
         public TokenController(
                 GamePortalDbContext gamePortalDbContext,

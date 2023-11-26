@@ -17,6 +17,7 @@ export const OnlineGame: React.FC<OnlineGameProps> = () => {
     };
 
     const loadGame = () => {
+        navigate(`/choosegame/${gameType}`);
         setModalState(false);
     };
 

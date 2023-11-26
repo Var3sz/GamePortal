@@ -1,6 +1,7 @@
 ﻿using GamePortal.DTOs;
 using GamePortal.Models;
 using GamePortal.Repository;
+using GamePortal.Response;
 using GamePortal.Service;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
