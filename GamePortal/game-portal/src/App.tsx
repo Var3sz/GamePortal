@@ -20,7 +20,7 @@ import ChooseOpponent from './pages/player/ChooseOpponent';
 
 const ROLES = {
   'Admin': 1,
-  'Player': 2002
+  'Player': 2
 }
 
 function App() {

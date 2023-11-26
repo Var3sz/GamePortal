@@ -78,14 +78,13 @@ namespace GamePortal.Migrations
                         .HasColumnName("Password");
 
                     b.Property<string>("RefreshToken")
-                        .IsRequired()
                         .HasMaxLength(500)
                         .IsUnicode(false)
                         .HasColumnType("varchar(500)")
                         .HasColumnName("RefreshToken");
 
-                    b.Property<DateTime?>("RefreshTokenExpiryTime")
-                        .HasColumnType("date")
+                    b.Property<DateTime>("RefreshTokenExpiryTime")
+                        .HasColumnType("datetime2")
                         .HasColumnName("RefreshTokenExpiryTime");
 
                     b.Property<string>("UserName")
@@ -141,29 +140,27 @@ namespace GamePortal.Migrations
                         .HasColumnType("varchar(255)")
                         .HasColumnName("GameState");
 
-                    b.Property<int>("PlayerId")
+                    b.Property<string>("GameUrl")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("PlayerOneId")
+                        .IsRequired()
                         .HasColumnType("int")
-                        .HasColumnName("PlayerId");
+                        .HasColumnName("PlayerOneId");
 
-                    b.Property<string>("PlayerOne")
+                    b.Property<int?>("PlayerTwoId")
                         .IsRequired()
-                        .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("PlayerOne");
-
-                    b.Property<string>("PlayerTwo")
-                        .IsRequired()
-                        .HasMaxLength(255)
-                        .IsUnicode(false)
-                        .HasColumnType("varchar(255)")
-                        .HasColumnName("PlayerTwo");
+                        .HasColumnType("int")
+                        .HasColumnName("PlayerTwoId");
 
                     b.HasKey("SavedGameId");
 
                     b.HasIndex("GameId");
 
-                    b.HasIndex("PlayerId");
+                    b.HasIndex("PlayerOneId");
+
+                    b.HasIndex("PlayerTwoId");
 
                     b.ToTable("SavedGame", (string)null);
                 });
@@ -191,15 +188,23 @@ namespace GamePortal.Migrations
                         .IsRequired()
                         .HasConstraintName("FK_Game_SavedGame");
 
-                    b.HasOne("GamePortal.Models.Player", "Player")
-                        .WithMany("SavedGames")
-                        .HasForeignKey("PlayerId")
+                    b.HasOne("GamePortal.Models.Player", "PlayerOne")
+                        .WithMany("SavedGames1")
+                        .HasForeignKey("PlayerOneId")
                         .IsRequired()
-                        .HasConstraintName("FK_Player_SavedGame");
+                        .HasConstraintName("FK_PlayerOne_SavedGame");
+
+                    b.HasOne("GamePortal.Models.Player", "PlayerTwo")
+                        .WithMany("SavedGames2")
+                        .HasForeignKey("PlayerTwoId")
+                        .IsRequired()
+                        .HasConstraintName("FK_PlayerTwo_SavedGame");
 
                     b.Navigation("Game");
 
-                    b.Navigation("Player");
+                    b.Navigation("PlayerOne");
+
+                    b.Navigation("PlayerTwo");
                 });
 
             modelBuilder.Entity("PlayerRole", b =>
@@ -224,7 +229,9 @@ namespace GamePortal.Migrations
 
             modelBuilder.Entity("GamePortal.Models.Player", b =>
                 {
-                    b.Navigation("SavedGames");
+                    b.Navigation("SavedGames1");
+
+                    b.Navigation("SavedGames2");
                 });
 #pragma warning restore 612, 618
         }

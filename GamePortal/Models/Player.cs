@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using Microsoft.AspNetCore.SignalR;
+using System.ComponentModel.DataAnnotations;
 
 namespace GamePortal.Models
 {
@@ -8,7 +9,8 @@ namespace GamePortal.Models
     {
         public Player()
         {
-            SavedGames = new HashSet<SavedGame>();
+            SavedGames1 = new HashSet<SavedGame>();
+            SavedGames2 = new HashSet<SavedGame>();
         }
 
         public int PlayerId { get; set; }
@@ -18,10 +20,12 @@ namespace GamePortal.Models
         public string Password { get; set; } = null!;
         public DateTime Birthdate { get; set; }
         public string? RefreshToken { get; set; }
-
         public DateTime RefreshTokenExpiryTime { get; set; }
-
         public List<Role> Roles { get; set; } = new();
-        public virtual ICollection<SavedGame> SavedGames { get; set; }
+
+        public IEnumerable<SavedGame> SavedGames
+            => SavedGames1.Concat(SavedGames2).Distinct();
+        public virtual ICollection<SavedGame> SavedGames1 { get; set; }
+        public virtual ICollection<SavedGame> SavedGames2 { get; set; }
     }
 }

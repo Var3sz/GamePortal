@@ -74,6 +74,8 @@ namespace GamePortal.Models
                 entity.Property(e => e.RefreshTokenExpiryTime).HasColumnName("RefreshTokenExpiryTime")
                         .HasColumnType("datetime2");
 
+                entity.Ignore(e => e.SavedGames);
+
                 entity.HasMany(e => e.Roles).WithMany(e => e.Players);
             });
 
@@ -97,20 +99,11 @@ namespace GamePortal.Models
 
                 entity.Property(e => e.GameId).HasColumnName("GameId");
 
-                entity.Property(e => e.PlayerId).HasColumnName("PlayerId");
+                entity.Property(e => e.PlayerOneId).HasColumnName("PlayerOneId");
 
+                entity.Property(e => e.PlayerTwoId).HasColumnName("PlayerTwoId");
 
                 entity.Property(e => e.GameState).HasColumnName("GameState")
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PlayerOne).HasColumnName("PlayerOne")
-                    .IsRequired()
-                    .HasMaxLength(255)
-                    .IsUnicode(false);
-
-                entity.Property(e => e.PlayerTwo).HasColumnName("PlayerTwo")
                     .IsRequired()
                     .HasMaxLength(255)
                     .IsUnicode(false);
@@ -121,11 +114,17 @@ namespace GamePortal.Models
                     .OnDelete(DeleteBehavior.ClientSetNull)
                     .HasConstraintName("FK_Game_SavedGame");
 
-                entity.HasOne(d => d.Player)
-                    .WithMany(p => p.SavedGames)
-                    .HasForeignKey(d => d.PlayerId)
+                entity.HasOne(d => d.PlayerOne)
+                    .WithMany(p => p.SavedGames1)
+                    .HasForeignKey(d => d.PlayerOneId)
                     .OnDelete(DeleteBehavior.ClientSetNull)
-                    .HasConstraintName("FK_Player_SavedGame");
+                    .HasConstraintName("FK_PlayerOne_SavedGame");
+
+                entity.HasOne(d => d.PlayerTwo)
+                    .WithMany(p => p.SavedGames2)
+                    .HasForeignKey(d => d.PlayerTwoId)
+                    .OnDelete(DeleteBehavior.ClientSetNull)
+                    .HasConstraintName("FK_PlayerTwo_SavedGame");
             });
 
             OnModelCreatingPartial(modelBuilder);

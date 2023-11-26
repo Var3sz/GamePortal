@@ -13,7 +13,7 @@ namespace GamePortal.Repository
 
         public void RemoveSavedGames(int playerId)
         {
-            _context.SavedGames.RemoveRange(_context.SavedGames.Where(q => q.PlayerId == playerId));
+            _context.SavedGames.RemoveRange(_context.SavedGames.Where(q => q.PlayerOneId == playerId));
             _context.SaveChanges();
         }
     }
