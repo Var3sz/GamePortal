@@ -7,9 +7,12 @@ import { Connect4State } from '../../helpers/connect4.helpers/connect4.interface
 import WinnerModal from "./WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
 import Connect4Connector from '../../connection/connect4.connector';
+import { SavedGame } from '../../models/savedGame.model';
 
 interface Connect4MultiProps {
   isMultiplayer: boolean;
+  isNewGame?: boolean;
+  savedGame?: SavedGame;
 }
 
 const defaultBoard: Connect4State = {

@@ -31,15 +31,19 @@ export const ChooseGame = () => {
         }, 500);
     }, []);
 
+    const gameFilters: { [key: string]: number[] } = {
+        'Chess': [1],
+        'Connect4': [2]
+    };
+
+
     const filteredGames = games && games.length > 0
         ? games.filter((game) => {
-            if (gameType === 'Chess' && game.gameId === 1) {
-                return true;
-            }
-            if (gameType === 'ConnectFour' && game.gameId === 2) {
-                return true;
-            }
-            return false;
+            console.log('Game Type:', gameType);
+            console.log('Game Filters:', gameFilters);
+            console.log('Game ID:', game.gameId);
+
+            return gameType && gameFilters[gameType]?.includes(game.gameId);
         })
         : [];
 

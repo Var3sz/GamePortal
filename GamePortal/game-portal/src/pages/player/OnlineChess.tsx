@@ -48,8 +48,6 @@ export const OnlineChess = () => {
     }
   };
 
-
-
   useEffect(() => {
     if (isNewGame) {
       newGame();
