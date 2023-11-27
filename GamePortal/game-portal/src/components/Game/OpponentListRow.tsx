@@ -12,9 +12,23 @@ interface OpponentListRowProps {
 export const OpponentListRow: React.FC<OpponentListRowProps> = ({ opponent, gameType }) => {
     const navigate = useNavigate();
 
+    function generateRandomString(): string {
+        const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+        let result = '';
+
+        for (let i = 0; i < 7; i++) {
+            const randomIndex = Math.floor(Math.random() * characters.length);
+            result += characters.charAt(randomIndex);
+        }
+
+        return result;
+    }
+
+    const gameIdentifier = generateRandomString();
+
     return (
         <Tr>
-            <Td onClick={() => { navigate(`/online${gameType}`) }}>{opponent.userName}</Td>
+            <Td onClick={() => { navigate(`/online${gameType}/new/${gameIdentifier}/${opponent.playerId}`) }}>{opponent.userName}</Td>
         </Tr>
     );
 };

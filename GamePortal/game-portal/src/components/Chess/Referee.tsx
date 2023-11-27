@@ -10,6 +10,9 @@ import { Board } from '../../models/chess/Board';
 import ChessConnector from '../../connection/chess.connector';
 import PawnPromotionModal from './PawnPromotionModal';
 import CheckmateModal from './CheckMateModal';
+import { Card, Flex, Heading, Text } from '@chakra-ui/react';
+import { SavedGame } from '../../models/savedGame.model';
+import axios from '../../api/axios';
 
 /**
  * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
@@ -17,26 +20,36 @@ import CheckmateModal from './CheckMateModal';
  */
 
 interface RefereeProps {
-    isMultiplayer: boolean
+    isMultiplayer: boolean;
+    isNewGame?: boolean;
+    savedGame?: SavedGame;
 }
 
-export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
+export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, savedGame }) => {
     const [board, setBoard] = useState<Board>(defaultBoard.clone());
     const [pawnToPromote, setPawnToPromote] = useState<Piece>();
     const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
     const [isCheckmateModalOpen, setIsCheckmateModalOpen] = useState(false);
     const { events, sendFEN } = ChessConnector();
+    const { savedGameId, gameUrl, gameState } = savedGame || {};
 
-    useEffect(() => {
-        board.getAllMoves();
-    }, [board]);
 
     useEffect(() => {
         board.getAllMoves();
         if (isMultiplayer) {
-            events((fen) => setBoard(Board.fromFEN(fen)));
+            saveState();
+            events((fen) => setBoard(prevBoard => {
+                const newBoard = Board.fromFEN(fen);
+                // Make any other necessary updates to the newBoard
+                return newBoard;
+            }));
         }
-    }, []);
+    }, [board, isMultiplayer]);
+
+    // Referee.tsx
+    useEffect(() => {
+        console.log("savedGame in Referee:", { savedGameId, gameUrl, gameState });
+    }, [savedGame]);
 
     useEffect(() => {
         if (board.winningColor) {
@@ -45,6 +58,27 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
             setIsCheckmateModalOpen(false);
         }
     }, [board.winningColor]);
+
+    const saveState = async () => {
+        console.log(savedGameId);
+        console.log(gameUrl);
+        try {
+            const response = await axios.put(`/api/savedgames/savedgame/${savedGameId}`,
+                JSON.stringify({
+                    SavedGameId: savedGameId,
+                    GameUrl: gameUrl,
+                    GameState: board.generateFEN()
+                }),
+                {
+                    headers: { 'Content-Type': 'application/json' },
+                    withCredentials: true
+                }
+            )
+        } catch (error: any) {
+            console.error(error);
+        }
+    }
+
 
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
         // no available move
@@ -146,7 +180,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
     }
 
     return (
-        <Container>
+        <Container className='d-flex'>
             <PawnPromotionModal
                 isOpen={isPromotionModalOpen}
                 promotePawn={promotePawn}
@@ -157,7 +191,32 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer }) => {
                 winningColor={board.winningColor}
                 restartGame={restartGame}
             />
-            <ChessBoard makeMove={makeMove} pieces={board.pieces} />
+            <Flex
+                direction="row"
+                align="center"
+                justify="center"
+            >
+                {isMultiplayer ? (
+                    <Card p={8} mr={15}>
+                        <Heading fontSize="xl">PlayerOne</Heading>
+                        <Text>Color: white</Text>
+                    </Card>
+                ) : (
+                    <></>
+                )}
+
+                <ChessBoard makeMove={makeMove} pieces={board.pieces} />
+
+                {isMultiplayer ? (
+                    <Card p={8} ml={15}>
+                        <Heading fontSize="xl">PlayerTwo</Heading>
+                        <Text>Color: black</Text>
+                    </Card>
+                ) : (
+                    <></>
+                )}
+            </Flex>
+
         </Container>
     )
 };

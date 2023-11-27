@@ -28,7 +28,7 @@ export const LoadGameList: React.FC<LoadGameListProps> = ({ games, gameType }) =
                             <LoadGameListRow
                                 game={game}
                                 gameType={gameType}
-                                key={game.savedgameId}
+                                key={game.savedGameId}
                             ></LoadGameListRow>
                         ))}
                 </Tbody>

@@ -3,10 +3,11 @@ import { Player } from "./player.model";
 
 export interface SavedGame
 {
-    savedgameId: number;
+    savedGameId: number;
     gameId: number;
     gameState: string;
     game: Game;
+    gameUrl: string;
     playerOneId: number;
     playerOne: Player;
     playerTwoId: number;

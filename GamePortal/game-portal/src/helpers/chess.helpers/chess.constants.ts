@@ -8,7 +8,7 @@ export const COLS = ['1', '2', '3', '4', '5', '6', '7', '8'];
 export const TILE_SIZE = 75;
 
 /** Initialize default Chess board **/
-export const defaultBoard: Board = Board.fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 1");
+export const defaultBoard: Board = Board.fromFEN("rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq 1 n");
 
 /** Promotion lines **/
 export const WHITE_PROMOTION_ROW = 7;
