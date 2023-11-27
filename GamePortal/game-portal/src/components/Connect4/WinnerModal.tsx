@@ -5,6 +5,7 @@ import {
 } from "@chakra-ui/react";
 import trophy from '../../images/trophy.png';
 import { customColors } from "../../theme/theme";
+import { useNavigate } from "react-router-dom";
 
 interface WinnerModalProps {
   isOpen: boolean;
@@ -14,8 +15,10 @@ interface WinnerModalProps {
 }
 
 const WinnerModal: React.FC<WinnerModalProps> = ({ isOpen, winnerName, onClose, restart }) => {
+  const navigate = useNavigate();
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered>
+    <Modal isOpen={isOpen} onClose={() => { }} isCentered>
       <ModalOverlay />
       <ModalContent borderRadius={'0px'}>
         <ModalHeader backgroundColor={customColors.primary} mb={'0px'}>
@@ -24,7 +27,6 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ isOpen, winnerName, onClose, 
             <Image src={trophy} alt="Trophy" boxSize="20px" />
           </HStack>
         </ModalHeader>
-        <ModalCloseButton />
         <ModalBody>
           <Text fontSize="lg" mt={3}>
             Congratulations, <strong>{winnerName}</strong>!
@@ -38,13 +40,13 @@ const WinnerModal: React.FC<WinnerModalProps> = ({ isOpen, winnerName, onClose, 
             <Button variant="modalButton" onClick={restart}>
               Restart
             </Button>
-            <Button colorScheme="red" onClick={onClose}>
-              Close
+            <Button colorScheme="red" onClick={() => navigate('/home')}>
+              Home
             </Button>
           </HStack>
         </ModalFooter>
       </ModalContent>
-    </Modal>
+    </Modal >
   );
 };
 
