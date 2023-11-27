@@ -8,12 +8,11 @@ import { useEffect, useState } from "react";
 export const OnlineChess = () => {
   const isMultiplayer = true;
   const { auth } = useAuth();
-  const { variant, id, enemyId } = useParams();
+  const { variant, id, enemyId } = useParams();  // Using this for POST request, only way I could solve it
   const isNewGame = variant === "new" ? true : false;
-  const [savedGame, setSavedGame] = useState<SavedGame>(); // Use state to manage savedGame
-  const [saveCompleted, setSaveCompleted] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [savedGame, setSavedGame] = useState<SavedGame>();
 
+  /* Creating a newGame when player chooses this option */
   const newGame = async () => {
     try {
       const response = await axios.post("/api/savedgames",
@@ -34,24 +33,35 @@ export const OnlineChess = () => {
       });
     } catch (error: any) {
       console.error(error);
-    } finally {
-      setLoading(false); // Set loading to false regardless of success or failure
-      setSaveCompleted(true); // Jelzi, hogy a mentés befejeződött
     }
   };
+
+  const loadGame = async () => {
+    try {
+      const response = await axios.get(`/api/savedgames/gameurl/${id}`);
+      setSavedGame((prevSavedGame) => {
+        return response.data;
+      });
+      console.log(response.data);
+    } catch (error: any) {
+      console.error(error);
+    }
+  };
+
+
 
   useEffect(() => {
     if (isNewGame) {
       newGame();
+    } else {
+      loadGame();
     }
-  }, [isNewGame]);
+  }, []);
 
 
-  return !loading && saveCompleted ? (
+  return (
     <Referee isMultiplayer={isMultiplayer} isNewGame={isNewGame} savedGame={savedGame} />
-  ) : (
-    <div>Loading...</div>
-  );
+  )
 }
 
 export default OnlineChess;

@@ -21,6 +21,15 @@ namespace GamePortal.Repository
                     .FirstOrDefault(s => s.SavedGameId == savedGameId)!;
         }
 
+        public SavedGame GetSavedGameByUrl(string savedGameUrl)
+        {
+            return _dbContext.SavedGames
+                .Include(s => s.PlayerOne)
+                .Include(s => s.PlayerTwo)
+                .Include(s => s.Game)
+                .FirstOrDefault(s => s.GameUrl == savedGameUrl)!;
+        }
+
         public List<SavedGame> GetSavedGamesByPlayerId(int playerId)
         {
             return _dbContext.SavedGames

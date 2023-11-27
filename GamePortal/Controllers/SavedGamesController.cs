@@ -48,6 +48,16 @@ namespace GamePortal.Controllers
             return savedGame;
         }
 
+        [HttpGet]
+        [Route("gameurl/{gameUrl}")]
+        public SavedGame GetSavedGameByUrl(string gameUrl)
+        {
+            SavedGame savedGame = _savedGamesRepository.GetSavedGameByUrl(gameUrl);
+
+            if (savedGame == null ) { return null; }
+            return savedGame;
+        }
+
         [HttpPost]
         public ActionResult InsertSavedGame([FromBody] SavedGameDTO savedGame)
         {

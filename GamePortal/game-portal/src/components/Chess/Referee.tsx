@@ -33,23 +33,23 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
     const { events, sendFEN } = ChessConnector();
     const { savedGameId, gameUrl, gameState } = savedGame || {};
 
+    useEffect(() => {
+        if (!isNewGame && gameState) {
+            setBoard(Board.fromFEN(gameState));
+        }
+    }, [isNewGame, gameState]);
 
     useEffect(() => {
         board.getAllMoves();
+
         if (isMultiplayer) {
             saveState();
             events((fen) => setBoard(prevBoard => {
                 const newBoard = Board.fromFEN(fen);
-                // Make any other necessary updates to the newBoard
                 return newBoard;
             }));
         }
     }, [board, isMultiplayer]);
-
-    // Referee.tsx
-    useEffect(() => {
-        console.log("savedGame in Referee:", { savedGameId, gameUrl, gameState });
-    }, [savedGame]);
 
     useEffect(() => {
         if (board.winningColor) {
