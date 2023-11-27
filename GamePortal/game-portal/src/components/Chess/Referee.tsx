@@ -105,6 +105,17 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
 
 
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
+        if (isMultiplayer) {
+            const authenticatedUserIsPlayerOne = auth.player.userName === playerOne?.userName;
+            const authenticatedUserIsPlayerTwo = auth.player.userName === playerTwo?.userName;
+
+            // Check if the authenticated user is the correct player based on the color of the moved piece
+            if ((movedPiece.color === PieceColor.WHITE && !authenticatedUserIsPlayerOne) ||
+                (movedPiece.color === PieceColor.BLACK && !authenticatedUserIsPlayerTwo)) {
+                return false; // Authenticated user is not the correct player for this move
+            }
+        }
+
         // no available move
         if (!movedPiece.availableMoves) {
             return false;
