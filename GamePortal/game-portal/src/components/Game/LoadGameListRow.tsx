@@ -14,6 +14,7 @@ export const LoadGameListRow: React.FC<LoadGameListRowProps> = ({ game, gameType
 
     return (
         <Tr>
+            <Td onClick={() => { navigate(`/online${gameType}/load/${game.gameUrl}/${game.playerTwoId}`) }}>{game.savedGameId}</Td>
             <Td onClick={() => { navigate(`/online${gameType}/load/${game.gameUrl}/${game.playerTwoId}`) }}>{game.game.name}</Td>
             <Td onClick={() => { navigate(`/online${gameType}/load/${game.gameUrl}/${game.playerTwoId}`) }}>{game.playerOne.userName}</Td>
             <Td onClick={() => { navigate(`/online${gameType}/load/${game.gameUrl}/${game.playerTwoId}`) }}>{game.playerTwo.userName}</Td>

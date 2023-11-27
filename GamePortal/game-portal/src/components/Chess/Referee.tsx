@@ -1,7 +1,7 @@
 import ChessBoard from './Chessboard';
 import { Piece } from '../../models/chess/Pieces';
 import { Position } from '../../models/chess/Position';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { BLACK_PROMOTION_ROW, DOWN, UP, WHITE_PROMOTION_ROW, defaultBoard } from '../../helpers/chess.helpers/chess.constants';
 import { PieceColor, PieceType } from '../../helpers/chess.helpers/chess.enums';
 import { Container } from 'react-bootstrap';
@@ -32,18 +32,28 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
     const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
     const [isCheckmateModalOpen, setIsCheckmateModalOpen] = useState(false);
     const { auth } = useAuth();
-    const { events, sendFEN } = ChessConnector(auth.player.userName);
     const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
+    const chessConnector = useMemo(() => {
+        if (gameUrl) {
+            return ChessConnector(auth.player.userName, gameUrl);
+        } else {
+            return {
+                events: () => { },
+                sendFEN: () => { }
+            };
+        }
+    }, [auth.player.userName, gameUrl]);
+
+    const { events, sendFEN } = chessConnector;
+
 
     let enemy: string;
 
     if (playerOne && playerTwo) {
         if (auth.player.userName === playerOne.userName) {
             enemy = playerTwo.userName;
-            console.log(`enemy: ${enemy}`);
         } else {
             enemy = playerOne.userName;
-            console.log(`enemy: ${enemy}`);
         }
     }
 
@@ -58,7 +68,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
 
         if (isMultiplayer) {
             saveState();
-            events((fen) => setBoard(prevBoard => {
+            events((fen: string) => setBoard(prevBoard => {
                 const newBoard = Board.fromFEN(fen);
                 return newBoard;
             }));
@@ -124,7 +134,9 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
             moveIsValid = clone.makeMove(validMove, enPassantMove, desiredPos, movedPiece);
 
             if (isMultiplayer) {
-                sendFEN(auth.player.userName, enemy, clone.generateFEN());
+                if (gameUrl) {
+                    sendFEN(auth.player.userName, enemy, clone.generateFEN(), gameUrl!);
+                }
                 console.log(clone.generateFEN());
             }
 
@@ -173,8 +185,8 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
             }, [] as Piece[]);
             clone.getAllMoves();
 
-            if (isMultiplayer) {
-                sendFEN(auth.player.userName, enemy, clone.generateFEN());
+            if (gameUrl) {
+                sendFEN(auth.player.userName, enemy, clone.generateFEN(), gameUrl!);
             }
 
             return clone;
@@ -188,7 +200,9 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
 
     function restartGame() {
         setBoard(() => {
-            sendFEN(auth.player.userName, enemy, defaultBoard.clone().generateFEN());
+            if (gameUrl) {
+                sendFEN(auth.player.userName, enemy, defaultBoard.clone().generateFEN(), gameUrl!);
+            }
             return defaultBoard.clone()
         });
     }

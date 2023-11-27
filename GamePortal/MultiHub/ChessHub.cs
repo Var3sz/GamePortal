@@ -11,18 +11,18 @@ namespace GamePortal.MultiHub
         }*/
 
         /* Register the connected users */
-        public async Task RegisterUsers(string name, string message)
+        public async Task RegisterUsers(string name, string message, string gameUrl)
         {
-                PlayerHandler.AddOrUpdateConnectionId(name, Context.ConnectionId);
+                PlayerHandler.AddOrUpdateConnectionId(name, Context.ConnectionId, gameUrl);
 
             await Clients.All.SendAsync("userRegistered", name, message);
         }
 
         /* Send fen to enemy and to the caller as well */
-        public async Task SendFen(string fromUsername, string toUsername, string fen)
+        public async Task SendFen(string fromUsername, string toUsername, string fen, string gameIdentifier)
         {
             string fromUserId = Context.ConnectionId;
-            string toUserId = PlayerHandler.GetConnectionIdByUsername(toUsername);
+            string toUserId = PlayerHandler.GetConnectionIdByUsernameAndGame(fromUsername, toUsername, gameIdentifier);
 
             if (toUserId != null && fromUserId != null)
             {
@@ -43,31 +43,34 @@ namespace GamePortal.MultiHub
      */
     public static class PlayerHandler
     {
-        private static Dictionary<string, string> UserToConnectionIdMap = new Dictionary<string, string>();
+        private static Dictionary<(string, string), string> UserToConnectionIdMap = new Dictionary<(string, string), string>();
 
-        public static void AddOrUpdateConnectionId(string username, string connectionId)
+        public static void AddOrUpdateConnectionId(string username, string connectionId, string gameIdentifier)
         {
-            if (UserToConnectionIdMap.ContainsKey(username))
+            var key = (username, gameIdentifier);
+
+            if (UserToConnectionIdMap.ContainsKey(key))
             {
-                UserToConnectionIdMap[username] = connectionId;
+                UserToConnectionIdMap[key] = connectionId;
             }
             else
             {
-                UserToConnectionIdMap.Add(username, connectionId);
+                UserToConnectionIdMap.Add(key, connectionId);
             }
         }
 
-        public static string GetConnectionIdByUsername(string username)
+        public static string GetConnectionIdByUsernameAndGame(string fromUsername, string toUsername, string gameIdentifier)
         {
-            if (UserToConnectionIdMap.TryGetValue(username, out var connectionId))
+            var fromKey = (fromUsername, gameIdentifier);
+            var toKey = (toUsername, gameIdentifier);
+
+            if (UserToConnectionIdMap.TryGetValue(toKey, out var connectionId))
             {
                 return connectionId;
             }
 
-            return null; // The user is not connected right now
+            return null;
         }
-
-        // Other methods and properties...
     }
 }
 

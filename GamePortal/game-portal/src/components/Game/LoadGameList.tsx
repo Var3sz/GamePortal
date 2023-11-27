@@ -17,6 +17,7 @@ export const LoadGameList: React.FC<LoadGameListProps> = ({ games, gameType }) =
             <Table variant={'striped'} size="lg">
                 <Thead color={customColors.secondary} backgroundColor={customColors.primary}>
                     <Tr>
+                        <Th width={'10%'} color={customColors.secondary}>Sorszám</Th>
                         <Th width={'10%'} color={customColors.secondary}>Game</Th>
                         <Th width={'10%'} color={customColors.secondary}>Player One</Th>
                         <Th width={'10%'} color={customColors.secondary}>Player Two</Th>
