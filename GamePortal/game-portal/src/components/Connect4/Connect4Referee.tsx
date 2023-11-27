@@ -40,11 +40,19 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
 
   useEffect(() => {
     if (!isNewGame && gameState) {
+      try {
+        const parsedGameState = JSON.parse(gameState);
+        const movesPlayed = parsedGameState.filter((piece: any) => piece !== Piece.None).length;
+        const currentPlayerTurn = movesPlayed % 2 === 0 ? Piece.Yellow : Piece.Red;
 
-      setState({
-        ...state,
-        board: JSON.parse(gameState)
-      });
+        setState({
+          ...state,
+          board: parsedGameState,
+          playerTurn: currentPlayerTurn,
+        });
+      } catch (error) {
+        console.error("Error parsing gameState:", error);
+      }
     }
   }, [isNewGame, gameState]);
 
