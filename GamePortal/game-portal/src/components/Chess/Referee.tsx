@@ -224,25 +224,27 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
                 align="center"
                 justify="center"
             >
-                {isMultiplayer ? (
-                    <Card p={8} mr={15}>
-                        <Heading fontSize="xl">PlayerOne: {playerOne?.userName}</Heading>
-                        <Text>Color: white</Text>
-                    </Card>
-                ) : (
-                    <></>
-                )}
+                <Card p={8} mr={15}>
+                    <Heading fontSize="xl">PlayerOne: {playerOne?.userName}</Heading>
+                    <Text>Color: white</Text>
+                    {board.getCurrentColor() === PieceColor.WHITE ? (
+                        <Text>It is your turn</Text>
+                    ) : (
+                        <></>
+                    )}
+                </Card>
 
                 <ChessBoard makeMove={makeMove} pieces={board.pieces} />
 
-                {isMultiplayer ? (
-                    <Card p={8} ml={15}>
-                        <Heading fontSize="xl">PlayerTwo: {playerTwo?.userName}</Heading>
-                        <Text>Color: black</Text>
-                    </Card>
-                ) : (
-                    <></>
-                )}
+                <Card p={8} ml={15}>
+                    <Heading fontSize="xl">PlayerTwo: {playerTwo?.userName}</Heading>
+                    <Text>Color: black</Text>
+                    {board.getCurrentColor() === PieceColor.BLACK ? (
+                        <Text>It is your turn</Text>
+                    ) : (
+                        <></>
+                    )}
+                </Card>
             </Flex>
 
         </Container>
