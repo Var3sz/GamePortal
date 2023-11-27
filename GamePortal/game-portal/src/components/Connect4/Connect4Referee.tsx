@@ -8,6 +8,9 @@ import WinnerModal from "./WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
 import Connect4Connector from '../../connection/connect4.connector';
 import { SavedGame } from '../../models/savedGame.model';
+import axios from '../../api/axios';
+import { stat } from 'fs';
+import useAuth from '../../auth/useAuth';
 
 interface Connect4MultiProps {
   isMultiplayer: boolean;
@@ -22,9 +25,10 @@ const defaultBoard: Connect4State = {
   isModalOpen: false,
 };
 
-export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer }) => {
+export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, isNewGame, savedGame }) => {
   const [state, setState] = useState<Connect4State>(defaultBoard);  // GameState
-
+  const { auth } = useAuth();
+  const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
   const { sendBoardState, events } = Connect4Connector();
 
   // Hook for opening WinnerModal
@@ -35,7 +39,18 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
   }, [state.gameState]);
 
   useEffect(() => {
+    if (!isNewGame && gameState) {
+
+      setState({
+        ...state,
+        board: JSON.parse(gameState)
+      });
+    }
+  }, [isNewGame, gameState]);
+
+  useEffect(() => {
     if (isMultiplayer) {
+      saveState();
       events((boardState) => {
         const parsedBoardState = JSON.parse(boardState);
         setState({
@@ -48,6 +63,25 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
       });
     }
   }, [isMultiplayer, state]);
+
+
+  const saveState = async () => {
+    try {
+      const response = await axios.put(`/api/savedgames/savedgame/${savedGameId}`,
+        JSON.stringify({
+          SavedGameId: savedGameId,
+          GameUrl: gameUrl,
+          GameState: getBoardString(state.board)
+        }),
+        {
+          headers: { 'Content-Type': 'application/json' },
+          withCredentials: true
+        }
+      )
+    } catch (error: any) {
+      console.error(error);
+    }
+  }
 
 
   /* Handling onClick */
@@ -71,7 +105,6 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
 
     if (isMultiplayer) {
       const boardString = getBoardString(newBoard);
-      console.log(boardString);
       sendBoardState(boardString);
       return;
     }

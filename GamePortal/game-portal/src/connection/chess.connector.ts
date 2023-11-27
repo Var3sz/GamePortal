@@ -14,7 +14,6 @@ class ChessConnector {
         this.connection.start().catch(err => document.write(err)).then(() => {
             this.registerUser(username, "cső", gameUrl);
         });
-        console.log(this.connection.connectionId);
         this.events = (onFENReceived) => {
             this.connection.on("receiveFEN", (fen) => {
                 onFENReceived(fen);
@@ -23,11 +22,11 @@ class ChessConnector {
     }
 
     public registerUser = (name: string, message: string, gameUrl: string) => {
-        this.connection.send("registerUsers", name, message, gameUrl).then(() => console.log("Online"));
+        this.connection.send("registerUsers", name, message, gameUrl).then(() => { });
     }
 
     public sendFEN = (fromUsername: string, toUsername: string, fen: string, gameUrl: string) => {
-        this.connection.send("sendFEN", fromUsername, toUsername, fen, gameUrl).then(() => console.log("Sent FEN"));
+        this.connection.send("sendFEN", fromUsername, toUsername, fen, gameUrl).then(() => { });
     }
 
     public static getInstance(username: string, gameUrl: string): ChessConnector {

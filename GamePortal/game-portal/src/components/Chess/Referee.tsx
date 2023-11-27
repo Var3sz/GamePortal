@@ -84,8 +84,6 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
     }, [board.winningColor]);
 
     const saveState = async () => {
-        console.log(savedGameId);
-        console.log(gameUrl);
         try {
             const response = await axios.put(`/api/savedgames/savedgame/${savedGameId}`,
                 JSON.stringify({
@@ -147,7 +145,6 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
                 if (gameUrl) {
                     sendFEN(auth.player.userName, enemy, clone.generateFEN(), gameUrl!);
                 }
-                console.log(clone.generateFEN());
             }
 
             return clone;
