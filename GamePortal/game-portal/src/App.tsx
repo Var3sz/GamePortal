@@ -48,7 +48,7 @@ function App() {
               element={<OnlineGame />}
             />
             <Route path="onlineChess/:variant/:id/:enemyId" element={<OnlineChess />} />
-            <Route path="onlineConnect4/:id/:enemyId" element={<OnlineConnect4 />} />
+            <Route path="onlineConnect4/:variant/:id/:enemyId" element={<OnlineConnect4 />} />
           </Route>
 
           {/* admin routes */}

@@ -40,6 +40,7 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
           board: parsedBoardState,
           playerTurn: nextColor(state.playerTurn),
           gameState: checkForWin(parsedBoardState),
+          isModalOpen: false
         });
       });
     }
@@ -69,6 +70,7 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
       const boardString = getBoardString(newBoard);
       console.log(boardString);
       sendBoardState(boardString);
+      return;
     }
 
     setState({
@@ -88,6 +90,10 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer })
   };
 
   const restartGame = () => {
+    if (isMultiplayer) {
+      sendBoardState(JSON.stringify(createBoard()));
+      return;
+    }
     setState({
       board: createBoard(),
       playerTurn: Piece.Yellow,

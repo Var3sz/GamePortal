@@ -31,6 +31,17 @@ export const ChooseGame = () => {
         }, 500);
     }, []);
 
+    const filteredGames = games && games.length > 0
+        ? games.filter((game) => {
+            if (gameType === 'Chess' && game.gameId === 1) {
+                return true;
+            }
+            if (gameType === 'ConnectFour' && game.gameId === 2) {
+                return true;
+            }
+            return false;
+        })
+        : [];
 
     return (
         <Container className="px-0" maxW={"100%"}>
@@ -44,7 +55,7 @@ export const ChooseGame = () => {
             <Divider variant={'custom'} width={'25%'} />
             <Row className="justify-content-center mx-0 mt-5">
                 <Col lg={8} md={10} sm={12} align="center">
-                    {games.length > 0 ?
+                    {filteredGames.length > 0 ?
                         (<LoadGameList
                             games={games}
                             gameType={gameType}

@@ -103,7 +103,6 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
         }
     }
 
-
     function makeMove(movedPiece: Piece, desiredPos: Position): boolean {
         if (isMultiplayer) {
             const authenticatedUserIsPlayerOne = auth.player.userName === playerOne?.userName;
