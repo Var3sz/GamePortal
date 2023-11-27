@@ -31,7 +31,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
     const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
     const [isCheckmateModalOpen, setIsCheckmateModalOpen] = useState(false);
     const { events, sendFEN } = ChessConnector();
-    const { savedGameId, gameUrl, gameState } = savedGame || {};
+    const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
 
     useEffect(() => {
         if (!isNewGame && gameState) {
@@ -198,7 +198,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
             >
                 {isMultiplayer ? (
                     <Card p={8} mr={15}>
-                        <Heading fontSize="xl">PlayerOne</Heading>
+                        <Heading fontSize="xl">PlayerOne: {playerOne?.userName}</Heading>
                         <Text>Color: white</Text>
                     </Card>
                 ) : (
@@ -209,7 +209,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
 
                 {isMultiplayer ? (
                     <Card p={8} ml={15}>
-                        <Heading fontSize="xl">PlayerTwo</Heading>
+                        <Heading fontSize="xl">PlayerTwo: {playerTwo?.userName}</Heading>
                         <Text>Color: black</Text>
                     </Card>
                 ) : (
