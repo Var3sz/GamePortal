@@ -6,12 +6,14 @@ class ChessConnector {
     private connection: signalR.HubConnection;
     public events: (onFENReceived: (fen: string) => void) => void;
     static instance: ChessConnector;
-    constructor() {
+    constructor(username: string) {
         this.connection = new signalR.HubConnectionBuilder()
             .withUrl(ChessHubURL)
             .withAutomaticReconnect()
             .build();
-        this.connection.start().catch(err => document.write(err));
+        this.connection.start().catch(err => document.write(err)).then(() => {
+            this.registerUser(username, "cső");
+        });
         console.log(this.connection.connectionId);
         this.events = (onFENReceived) => {
             this.connection.on("receiveFEN", (fen) => {
@@ -20,13 +22,17 @@ class ChessConnector {
         };
     }
 
-    public sendFEN = (fen: string) => {
-        this.connection.send("sendFEN", fen).then(() => console.log("Sent FEN"));
+    public registerUser = (name: string, message: string) => {
+        this.connection.send("registerUsers", name, message).then(() => console.log("Online"));
     }
 
-    public static getInstance(): ChessConnector {
+    public sendFEN = (fromUsername: string, toUsername: string, fen: string) => {
+        this.connection.send("sendFEN", fromUsername, toUsername, fen).then(() => console.log("Sent FEN"));
+    }
+
+    public static getInstance(username: string): ChessConnector {
         if (!ChessConnector.instance)
-            ChessConnector.instance = new ChessConnector();
+            ChessConnector.instance = new ChessConnector(username);
         return ChessConnector.instance;
     }
 }

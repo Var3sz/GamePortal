@@ -13,6 +13,7 @@ import CheckmateModal from './CheckMateModal';
 import { Card, Flex, Heading, Text } from '@chakra-ui/react';
 import { SavedGame } from '../../models/savedGame.model';
 import axios from '../../api/axios';
+import useAuth from '../../auth/useAuth';
 
 /**
  * Source: https://www.youtube.com/playlist?list=PLBmRxydnERkysOgOS917Ojc_-uisgb8Aj
@@ -30,8 +31,21 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
     const [pawnToPromote, setPawnToPromote] = useState<Piece>();
     const [isPromotionModalOpen, setIsPromotionModalOpen] = useState(false);
     const [isCheckmateModalOpen, setIsCheckmateModalOpen] = useState(false);
-    const { events, sendFEN } = ChessConnector();
+    const { auth } = useAuth();
+    const { events, sendFEN } = ChessConnector(auth.player.userName);
     const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
+
+    let enemy: string;
+
+    if (playerOne && playerTwo) {
+        if (auth.player.userName === playerOne.userName) {
+            enemy = playerTwo.userName;
+            console.log(`enemy: ${enemy}`);
+        } else {
+            enemy = playerOne.userName;
+            console.log(`enemy: ${enemy}`);
+        }
+    }
 
     useEffect(() => {
         if (!isNewGame && gameState) {
@@ -110,7 +124,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
             moveIsValid = clone.makeMove(validMove, enPassantMove, desiredPos, movedPiece);
 
             if (isMultiplayer) {
-                sendFEN(clone.generateFEN());
+                sendFEN(auth.player.userName, enemy, clone.generateFEN());
                 console.log(clone.generateFEN());
             }
 
@@ -160,7 +174,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
             clone.getAllMoves();
 
             if (isMultiplayer) {
-                sendFEN(clone.generateFEN());
+                sendFEN(auth.player.userName, enemy, clone.generateFEN());
             }
 
             return clone;
@@ -174,7 +188,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
 
     function restartGame() {
         setBoard(() => {
-            sendFEN(defaultBoard.clone().generateFEN());
+            sendFEN(auth.player.userName, enemy, defaultBoard.clone().generateFEN());
             return defaultBoard.clone()
         });
     }
