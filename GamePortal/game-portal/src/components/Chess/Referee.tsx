@@ -38,13 +38,15 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
             return ChessConnector(auth.player.userName, gameUrl);
         } else {
             return {
-                events: () => { },
-                sendFEN: () => { }
-            };
+                chessEvents: () => { },
+                connect4Events: () => { },
+                sendFEN: () => { },
+                sendBoardState: () => { }
+            }
         }
     }, [auth.player.userName, gameUrl]);
 
-    const { events, sendFEN } = chessConnector;
+    const { chessEvents, sendFEN } = chessConnector;
 
 
     let enemy: string;
@@ -68,7 +70,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
 
         if (isMultiplayer) {
             saveState();
-            events((fen: string) => setBoard(prevBoard => {
+            chessEvents((fen: string) => setBoard(prevBoard => {
                 const newBoard = Board.fromFEN(fen);
                 return newBoard;
             }));

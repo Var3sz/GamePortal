@@ -34,6 +34,25 @@ namespace GamePortal.MultiHub
                 Console.WriteLine($"Unable to send FEN. fromUserId: {fromUserId}, toUserId: {toUserId}");
             }
         }
+        
+        public async Task SendBoardState(string fromUsername, string toUsername, string boardState, string gameIdentifier)
+        {
+            string fromUserId = Context.ConnectionId;
+            string toUserId = PlayerHandler.GetConnectionIdByUsernameAndGame(fromUsername, toUsername, gameIdentifier);
+
+            Console.WriteLine(boardState);
+
+            if (toUserId != null && fromUserId != null)
+            {
+                Console.WriteLine($"Sending BoardState from {fromUserId} to {toUserId}: {boardState}");
+                await Clients.Client(toUserId).SendAsync("receiveBoardState", boardState);
+            }
+            else
+            {
+                Console.WriteLine($"Unable to send BoardState. fromUserId: {fromUserId}, toUserId: {toUserId}");
+            }
+        }
+
 
     }
 

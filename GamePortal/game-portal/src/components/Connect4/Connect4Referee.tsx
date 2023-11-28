@@ -1,15 +1,14 @@
 import '../../css-files/connect4.css'
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
 import { Piece, GameState } from "../../helpers/connect4.helpers/connect4.enums";
 import { Container, Box, Grid, GridItem } from '@chakra-ui/react';
 import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } from '../../helpers/connect4.helpers/connect4.functions';
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
 import WinnerModal from "./WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
-import Connect4Connector from '../../connection/connect4.connector';
+import ChessConnector from '../../connection/chess.connector';
 import { SavedGame } from '../../models/savedGame.model';
 import axios from '../../api/axios';
-import { stat } from 'fs';
 import useAuth from '../../auth/useAuth';
 
 interface Connect4MultiProps {
@@ -29,7 +28,30 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
   const [state, setState] = useState<Connect4State>(defaultBoard);  // GameState
   const { auth } = useAuth();
   const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
-  const { sendBoardState, events } = Connect4Connector();
+  const chessConnector = useMemo(() => {
+    if (gameUrl) {
+      return ChessConnector(auth.player.userName, gameUrl);
+    } else {
+      return {
+        chessEvents: () => { },
+        connect4Events: () => { },
+        sendFEN: () => { },
+        sendBoardState: () => { }
+      };
+    }
+  }, [auth.player.userName, gameUrl]);
+
+  const { connect4Events, sendBoardState } = chessConnector;
+
+  let enemy: string;
+
+  if (playerOne && playerTwo) {
+    if (auth.player.userName === playerOne.userName) {
+      enemy = playerTwo.userName;
+    } else {
+      enemy = playerOne.userName;
+    }
+  }
 
   // Hook for opening WinnerModal
   useEffect(() => {
@@ -59,10 +81,11 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
   useEffect(() => {
     if (isMultiplayer) {
       saveState();
-      events((boardState) => {
+      connect4Events((boardState) => {
         const parsedBoardState = JSON.parse(boardState);
+        /*const movesPlayed = parsedGameState.filter((piece: any) => piece !== Piece.None).length;
+        const currentPlayerTurn = movesPlayed % 2 === 0 ? Piece.Yellow : Piece.Red;  */
         setState({
-          ...state,
           board: parsedBoardState,
           playerTurn: nextColor(state.playerTurn),
           gameState: checkForWin(parsedBoardState),
@@ -70,7 +93,7 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
         });
       });
     }
-  }, [isMultiplayer, state]);
+  }, [isMultiplayer, state]); // state mindenképpen kell, hogy frissüljön
 
 
   const saveState = async () => {
@@ -111,18 +134,20 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
     const newBoard = [...state.board];
     newBoard[index] = state.playerTurn;
 
-    if (isMultiplayer) {
-      const boardString = getBoardString(newBoard);
-      sendBoardState(boardString);
-      return;
-    }
-
     setState({
       ...state,
       board: newBoard,
       playerTurn: nextColor(state.playerTurn),
       gameState: checkForWin(newBoard),
     });
+
+    if (isMultiplayer) {
+      const boardString = getBoardString(newBoard);
+      if (gameUrl) {
+        sendBoardState(auth.player.userName, enemy, boardString, gameUrl);
+      }
+      return;
+    }
   };
 
   /* Managing winner modal */
@@ -134,16 +159,20 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
   };
 
   const restartGame = () => {
-    if (isMultiplayer) {
-      sendBoardState(JSON.stringify(createBoard()));
-      return;
-    }
     setState({
       board: createBoard(),
       playerTurn: Piece.Yellow,
       gameState: GameState.InProgress,
       isModalOpen: false,
     });
+
+    if (isMultiplayer) {
+      const boardString = JSON.stringify(createBoard());
+      if (gameUrl) {
+        sendBoardState(auth.player.userName, enemy, boardString, gameUrl);
+      }
+      return;
+    }
   };
 
   /* Rendering cells */

@@ -4,7 +4,8 @@ const ChessHubURL = "http://localhost:5086/chesshub";
 
 class ChessConnector {
     private connection: signalR.HubConnection;
-    public events: (onFENReceived: (fen: string) => void) => void;
+    public chessEvents: (onFENReceived: (fen: string) => void) => void;
+    public connect4Events: (onBoardStateReceived: (boardState: string) => void) => void;
     static instance: ChessConnector;
     constructor(username: string, gameUrl: string) {
         this.connection = new signalR.HubConnectionBuilder()
@@ -14,11 +15,17 @@ class ChessConnector {
         this.connection.start().catch(err => document.write(err)).then(() => {
             this.registerUser(username, "cső", gameUrl);
         });
-        this.events = (onFENReceived) => {
+        this.chessEvents = (onFENReceived) => {
             this.connection.on("receiveFEN", (fen) => {
                 onFENReceived(fen);
             });
         };
+        this.connect4Events = (onBoardStateReceived) => {
+            this.connection.on("receiveBoardState", (boardState) => {
+                onBoardStateReceived(boardState);
+                console.log(`ReceivedBoardState: ${boardState}`)
+            });
+        }
     }
 
     public registerUser = (name: string, message: string, gameUrl: string) => {
@@ -27,6 +34,10 @@ class ChessConnector {
 
     public sendFEN = (fromUsername: string, toUsername: string, fen: string, gameUrl: string) => {
         this.connection.send("sendFEN", fromUsername, toUsername, fen, gameUrl).then(() => { });
+    }
+
+    public sendBoardState = (fromUsername: string, toUsername: string, boardState: string, gameUrl: string) => {
+        this.connection.send("sendBoardState", fromUsername, toUsername, boardState, gameUrl).then(() => { });
     }
 
     public static getInstance(username: string, gameUrl: string): ChessConnector {
