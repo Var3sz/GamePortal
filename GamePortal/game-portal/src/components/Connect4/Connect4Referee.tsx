@@ -24,7 +24,7 @@ const defaultBoard: Connect4State = {
 };
 
 export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, isNewGame, savedGame }) => {
-  const [state, setState] = useState<Connect4State>(defaultBoard);  // GameState
+  const [state, setState] = useState<Connect4State>(defaultBoard);
   const { auth } = useAuth();
   const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
   const chessConnector = useMemo(() => {
@@ -133,6 +133,14 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
     const newBoard = [...state.board];
     newBoard[index] = state.playerTurn;
 
+    if (isMultiplayer) {
+      if (getCurrentColor(state.playerTurn) === "yellow" && auth.player.userName !== playerOne?.userName) {
+        return;
+      } else if (getCurrentColor(state.playerTurn) === "red" && auth.player.userName !== playerTwo?.userName) {
+        return;
+      }
+    }
+
     setState({
       ...state,
       board: newBoard,
@@ -187,19 +195,6 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
         data-player={getCurrentColor(player)}
       />
     )
-  };
-
-  /* Render the status of the game */
-  const renderGameStatus = () => {
-    const { gameState } = state;
-    const statusText = {
-      [GameState.InProgress]: 'Game is in progress',
-      [GameState.Draw]: 'Game is a draw',
-      [GameState.PlayerOneWin]: 'PlayerOne won',
-      [GameState.PlayerTwoWin]: 'PlayerTwo won',
-    }[gameState];
-
-    return <Container>{statusText}</Container>;
   };
 
   return (
