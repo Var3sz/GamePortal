@@ -48,7 +48,6 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
 
     const { chessEvents, sendFEN } = chessConnector;
 
-
     let enemy: string;
 
     if (playerOne && playerTwo) {

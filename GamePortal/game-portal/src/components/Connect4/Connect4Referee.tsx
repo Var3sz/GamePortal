@@ -1,11 +1,10 @@
 import '../../css-files/connect4.css'
 import { useState, useEffect, useMemo } from 'react';
 import { Piece, GameState } from "../../helpers/connect4.helpers/connect4.enums";
-import { Container, Box, Grid, GridItem } from '@chakra-ui/react';
+import { Container, Box, Grid, GridItem, Card, Heading, CardHeader, CardBody, Text } from '@chakra-ui/react';
 import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } from '../../helpers/connect4.helpers/connect4.functions';
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
 import WinnerModal from "./WinnerModal";
-import Connect4Menu from "./Connect4GameMenu";
 import MultiplayerConnector from '../../connection/multiplayer.connector';
 import { SavedGame } from '../../models/savedGame.model';
 import axios from '../../api/axios';
@@ -204,17 +203,20 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
   };
 
   return (
-    <Container maxW="container.lg" >
-      <Grid templateColumns="repeat(12, 1fr)" gap={4}>
-        <GridItem colSpan={3} className="side-menu mt-3">
-          <Box boxShadow="base" p="4" rounded="md" mt="3">
-            <Connect4Menu
-              renderGameStatus={renderGameStatus()}
-              currentPlayer={state.playerTurn === Piece.Yellow ? 'Yellow' : 'Red'}
-            />
-          </Box>
+    <Box>
+      <Grid templateColumns="repeat(12, 1fr)" gap={0}>
+        <GridItem colSpan={1} mt={12} ml={12}>
+          <Card p={8} mr={15}>
+            <Heading fontSize="xl">PlayerOne: {playerOne?.userName}</Heading>
+            <Text>Color: Yellow</Text>
+            {getCurrentColor(state.playerTurn) === "yellow" ? (
+              <Text>It is your turn</Text>
+            ) : (
+              <></>
+            )}
+          </Card>
         </GridItem>
-        <GridItem colSpan={9} className="board-container mt-3">
+        <GridItem colSpan={10} className="board-container mt-3">
           <Box
             id="board"
             bg="var(--primary-color)"
@@ -229,6 +231,17 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
             {renderCells()}
           </Box>
         </GridItem>
+        <GridItem colSpan={1} mt={12} mr={12}>
+          <Card p={8} mr={15}>
+            <Heading fontSize="xl">PlayerTwo: {playerTwo?.userName}</Heading>
+            <Text>Color: Red</Text>
+            {getCurrentColor(state.playerTurn) === "red" ? (
+              <Text>It is your turn</Text>
+            ) : (
+              <></>
+            )}
+          </Card>
+        </GridItem>
       </Grid>
 
       <WinnerModal
@@ -237,7 +250,7 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
         winnerName={state.gameState === GameState.PlayerOneWin ? 'Player One' : 'Player Two'}
         restart={restartGame}
       />
-    </Container>
+    </Box>
   );
 };
 
