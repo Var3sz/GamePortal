@@ -2,14 +2,8 @@
 
 namespace GamePortal.MultiHub
 {
-    public class ChessHub : Hub
+    public class MultiHub : Hub
     {
-
-        /*public async Task SendFen(string fen)
-        {
-            await Clients.All.SendAsync("ReceiveFEN", fen);
-        }*/
-
         /* Register the connected users */
         public async Task RegisterUsers(string name, string message, string gameUrl)
         {
@@ -26,7 +20,6 @@ namespace GamePortal.MultiHub
 
             if (toUserId != null && fromUserId != null)
             {
-                Console.WriteLine($"Sending FEN from {fromUserId} to {toUserId}: {fen}");
                 await Clients.Client(toUserId).SendAsync("receiveFen", fen);
             }
             else
@@ -40,11 +33,8 @@ namespace GamePortal.MultiHub
             string fromUserId = Context.ConnectionId;
             string toUserId = PlayerHandler.GetConnectionIdByUsernameAndGame(fromUsername, toUsername, gameIdentifier);
 
-            Console.WriteLine(boardState);
-
             if (toUserId != null && fromUserId != null)
             {
-                Console.WriteLine($"Sending BoardState from {fromUserId} to {toUserId}: {boardState}");
                 await Clients.Client(toUserId).SendAsync("receiveBoardState", boardState);
             }
             else
@@ -52,13 +42,11 @@ namespace GamePortal.MultiHub
                 Console.WriteLine($"Unable to send BoardState. fromUserId: {fromUserId}, toUserId: {toUserId}");
             }
         }
-
-
     }
 
     /*
-     Source: 
-     https://stackoverflow.com/questions/69834362/how-can-i-send-signalr-message-to-a-single-client
+        Source:  https://stackoverflow.com/questions/69834362/how-can-i-send-signalr-message-to-a-single-client
+        heavily upgraded and way better ;) 
      */
     public static class PlayerHandler
     {

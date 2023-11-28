@@ -6,7 +6,7 @@ import { getCurrentColor, nextColor, findEmptyCell, checkForWin, createBoard } f
 import { Connect4State } from '../../helpers/connect4.helpers/connect4.interfaces';
 import WinnerModal from "./WinnerModal";
 import Connect4Menu from "./Connect4GameMenu";
-import ChessConnector from '../../connection/chess.connector';
+import MultiplayerConnector from '../../connection/multiplayer.connector';
 import { SavedGame } from '../../models/savedGame.model';
 import axios from '../../api/axios';
 import useAuth from '../../auth/useAuth';
@@ -30,7 +30,7 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
   const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
   const chessConnector = useMemo(() => {
     if (gameUrl) {
-      return ChessConnector(auth.player.userName, gameUrl);
+      return MultiplayerConnector(auth.player.userName, gameUrl);
     } else {
       return {
         chessEvents: () => { },

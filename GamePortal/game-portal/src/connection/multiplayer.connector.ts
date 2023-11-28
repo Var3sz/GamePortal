@@ -1,15 +1,15 @@
 import * as signalR from "@microsoft/signalr";
 
-const ChessHubURL = "http://localhost:5086/chesshub";
+const HubURl = "http://localhost:5086/multihub";
 
-class ChessConnector {
+class MultiplayerConnector {
     private connection: signalR.HubConnection;
     public chessEvents: (onFENReceived: (fen: string) => void) => void;
     public connect4Events: (onBoardStateReceived: (boardState: string) => void) => void;
-    static instance: ChessConnector;
+    static instance: MultiplayerConnector;
     constructor(username: string, gameUrl: string) {
         this.connection = new signalR.HubConnectionBuilder()
-            .withUrl(ChessHubURL)
+            .withUrl(HubURl)
             .withAutomaticReconnect()
             .build();
         this.connection.start().catch(err => document.write(err)).then(() => {
@@ -40,10 +40,10 @@ class ChessConnector {
         this.connection.send("sendBoardState", fromUsername, toUsername, boardState, gameUrl).then(() => { });
     }
 
-    public static getInstance(username: string, gameUrl: string): ChessConnector {
-        if (!ChessConnector.instance)
-            ChessConnector.instance = new ChessConnector(username, gameUrl);
-        return ChessConnector.instance;
+    public static getInstance(username: string, gameUrl: string): MultiplayerConnector {
+        if (!MultiplayerConnector.instance)
+            MultiplayerConnector.instance = new MultiplayerConnector(username, gameUrl);
+        return MultiplayerConnector.instance;
     }
 }
-export default ChessConnector.getInstance;
+export default MultiplayerConnector.getInstance;

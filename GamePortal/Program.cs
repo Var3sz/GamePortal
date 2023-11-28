@@ -26,8 +26,7 @@ app.MapControllerRoute(
     pattern: "{controller}/{action=Index}/{id?}"
 );
 
-//app.MapHub<Connect4Hub>("/connect4hub");
-app.MapHub<ChessHub>("/chesshub");
+app.MapHub<MultiHub>("/multihub");
 
 app.MapFallbackToFile("index.html");
 

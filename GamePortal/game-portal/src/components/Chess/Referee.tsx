@@ -7,7 +7,7 @@ import { PieceColor, PieceType } from '../../helpers/chess.helpers/chess.enums';
 import { Container } from 'react-bootstrap';
 import { Pawn } from '../../models/chess/Pawn';
 import { Board } from '../../models/chess/Board';
-import ChessConnector from '../../connection/chess.connector';
+import MultiplayerConnector from '../../connection/multiplayer.connector';
 import PawnPromotionModal from './PawnPromotionModal';
 import CheckmateModal from './CheckMateModal';
 import { Card, Flex, Heading, Text } from '@chakra-ui/react';
@@ -35,7 +35,7 @@ export const Referee: React.FC<RefereeProps> = ({ isMultiplayer, isNewGame, save
     const { savedGameId, gameUrl, gameState, playerOne, playerTwo } = savedGame || {};
     const chessConnector = useMemo(() => {
         if (gameUrl) {
-            return ChessConnector(auth.player.userName, gameUrl);
+            return MultiplayerConnector(auth.player.userName, gameUrl);
         } else {
             return {
                 chessEvents: () => { },
