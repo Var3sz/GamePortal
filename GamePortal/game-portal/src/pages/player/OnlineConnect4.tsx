@@ -17,7 +17,7 @@ export const OnlineConnect4 = () => {
     try {
       const response = await axios.post("/api/savedgames",
         JSON.stringify({
-          GameId: 2,      // Sakk az egyes ID
+          GameId: 2,      // Connect4 a kettes ID
           GameUrl: id,
           GameState: "[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]",
           PlayerOneId: auth.player.playerId,

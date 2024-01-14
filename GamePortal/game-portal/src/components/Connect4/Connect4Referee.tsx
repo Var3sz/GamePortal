@@ -80,6 +80,8 @@ export const Connect4Referee: React.FC<Connect4MultiProps> = ({ isMultiplayer, i
     }
   }, [isNewGame, gameState]);
 
+ 
+
   useEffect(() => {
     if (isMultiplayer) {
       saveState();

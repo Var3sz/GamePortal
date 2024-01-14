@@ -48,7 +48,14 @@ namespace GamePortal.Extensions
             // Add DatabaseContext to container
             services.AddDbContext<GamePortalDbContext>(options =>
             {
-                options.UseSqlServer(configuration.GetConnectionString("DatabaseConnection")!);
+                if (Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") == "Test")
+                {
+                    options.UseInMemoryDatabase("InMemoryDatabaseForTesting");
+                }
+                else
+                {
+                    options.UseSqlServer(configuration.GetConnectionString("DatabaseConnection")!);
+                }
             });
 
             //Add Cors to container

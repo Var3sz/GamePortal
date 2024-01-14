@@ -11,14 +11,11 @@ namespace GamePortal.Controllers
     {
         private readonly IPlayerRepository _playerRepository;
         private readonly ISavedGamesRepository _savedGamesRepository;
-        private readonly ILogger<PlayersController> _logger;
         public PlayersController(
-            ILogger<PlayersController> logger, 
             IPlayerRepository playerRepository,
             ISavedGamesRepository savedGamesRepository
         )
         {
-            _logger = logger;
             _playerRepository = playerRepository;
             _savedGamesRepository = savedGamesRepository;
         }

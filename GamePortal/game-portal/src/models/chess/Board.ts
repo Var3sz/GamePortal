@@ -97,7 +97,7 @@ export class Board {
             case 'r': return PieceType.ROOK;
             case 'q': return PieceType.QUEEN;
             case 'k': return PieceType.KING;
-            default: throw new Error(`Inletid piece type: ${char}`);
+            default: throw new Error(`Invalid piece type: ${char}`);
         }
     }
 

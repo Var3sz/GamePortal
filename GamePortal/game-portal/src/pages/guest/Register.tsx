@@ -99,14 +99,14 @@ export const Register = () => {
   }
 
   return (
-    <Container className="d-flex flex-column justify-content-center col-lg- mt-3">
+    <Container className="d-flex flex-column justify-content-center col-lg">
       <Card variant={'loginCard'}>
         <CardHeader>
           <Heading variant={'authTitle'}>Sign Up</Heading>
         </CardHeader>
         <CardBody mb={"0px"}>
           <Form onSubmit={handleSubmit(registration)}>
-            <FormControl mt={'15px'} isRequired isInvalid={!!errors.fullName}>
+            <FormControl mt={'3px'} isRequired isInvalid={!!errors.fullName}>
               <FormLabel>Fullname</FormLabel>
               <Input
                 type={'text'}

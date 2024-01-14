@@ -17,38 +17,25 @@ interface AuthContextInterface {
     setAuth: Dispatch<SetStateAction<Auth>>
 }
 
-const AuthContext = createContext<AuthContextInterface>({
-    auth: {
-        player: {
-            roles: [],
-            playerId: -1,
-            fullName: '',
-            userName: '',
-            email: '',
-            password: '',
-            birthdate: '',
-            token: ''
-        },
-        token: "",
-        refresh: ""
-    },
-    setAuth: () => { }
-});
-
 export const initialAuth: Auth = {
-    player: {
-        roles: [],
-        playerId: -1,
-        fullName: '',
-        userName: '',
-        email: '',
-        password: '',
-        birthdate: '',
-        token: ''
-    },
-    token: "",
-    refresh: ""
+  player: {
+      roles: [],
+      playerId: -1,
+      fullName: '',
+      userName: '',
+      email: '',
+      password: '',
+      birthdate: '',
+      token: ''
+  },
+  token: "",
+  refresh: ""
 };
+
+export const AuthContext = createContext<AuthContextInterface>({
+  auth: initialAuth,
+  setAuth: () => {},
+});
 
 export const AuthProvider = ({ children }: any) => {
     const [auth, setAuth] = useState(() => {

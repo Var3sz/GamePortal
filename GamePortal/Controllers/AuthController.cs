@@ -13,112 +13,104 @@ using System.Text;
 
 namespace GamePortal.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class AuthController : ControllerBase
+  [Route("api/[controller]")]
+  [ApiController]
+  public class AuthController : ControllerBase
+  {
+    private readonly IPlayerRepository _playerRepository;
+    private readonly IRoleRepository _roleRepository;
+    private readonly ITokenService _tokenService;
+    public AuthController(IPlayerRepository playerRepository,
+        IRoleRepository roleRepository,
+        ITokenService tokenService
+    )
     {
-        private readonly GamePortalDbContext _gamePortalDbContext;
-        private readonly IPlayerRepository _playerRepository;
-        private readonly IRoleRepository _roleRepository;
-        private readonly ITokenService _tokenService;
-        private readonly ILogger<AuthController> _logger;
+      _playerRepository = playerRepository;
+      _roleRepository = roleRepository;
+      _tokenService = tokenService;
+    }
 
+    [HttpPost("login")]
+    public IActionResult Login([FromBody] LoginDTO credentials)
+    {
+      if (credentials == null) { return BadRequest("Invalid client request"); }
 
-        public AuthController(IPlayerRepository playerRepository, 
-            IRoleRepository roleRepository,
-            GamePortalDbContext gamePortalDbContext, 
-            ITokenService tokenService, 
-            ILogger<AuthController> logger
-        )
-        {
-            _playerRepository = playerRepository;
-            _roleRepository = roleRepository;
-            _gamePortalDbContext = gamePortalDbContext;
-            _tokenService = tokenService;
-            _logger = logger;
-        }
+      Player player = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
 
-        [HttpPost("login")]
-        public IActionResult Login([FromBody] LoginDTO credentials)
-        {
-            if (credentials == null) { return BadRequest("Invalid client request"); }
+      if (player is null) { return Unauthorized(); }
 
-            Player player = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
-
-            if (player is null) { return Unauthorized(); }
-
-            if (player.Roles.Select(r => r.Name).ToList().Contains("admin"))
-            {
-                var claims = new List<Claim>
+      if (player.Roles.Select(r => r.Name).ToList().Contains("admin"))
+      {
+        var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, player.UserName),
                     new Claim(ClaimTypes.Role, "admin")
                 };
 
-                var accessToken = _tokenService.GenerateToken(claims);
-                var refreshToken = _tokenService.GenerateRefreshToken();
-                var tokenExpiryTime = DateTime.Now.AddMinutes(5);
+        var accessToken = _tokenService.GenerateToken(claims);
+        var refreshToken = _tokenService.GenerateRefreshToken();
+        var tokenExpiryTime = DateTime.Now.AddMinutes(5);
 
-                _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
+        _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
-                return Ok(new AuthenticatedResponse { player = player, Token = accessToken, RefreshToken = refreshToken });
-            }
-            else
-            {
-                var claims = new List<Claim>
+        return Ok(new AuthenticatedResponse { player = player, Token = accessToken, RefreshToken = refreshToken });
+      }
+      else
+      {
+        var claims = new List<Claim>
                 {
                     new Claim(ClaimTypes.Name, player.UserName),
                     new Claim(ClaimTypes.Role, "player")
                 };
 
-                var accessToken = _tokenService.GenerateToken(claims);
-                var refreshToken = _tokenService.GenerateRefreshToken();
-                var tokenExpiryTime = DateTime.Now.AddMinutes(5);
+        var accessToken = _tokenService.GenerateToken(claims);
+        var refreshToken = _tokenService.GenerateRefreshToken();
+        var tokenExpiryTime = DateTime.Now.AddMinutes(5);
 
-                _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
+        _playerRepository.UpdateRefreshToken(player.PlayerId, refreshToken, tokenExpiryTime);
 
-                return Ok(new AuthenticatedResponse { player = player, Token = accessToken, RefreshToken = refreshToken });
-            }
-        }
+        return Ok(new AuthenticatedResponse { player = player, Token = accessToken, RefreshToken = refreshToken });
+      }
+    }
 
 
-        [HttpPost("registration")]
-        public IActionResult Registration([FromBody] RegisterDTO credentials)
-        {
-            if (credentials == null) { return BadRequest("Invalid client request"); }
+    [HttpPost("registration")]
+    public IActionResult Registration([FromBody] RegisterDTO credentials)
+    {
+      if (credentials == null) { return BadRequest("Invalid client request"); }
 
-            var existingUser = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
-            if (existingUser is not null) { return Conflict(); }
-            
-            Player player = new Player
-            {
-                FullName = credentials.FullName!,
-                UserName = credentials.UserName!,
-                Email = credentials.Email!,
-                Password = credentials.Password!,
-                Birthdate = credentials.Birthdate!
-            };
+      var existingUser = _playerRepository.GetPlayerByUsernameAndPassword(credentials.UserName!, credentials.Password!);
+      if (existingUser is not null) { return Conflict(); }
 
-            Role role = _roleRepository.GetRoleByName("player");
+      Player player = new Player
+      {
+        FullName = credentials.FullName!,
+        UserName = credentials.UserName!,
+        Email = credentials.Email!,
+        Password = credentials.Password!,
+        Birthdate = credentials.Birthdate!
+      };
 
-            player.Roles.Add(role);
+      Role role = _roleRepository.GetRoleByName("player");
 
-            var claims = new List<Claim> {
+      player.Roles.Add(role);
+
+      var claims = new List<Claim>
+      {
                 new Claim(ClaimTypes.Name, player.UserName),
                 new Claim(ClaimTypes.Role, role.Name)
             };
 
-            var accessToken = _tokenService.GenerateToken(claims);
-            var refreshToken = _tokenService.GenerateRefreshToken();
-            var tokenExpiryTime = DateTime.Now.AddMinutes(5);
+      var accessToken = _tokenService.GenerateToken(claims);
+      var refreshToken = _tokenService.GenerateRefreshToken();
+      var tokenExpiryTime = DateTime.Now.AddMinutes(5);
 
-            player.RefreshToken = refreshToken;
-            player.RefreshTokenExpiryTime = tokenExpiryTime;
+      player.RefreshToken = refreshToken;
+      player.RefreshTokenExpiryTime = tokenExpiryTime;
 
-            _playerRepository.InsertPlayer(player);
+      _playerRepository.InsertPlayer(player);
 
-
-            return Ok(new AuthenticatedResponse { player = player,  Token = accessToken, RefreshToken = refreshToken });
-        }
+      return Ok(new AuthenticatedResponse { player = player, Token = accessToken, RefreshToken = refreshToken });
     }
+  }
 }
